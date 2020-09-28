@@ -1,4 +1,53 @@
-<?php 
+<?php include_once('sql-query.php'); ?>
+
+<?php
+if (isset($_GET['id_delete'])) {
+
+    // $sql = 'SELECT * FROM tbl_fcm_template WHERE id=\''.$_GET['id'].'\'';
+    // $img_rss = mysqli_query($connect, $sql);
+    // $img_rss_row = mysqli_fetch_assoc($img_rss);
+
+    // if ($img_rss_row['image'] != "") {
+    //     unlink('upload/notification/'.$img_rss_row['image']);
+    // }
+
+    Delete('tbl_comment','id_coment='.$_GET['id_delete'].'');
+    if (isset($_GET['id'])) {
+        $ID = $_GET['id'];
+    } else {
+        $ID = "";
+    }
+
+   header("location: order-detail.php?id=".$ID);
+    exit;
+
+}
+if (isset($_POST['submit_coment'])) {
+
+
+    $data = array(
+        'orden_comment'	=> $_POST['orden_commint'],
+        'date_coment'		=> date('Y-m-d h:i:s'),
+        'orden_code'  			=> $_POST['ordencode'],
+        'player_id'  			=> $_SESSION['user']
+    );
+
+    $qry = Insert('tbl_comment', $data);
+
+    //$_SESSION['msg'] = "";
+    $succes =<<<EOF
+					<script>
+					        alert('Comentario Agreagado...');
+					        window.location = 'manage-order.php' ;
+					</script>
+EOF;
+    echo $succes;
+    exit;
+
+}
+
+
+
 	if (isset($_GET['id'])) {
 		$ID = $_GET['id'];
 	} else {
@@ -9,6 +58,8 @@
 	$data = array();
 
 	$sql_query = "SELECT * FROM tbl_order WHERE id = ?";
+
+
 
 	$stmt = $connect->stmt_init();
 	if ($stmt->prepare($sql_query)) {
@@ -37,8 +88,23 @@
 		$stmt->close();
 	}
 
-	$order_list = explode(',', $data['order_list']);
-			
+    $eComment = array();
+    $dComment = array();
+
+    $sql_comment = "SELECT * FROM tbl_comment WHERE orden_code = ?";
+    $stmt_comment = $connect->stmt_init();
+    if ($stmt_comment->prepare($sql_comment)) {
+        $stmt_comment->bind_param('s', $data['code']);
+        $stmt_comment->execute();
+        $stmt_comment->store_result();
+        $stmt_comment->bind_result(
+            $dComment['id_coment'],
+            $dComment['orden_code'],
+            $dComment['orden_comment'],
+            $dComment['date_coment'],
+            $dComment['player_id']
+        );
+    }
 ?>
 
 <?php
@@ -175,18 +241,20 @@ EOF;
 
 	<!--tab start-->
 	<div class="container-fluid full-width-container">
-	
+
 		<h1 class="section-title" id="services"></h1>
-			
+
 		<!--breadcrum start-->
 		<ol class="breadcrumb text-left">
 		  <li><a href="dashboard.php">Dashboard</a></li>
 		  <li><a href="manage-order.php">Bandeja de Ordenes</a></li>
 		  <li class="active">Ordenes detalles</li>
 		</ol><!--breadcrum end-->
-	
+
+
+
 		<div class="section" >
-			
+
 			<div class="pmd-card pmd-z-depth">
 				<div class="pmd-card-body">
 
@@ -196,14 +264,14 @@ EOF;
 						</div>
 						<div class="col-lg-4 col-md-4 col-sm-4 col-xs-12 right">
 							<div align="right">
-								
-								<?php if ($data['status'] == '0') { ?> 
+
+								<?php if ($data['status'] == '0') { ?>
 								<form id="validationForm" method="post">
 									<input type="submit" name="cancel_order" class="btn pmd-ripple-effect btn-default" value="CANCELAR" onclick="cancelClicked(event)"/>
 
 									<input type="submit" name="submit_order" class="btn pmd-ripple-effect btn-danger" value="PROCESAR" onclick="processClicked(event)" />
 								</form>
-								<?php } else if ($data['status'] == '1') { ?> 
+								<?php } else if ($data['status'] == '1') { ?>
 								<form id="validationForm" method="post">
 									<input type="submit" name="cancel_order" class="btn pmd-ripple-effect btn-default" value="CANCELAR" onclick="cancelClicked(event)"/>
 								</form>
@@ -214,7 +282,7 @@ EOF;
 						</div>
 					</div>
 
-					<div class="table-responsive"> 
+					<div class="table-responsive">
 						<table cellspacing="0" cellpadding="0" class="table pmd-table table-hover" id="table-propeller">
 							<tbody>
 
@@ -240,7 +308,7 @@ EOF;
 										<span class="badge">CANCELADO</span>
 										<?php } else { ?>
 										<span class="badge badge-error">PENDIENTE</span>
-										<?php } ?>										
+										<?php } ?>
 									</td>
 								</tr>
 
@@ -266,7 +334,7 @@ EOF;
 									<td>:</td>
 									<td><?php echo $data['date_time']; ?></td>
 								</tr>
-								
+
 								<tr>
 									<td>Orden</td>
 									<td>:</td>
@@ -288,10 +356,64 @@ EOF;
 				</div>
 			</div> <!-- section content end -->
 		</div>
-			
+
+        <div class="section" >
+            <div class="pmd-card pmd-z-depth">
+                <div class="pmd-card-body">
+                    <form id="validationForm" method="post">
+                        <div style="display: none">
+                        <input type="text" value="<?php echo $data['code']; ?>" name="ordencode">
+                        <input type="text" value="<?php echo $_GET['id']; ?>" name="ordenid">
+                        </div>
+                    <div class="form-group pmd-textfield">
+                        <label class="control-label">Agregar Comentario</label>
+                        <textarea required class="form-control" name="orden_commint"></textarea>
+                        <script>
+                            CKEDITOR.replace( 'orden_commint' );
+                        </script>
+                        <br>
+                        <p align="right">
+                            <button type="submit" class="btn pmd-ripple-effect btn-danger" name="submit_coment">Guardar</button>
+                        </p>
+                    </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-12">
+                <div class="page-header">
+                    <h1><small class="pull-right"><?php echo $stmt_comment->num_rows;?> Comentarios</small> Comentarios </h1>
+                </div>
+                <div class="comments-list">
+                    <?php
+                    while ($stmt_comment->fetch()) { ?>
+                        <div class="media">
+                            <p class="pull-right"><small><?php echo $dComment['date_coment'];?></small></p>
+                            <a class="media-left" href="#">
+                                <img src="http://lorempixel.com/40/40/people/1/">
+                            </a>
+                            <div class="media-body">
+                                <h4 class="media-heading user_name"><?php echo $dComment['orden_code'];?></h4>
+                                <?php echo $dComment['orden_comment'];?>
+                                <p><small><a href="order-detail.php?id=<?php echo $_GET['id'];?>&id_delete=<?php echo $dComment['id_coment'];?>">Borrar</a> </small></p>
+                            </div>
+                        </div>
+                    <?php } ?>
+            </div>
+        </div>
+
 	</div><!-- tab end -->
 
+
+
 </div><!--end content area-->
+
+<?php
+$stmt_comment->close();?>
+
+
 
 <script>
 	function processClicked(e) {

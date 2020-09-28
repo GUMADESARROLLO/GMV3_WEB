@@ -8,6 +8,13 @@
 		background-color: transparent;
 		padding: 0px;
 	}
+    .user_name{
+        font-size:14px;
+        font-weight: bold;
+    }
+    .comments-list .media{
+        border-bottom: 1px dotted #ccc;
+    }
 </style>
+    <script src="assets/js/ckeditor/ckeditor.js"></script>
 <?php include 'public/data-order-detail.php'; ?>
-<?php include 'public/footer.php'; ?>
