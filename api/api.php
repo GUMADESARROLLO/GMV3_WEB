@@ -203,19 +203,7 @@ if (isset($_GET['category_id'])) {
     echo $val = str_replace('\\/', '/', json_encode($set));
 
 } else if (isset($_GET['product_id'])) {
-    /*$query = "SELECT p.product_id, p.product_name,p.product_sku, p.category_id, n.category_name, p.product_price, p.product_status, p.product_image, p.product_description, p.product_quantity, c.currency_id, c.tax, o.currency_code, o.currency_name FROM tbl_category n, tbl_product p, tbl_config c, tbl_currency o WHERE n.category_id = p.category_id AND c.currency_id = o.currency_id AND c.id = 1 AND p.product_sku ='".$_GET['product_id']."'";
-    $resouter = mysqli_query($connect, $query);
 
-    $set = array();
-    $total_records = mysqli_num_rows($resouter);
-    if($total_records >= 1) {
-        while ($link = mysqli_fetch_array($resouter, MYSQLI_ASSOC)){
-        $set = $link;
-      }
-    }
-
-    header('Content-Type: application/json; charset=utf-8');
-    echo $val = str_replace('\\/', '/', json_encode($set));*/
 
     $sqlsrv = new Sqlsrv();
 
@@ -260,24 +248,6 @@ if (isset($_GET['category_id'])) {
 
 } else if (isset($_GET['clients_id'])) {
 
-    /* $sqlsrv = new Sqlsrv();
-     $conn = $sqlsrv->OPen_database_odbcSAp();
-     $filtro = $_GET['clients_id'];
-
-     $query = 'SELECT * from SBO_INNOVA_INDUSTRIAS.GMV_CLIENTES  WHERE "COD_VENDEDOR" = '.$filtro.'';
-
-     $resultado =  @odbc_exec($conn,$query);
-     $rtnCliente=array();
-     $i=0;
-
-     while ($key = @odbc_fetch_array($resultado)){
-
-         $rtnCliente[$i]['CLIENTE'] = $key['CODIGO'];
-         $rtnCliente[$i]['NOMBRE'] = $key['NOMBRE'];
-         $rtnCliente[$i]['DIRECCION'] = $key['DIRECCION'];
-         $rtnCliente[$i]['DIPONIBLE'] = number_format($key['DISPONIBLE'],2);
-         $i++;
-     }*/
 
 
     $sqlsrv = new Sqlsrv();
@@ -289,7 +259,7 @@ if (isset($_GET['category_id'])) {
             $dta[$i]['CLIENTE']     = $key['CLIENTE'];
             $dta[$i]['NOMBRE']      = $key['NOMBRE'];
             $dta[$i]['DIRECCION']   = $key['DIRECCION'];
-            $dta[$i]['DIPONIBLE']   = number_format($key['CREDITODISP'],2);
+            $dta[$i]['DIPONIBLE']   = number_format($key['LIMITE_CREDITO'] - $key['SALDO'],2);
             $dta[$i]['LIMITE']      = number_format($key['LIMITE_CREDITO'],2);
             $dta[$i]['SALDO']       = number_format($key['SALDO'],2);
             $dta[$i]['MOROSO']      = $key['MOROSO'];

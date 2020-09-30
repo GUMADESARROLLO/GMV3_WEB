@@ -4,8 +4,6 @@
     <list default="true" id="8a03584f-4f19-40cc-90fd-67576ea81a89" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/api/api.php" afterPath="$PROJECT_DIR$/api/api.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/public/data-order-detail.php" afterPath="$PROJECT_DIR$/public/data-order-detail.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/public/table-order.php" afterPath="$PROJECT_DIR$/public/table-order.php" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -20,34 +18,34 @@
       <file leaf-file-name="api.php" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/api/api.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="223">
-              <caret line="278" column="14" lean-forward="true" selection-start-line="278" selection-start-column="14" selection-end-line="278" selection-end-column="14" />
+            <state relative-caret-position="439">
+              <caret line="256" column="26" lean-forward="true" selection-start-line="256" selection-start-column="26" selection-end-line="256" selection-end-column="26" />
               <folding>
-                <marker date="1601501711016" expanded="true" signature="140:188" ph="SELECT * FRO... tbl_admin" />
-                <marker date="1601501711016" expanded="true" signature="385:824" ph="SELECT p.pro... tbl_category" />
-                <marker date="1601501711016" expanded="true" signature="3561:3614" ph="SELECT * FRO... GMV_mstr_articulos" />
-                <marker date="1601501711016" expanded="true" signature="3774:3882" ph="SELECT p.pro... tbl_product" />
-                <marker date="1601501711016" expanded="true" signature="5522:5761" ph="SELECT DISTI... tbl_category" />
-                <marker date="1601501711016" expanded="true" signature="6209:6321" ph="SELECT c.tax... tbl_config" />
-                <marker date="1601501711016" expanded="true" signature="7219:7476" ph="INSERT INTO tbl_order... " />
-                <marker date="1601501711016" expanded="true" signature="7769:7820" ph="SELECT * FRO... tbl_shipping" />
-                <marker date="1601501711016" expanded="true" signature="8271:8310" ph="SELECT * FRO... tbl_help" />
-                <marker date="1601501711016" expanded="true" signature="9623:9715" ph="SELECT * FRO... GMV_mstr_articulos" />
-                <marker date="1601501711016" expanded="true" signature="9875:9983" ph="SELECT p.pro... tbl_product" />
-                <marker date="1601501711016" expanded="true" signature="12099:12201" ph="SELECT * FRO... ANA_MTClientes_UMK" />
-                <marker date="1601501711016" expanded="true" signature="13594:13687" ph="SELECT usern... tbl_admin" />
-                <marker date="1601501711016" expanded="true" signature="14925:15004" ph="SELECT * FRO... GMV_PERFILES_CLIENTE" />
-                <marker date="1601501711016" expanded="true" signature="16308:16400" ph="SELECT * FRO... GMV_FACTURA_DETALLE_HISTORICO" />
-                <marker date="1601501711016" expanded="true" signature="17272:17353" ph="SELECT * FRO... GMV3_hstCompra_3M" />
-                <marker date="1601501711016" expanded="true" signature="18290:18467" ph="SELECT T0.CL... APK_CxC_DocVenxCL" />
-                <marker date="1601501711016" expanded="true" signature="19682:19779" ph="SELECT IdPer... metacuota_GumaNet" />
-                <marker date="1601501711016" expanded="true" signature="19848:19989" ph="SELECT Sum(M... gn_cuota_x_productos" />
-                <marker date="1601501711016" expanded="true" signature="20056:20195" ph="SELECT Sum(v... gn_cuota_x_productos" />
-                <marker date="1601501711016" expanded="true" signature="22513:22759" ph="SELECT T0.FA... " />
-                <marker date="1601501711016" expanded="true" signature="23645:23676" ph="SELECT * FRO... tbl_comment" />
-                <marker date="1601501711016" expanded="true" signature="23645:23677" ph="SELECT * FRO... tbl_comment" />
-                <marker date="1601501711016" expanded="true" signature="23645:23690" ph="SELECT * FRO... tbl_comment" />
-                <marker date="1601501711016" expanded="true" signature="23645:23719" ph="SELECT * FRO... tbl_comment" />
+                <marker date="1601503350754" expanded="true" signature="140:188" ph="SELECT * FRO... tbl_admin" />
+                <marker date="1601503350754" expanded="true" signature="385:824" ph="SELECT p.pro... tbl_category" />
+                <marker date="1601503350754" expanded="true" signature="3561:3614" ph="SELECT * FRO... GMV_mstr_articulos" />
+                <marker date="1601503350754" expanded="true" signature="3774:3882" ph="SELECT p.pro... tbl_product" />
+                <marker date="1601503350754" expanded="true" signature="5522:5761" ph="SELECT DISTI... tbl_category" />
+                <marker date="1601503350754" expanded="true" signature="6209:6321" ph="SELECT c.tax... tbl_config" />
+                <marker date="1601503350754" expanded="true" signature="7219:7476" ph="INSERT INTO tbl_order... " />
+                <marker date="1601503350754" expanded="true" signature="7769:7820" ph="SELECT * FRO... tbl_shipping" />
+                <marker date="1601503350754" expanded="true" signature="8271:8310" ph="SELECT * FRO... tbl_help" />
+                <marker date="1601503350754" expanded="true" signature="8803:8895" ph="SELECT * FRO... GMV_mstr_articulos" />
+                <marker date="1601503350754" expanded="true" signature="9055:9163" ph="SELECT p.pro... tbl_product" />
+                <marker date="1601503350754" expanded="true" signature="10659:10761" ph="SELECT * FRO... ANA_MTClientes_UMK" />
+                <marker date="1601503350754" expanded="true" signature="12173:12266" ph="SELECT usern... tbl_admin" />
+                <marker date="1601503350754" expanded="true" signature="13504:13583" ph="SELECT * FRO... GMV_PERFILES_CLIENTE" />
+                <marker date="1601503350754" expanded="true" signature="14887:14979" ph="SELECT * FRO... GMV_FACTURA_DETALLE_HISTORICO" />
+                <marker date="1601503350754" expanded="true" signature="15851:15932" ph="SELECT * FRO... GMV3_hstCompra_3M" />
+                <marker date="1601503350754" expanded="true" signature="16869:17046" ph="SELECT T0.CL... APK_CxC_DocVenxCL" />
+                <marker date="1601503350754" expanded="true" signature="18261:18358" ph="SELECT IdPer... metacuota_GumaNet" />
+                <marker date="1601503350754" expanded="true" signature="18427:18568" ph="SELECT Sum(M... gn_cuota_x_productos" />
+                <marker date="1601503350754" expanded="true" signature="18635:18774" ph="SELECT Sum(v... gn_cuota_x_productos" />
+                <marker date="1601503350754" expanded="true" signature="21092:21338" ph="SELECT T0.FA... " />
+                <marker date="1601503350754" expanded="true" signature="22224:22255" ph="SELECT * FRO... tbl_comment" />
+                <marker date="1601503350754" expanded="true" signature="22224:22256" ph="SELECT * FRO... tbl_comment" />
+                <marker date="1601503350754" expanded="true" signature="22224:22269" ph="SELECT * FRO... tbl_comment" />
+                <marker date="1601503350754" expanded="true" signature="22224:22298" ph="SELECT * FRO... tbl_comment" />
               </folding>
             </state>
           </provider>
@@ -402,7 +400,7 @@
       <workItem from="1600872939319" duration="1715000" />
       <workItem from="1600899318467" duration="4677000" />
       <workItem from="1601314231676" duration="12066000" />
-      <workItem from="1601482714586" duration="9583000" />
+      <workItem from="1601482714586" duration="10467000" />
     </task>
     <task id="LOCAL-00001" summary="Primer Commit">
       <created>1600874444081</created>
@@ -432,11 +430,18 @@
       <option name="project" value="LOCAL" />
       <updated>1601483579969</updated>
     </task>
-    <option name="localTasksCounter" value="5" />
+    <task id="LOCAL-00005" summary="30/09/2020">
+      <created>1601502529405</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1601502529405</updated>
+    </task>
+    <option name="localTasksCounter" value="6" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="129800000" />
+    <option name="totallyTimeSpent" value="130684000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="1912" y="-4" width="1936" height="1066" extended-state="6" />
@@ -898,34 +903,34 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/api/api.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="223">
-          <caret line="278" column="14" lean-forward="true" selection-start-line="278" selection-start-column="14" selection-end-line="278" selection-end-column="14" />
+        <state relative-caret-position="439">
+          <caret line="256" column="26" lean-forward="true" selection-start-line="256" selection-start-column="26" selection-end-line="256" selection-end-column="26" />
           <folding>
-            <marker date="1601501711016" expanded="true" signature="140:188" ph="SELECT * FRO... tbl_admin" />
-            <marker date="1601501711016" expanded="true" signature="385:824" ph="SELECT p.pro... tbl_category" />
-            <marker date="1601501711016" expanded="true" signature="3561:3614" ph="SELECT * FRO... GMV_mstr_articulos" />
-            <marker date="1601501711016" expanded="true" signature="3774:3882" ph="SELECT p.pro... tbl_product" />
-            <marker date="1601501711016" expanded="true" signature="5522:5761" ph="SELECT DISTI... tbl_category" />
-            <marker date="1601501711016" expanded="true" signature="6209:6321" ph="SELECT c.tax... tbl_config" />
-            <marker date="1601501711016" expanded="true" signature="7219:7476" ph="INSERT INTO tbl_order... " />
-            <marker date="1601501711016" expanded="true" signature="7769:7820" ph="SELECT * FRO... tbl_shipping" />
-            <marker date="1601501711016" expanded="true" signature="8271:8310" ph="SELECT * FRO... tbl_help" />
-            <marker date="1601501711016" expanded="true" signature="9623:9715" ph="SELECT * FRO... GMV_mstr_articulos" />
-            <marker date="1601501711016" expanded="true" signature="9875:9983" ph="SELECT p.pro... tbl_product" />
-            <marker date="1601501711016" expanded="true" signature="12099:12201" ph="SELECT * FRO... ANA_MTClientes_UMK" />
-            <marker date="1601501711016" expanded="true" signature="13594:13687" ph="SELECT usern... tbl_admin" />
-            <marker date="1601501711016" expanded="true" signature="14925:15004" ph="SELECT * FRO... GMV_PERFILES_CLIENTE" />
-            <marker date="1601501711016" expanded="true" signature="16308:16400" ph="SELECT * FRO... GMV_FACTURA_DETALLE_HISTORICO" />
-            <marker date="1601501711016" expanded="true" signature="17272:17353" ph="SELECT * FRO... GMV3_hstCompra_3M" />
-            <marker date="1601501711016" expanded="true" signature="18290:18467" ph="SELECT T0.CL... APK_CxC_DocVenxCL" />
-            <marker date="1601501711016" expanded="true" signature="19682:19779" ph="SELECT IdPer... metacuota_GumaNet" />
-            <marker date="1601501711016" expanded="true" signature="19848:19989" ph="SELECT Sum(M... gn_cuota_x_productos" />
-            <marker date="1601501711016" expanded="true" signature="20056:20195" ph="SELECT Sum(v... gn_cuota_x_productos" />
-            <marker date="1601501711016" expanded="true" signature="22513:22759" ph="SELECT T0.FA... " />
-            <marker date="1601501711016" expanded="true" signature="23645:23676" ph="SELECT * FRO... tbl_comment" />
-            <marker date="1601501711016" expanded="true" signature="23645:23677" ph="SELECT * FRO... tbl_comment" />
-            <marker date="1601501711016" expanded="true" signature="23645:23690" ph="SELECT * FRO... tbl_comment" />
-            <marker date="1601501711016" expanded="true" signature="23645:23719" ph="SELECT * FRO... tbl_comment" />
+            <marker date="1601503350754" expanded="true" signature="140:188" ph="SELECT * FRO... tbl_admin" />
+            <marker date="1601503350754" expanded="true" signature="385:824" ph="SELECT p.pro... tbl_category" />
+            <marker date="1601503350754" expanded="true" signature="3561:3614" ph="SELECT * FRO... GMV_mstr_articulos" />
+            <marker date="1601503350754" expanded="true" signature="3774:3882" ph="SELECT p.pro... tbl_product" />
+            <marker date="1601503350754" expanded="true" signature="5522:5761" ph="SELECT DISTI... tbl_category" />
+            <marker date="1601503350754" expanded="true" signature="6209:6321" ph="SELECT c.tax... tbl_config" />
+            <marker date="1601503350754" expanded="true" signature="7219:7476" ph="INSERT INTO tbl_order... " />
+            <marker date="1601503350754" expanded="true" signature="7769:7820" ph="SELECT * FRO... tbl_shipping" />
+            <marker date="1601503350754" expanded="true" signature="8271:8310" ph="SELECT * FRO... tbl_help" />
+            <marker date="1601503350754" expanded="true" signature="8803:8895" ph="SELECT * FRO... GMV_mstr_articulos" />
+            <marker date="1601503350754" expanded="true" signature="9055:9163" ph="SELECT p.pro... tbl_product" />
+            <marker date="1601503350754" expanded="true" signature="10659:10761" ph="SELECT * FRO... ANA_MTClientes_UMK" />
+            <marker date="1601503350754" expanded="true" signature="12173:12266" ph="SELECT usern... tbl_admin" />
+            <marker date="1601503350754" expanded="true" signature="13504:13583" ph="SELECT * FRO... GMV_PERFILES_CLIENTE" />
+            <marker date="1601503350754" expanded="true" signature="14887:14979" ph="SELECT * FRO... GMV_FACTURA_DETALLE_HISTORICO" />
+            <marker date="1601503350754" expanded="true" signature="15851:15932" ph="SELECT * FRO... GMV3_hstCompra_3M" />
+            <marker date="1601503350754" expanded="true" signature="16869:17046" ph="SELECT T0.CL... APK_CxC_DocVenxCL" />
+            <marker date="1601503350754" expanded="true" signature="18261:18358" ph="SELECT IdPer... metacuota_GumaNet" />
+            <marker date="1601503350754" expanded="true" signature="18427:18568" ph="SELECT Sum(M... gn_cuota_x_productos" />
+            <marker date="1601503350754" expanded="true" signature="18635:18774" ph="SELECT Sum(v... gn_cuota_x_productos" />
+            <marker date="1601503350754" expanded="true" signature="21092:21338" ph="SELECT T0.FA... " />
+            <marker date="1601503350754" expanded="true" signature="22224:22255" ph="SELECT * FRO... tbl_comment" />
+            <marker date="1601503350754" expanded="true" signature="22224:22256" ph="SELECT * FRO... tbl_comment" />
+            <marker date="1601503350754" expanded="true" signature="22224:22269" ph="SELECT * FRO... tbl_comment" />
+            <marker date="1601503350754" expanded="true" signature="22224:22298" ph="SELECT * FRO... tbl_comment" />
           </folding>
         </state>
       </provider>
