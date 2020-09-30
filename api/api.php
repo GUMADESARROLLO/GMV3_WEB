@@ -160,7 +160,7 @@ if (isset($_GET['category_id'])) {
     $date        = $_POST['date'];
     $server_url  = $_POST['server_url'];
 
-    $query = "INSERT INTO tbl_order (code,name, email, phone, address, shipping, order_list, order_total, comment, player_id) VALUES ('$code','$name', '$email', '$phone', '$address', '$shipping', '$order_list', '$order_total', '$comment', '$player_id')";
+    $query = "INSERT INTO tbl_order (code,name, email, phone,created_at, address, shipping, order_list, order_total, comment, player_id) VALUES ('$code','$name', '$email', '$phone','$date', '$address', '$shipping', '$order_list', '$order_total', '$comment', '$player_id')";
 
     if (mysqli_query($connect, $query)) {
         //include_once ('php-mail.php');
@@ -282,16 +282,19 @@ if (isset($_GET['category_id'])) {
 
     $sqlsrv = new Sqlsrv();
     $dta = array(); $i=0;
-    $query = $sqlsrv->fetchArray("SELECT * FROM SAC_DISP_CREDITO_UMK WHERE VENDEDOR='".$_GET['clients_id']."' ", SQLSRV_FETCH_ASSOC);
+
+    $query = $sqlsrv->fetchArray("SELECT * FROM Softland.dbo.ANA_MTClientes_UMK WHERE VENDEDOR='".$_GET['clients_id']."' AND ACTIVO ='S'", SQLSRV_FETCH_ASSOC);
     if (count($query)>0) {
         foreach ($query as $key) {
-            $dta[$i]['CLIENTE'] = $key['CLIENTE'];
-            $dta[$i]['NOMBRE'] = $key['NOMBRE'];
-            $dta[$i]['DIRECCION'] = $key['DIRECCION'];
-            $dta[$i]['DIPONIBLE'] = number_format($key['CREDITODISP'],2);
-            $dta[$i]['LIMITE'] = number_format($key['LIMITE_CREDITO'],2);
-            $dta[$i]['SALDO'] = number_format($key['SALDO'],2);
-            $dta[$i]['MOROSO'] = $key['MOROSO'];
+            $dta[$i]['CLIENTE']     = $key['CLIENTE'];
+            $dta[$i]['NOMBRE']      = $key['NOMBRE'];
+            $dta[$i]['DIRECCION']   = $key['DIRECCION'];
+            $dta[$i]['DIPONIBLE']   = number_format($key['CREDITODISP'],2);
+            $dta[$i]['LIMITE']      = number_format($key['LIMITE_CREDITO'],2);
+            $dta[$i]['SALDO']       = number_format($key['SALDO'],2);
+            $dta[$i]['MOROSO']      = $key['MOROSO'];
+            $dta[$i]['TELE']        = "Tels. ".$key['TELEFONO1'].' / '.$key['TELEFONO2'];
+            $dta[$i]['CONDPA']      = "Cond. Pago: ".$key['CONDICION_PAGO'].' Dias';
             $i++;
         }
 

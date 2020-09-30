@@ -78,6 +78,8 @@ EOF;
 			$data['address'],
 			$data['shipping'],
 			$data['date_time'],
+            $data['created_at'],
+            $data['updated_at'],
 			$data['order_list'],
 			$data['order_total'],
 			$data['comment'],
@@ -160,10 +162,13 @@ EOF;
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
 
         $response = curl_exec($ch);
-        curl_close($ch);		
- 
+        curl_close($ch);
+
+        $fecha = new DateTime();
+
 		$data = array(
-			'status'  => 1
+			'status'  => 1,
+            'updated_at'  =>date('Y-m-d H:i:s')
 		);	
 
 		$hasil = Update('tbl_order', $data, "WHERE id = '".$_GET['id']."'");
@@ -214,12 +219,16 @@ EOF;
 
         $response = curl_exec($ch);
         curl_close($ch);		
- 
-		$data = array(
-			'status'  => 2
-		);	
 
-		$hasil = Update('tbl_order', $data, "WHERE id = '".$_GET['id']."'");
+        $fecha = new DateTime();
+
+        $data = array(
+            'status'  => 2,
+            'updated_at'  => date('Y-m-d H:i:s')
+        );
+
+
+        $hasil = Update('tbl_order', $data, "WHERE id = '".$_GET['id']."'");
 
 		if ($hasil > 0) {
 		    $succes =<<<EOF
@@ -250,7 +259,6 @@ EOF;
 		  <li><a href="manage-order.php">Bandeja de Ordenes</a></li>
 		  <li class="active">Ordenes detalles</li>
 		</ol><!--breadcrum end-->
-
 
 
 		<div class="section" >
@@ -395,7 +403,7 @@ EOF;
                                 <img src="http://lorempixel.com/40/40/people/1/">
                             </a>
                             <div class="media-body">
-                                <h4 class="media-heading user_name"><?php echo $dComment['orden_code'];?></h4>
+                                <h4 class="media-heading user_name"><?php echo $dComment['player_id'];?></h4>
                                 <?php echo $dComment['orden_comment'];?>
                                 <p><small><a href="order-detail.php?id=<?php echo $_GET['id'];?>&id_delete=<?php echo $dComment['id_coment'];?>">Borrar</a> </small></p>
                             </div>
