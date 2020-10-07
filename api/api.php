@@ -335,26 +335,15 @@ if (isset($_GET['category_id'])) {
     $sqlsrv = new Sqlsrv();
     $dta = array(); $i=0;
     $query = $sqlsrv->fetchArray("SELECT * FROM GMV_PERFILES_CLIENTE WHERE CLIENTE='".$_GET['get_perfil_user']."' ", SQLSRV_FETCH_ASSOC);
-    if (count($query)>0) {
-        foreach ($query as $key) {
-            $dta[$i]['NoVencidos']  = number_format($key['NoVencidos'],2);
-            $dta[$i]['Dias30']      = number_format($key['Dias30'],2);
-            $dta[$i]['Dias60']      = number_format($key['Dias60'],2);
-            $dta[$i]['Dias90']      = number_format($key['Dias90'],2);
-            $dta[$i]['Dias120']     = number_format($key['Dias120'],2);
-            $dta[$i]['Mas120']      = number_format($key['Mas120'],2);
-            $dta[$i]['FACT_PEND']   = $key['FACT_PEND'];
-            $i++;
-        }
-
-    }else{
-        $dta[$i]['NoVencidos']  = number_format(0.00,2);
-        $dta[$i]['Dias30']      = number_format(0.00,2);
-        $dta[$i]['Dias60']      = number_format(0.00,2);
-        $dta[$i]['Dias90']      = number_format(0.00,2);
-        $dta[$i]['Dias120']     = number_format(0.00,2);
-        $dta[$i]['Mas120']      = number_format(0.00,2);
-        $dta[$i]['FACT_PEND']   = "-:0.00:00-00-0000:0.00";
+    foreach ($query as $key) {
+        $dta[$i]['NoVencidos']  = number_format($key['NoVencidos'],2);
+        $dta[$i]['Dias30']      = number_format($key['Dias30'],2);
+        $dta[$i]['Dias60']      = number_format($key['Dias60'],2);
+        $dta[$i]['Dias90']      = number_format($key['Dias90'],2);
+        $dta[$i]['Dias120']     = number_format($key['Dias120'],2);
+        $dta[$i]['Mas120']      = number_format($key['Mas120'],2);
+        $dta[$i]['FACT_PEND']   = $key['FACT_PEND'];
+        $i++;
     }
 
     $sqlsrv->close();
@@ -390,23 +379,13 @@ if (isset($_GET['category_id'])) {
     $dta = array(); $i=0;
 
     $query = $sqlsrv->fetchArray("SELECT * FROM GMV3_hstCompra_3M WHERE Cliente='".$_GET['last_3m']."' ORDER BY Dia", SQLSRV_FETCH_ASSOC);
-
-    if (count($query)>0) {
-        foreach ($query as $key) {
-            $dta[$i]['ARTICULO']        = $key['ARTICULO'];
-            $dta[$i]['DESCRIPCION']     = $key['DESCRIPCION'];
-            $dta[$i]['CANTIDAD']        = number_format($key['CANTIDAD'],2);
-            $dta[$i]['VENTA']           = $key['Venta'];
-            $dta[$i]['FECHA']           = $key['Dia'];
-            $i++;
-        }
-
-    }else{
-        $dta[$i]['ARTICULO']        = "N/D";
-        $dta[$i]['DESCRIPCION']     = "N/D";
-        $dta[$i]['CANTIDAD']        = number_format(0.00,2);
-        $dta[$i]['VENTA']           = 0.00;
-        $dta[$i]['FECHA']           = "00-00-0000";
+    foreach ($query as $key) {
+        $dta[$i]['ARTICULO']        = $key['ARTICULO'];
+        $dta[$i]['DESCRIPCION']     = $key['DESCRIPCION'];
+        $dta[$i]['CANTIDAD']        = number_format($key['CANTIDAD'],2);
+        $dta[$i]['VENTA']           = $key['Venta'];
+        $dta[$i]['FECHA']           = $key['Dia'];
+        $i++;
     }
     header('Content-Type: application/json; charset=utf-8');
     echo $val = str_replace('\\/', '/', json_encode($dta));
@@ -416,22 +395,13 @@ if (isset($_GET['category_id'])) {
 
     $query = $sqlsrv->fetchArray("SELECT T0.CLIENTE,T0.DOCUMENTO,T0.FECHA,T0.SALDO_LOCAL,T0.APLICACION,T0.VENDEDOR FROM Softland.dbo.APK_CxC_DocVenxCL T0  WHERE T0.CLIENTE='".$_GET['get_nc']."' and T0.TIPO='N/C'", SQLSRV_FETCH_ASSOC);
 
-    if (count($query)>0) {
-        foreach ($query as $key) {
-            $dta[$i]['DOCUMENTO']        = $key['DOCUMENTO'];
-            $dta[$i]['FECHA']     = $key['FECHA']->format('d-m-Y');
-            $dta[$i]['SALDO_LOCAL']        = str_replace(",", "", number_format($key['SALDO_LOCAL'],2));
-            $dta[$i]['APLICACION']           = $key['APLICACION'];
-            $dta[$i]['VENDEDOR']           = $key['VENDEDOR'];
-            $i++;
-        }
-
-    }else{
-        $dta[$i]['DOCUMENTO']        = "N/D";
-        $dta[$i]['FECHA']     = "N/D";
-        $dta[$i]['SALDO_LOCAL']        = str_replace(",", "",number_format(0.00,2));
-        $dta[$i]['APLICACION']           = 0.00;
-        $dta[$i]['VENDEDOR']           = "00-00-0000";
+    foreach ($query as $key) {
+        $dta[$i]['DOCUMENTO']        = $key['DOCUMENTO'];
+        $dta[$i]['FECHA']     = $key['FECHA']->format('d-m-Y');
+        $dta[$i]['SALDO_LOCAL']        = str_replace(",", "", number_format($key['SALDO_LOCAL'],2));
+        $dta[$i]['APLICACION']           = $key['APLICACION'];
+        $dta[$i]['VENDEDOR']           = $key['VENDEDOR'];
+        $i++;
     }
     header('Content-Type: application/json; charset=utf-8');
     echo $val = str_replace('\\/', '/', json_encode($dta));
@@ -527,24 +497,12 @@ if (isset($_GET['category_id'])) {
     $sqlsrv = new Sqlsrv();
     $dta = array(); $i=0;
     $query = $sqlsrv->fetchArray($Q, SQLSRV_FETCH_ASSOC);
-    if (count($query)>0) {
-        foreach ($query as $key) {
-            $dta[$i]['FACTURA']    = $key['FACTURA'];
-            $dta[$i]['FECHA']      = $key['Dia']->format('d/m/Y');
-            $dta[$i]['CLIENTE']    = $key['Cliente'];
-            $dta[$i]['MONTO']      = str_replace(",", "",number_format($key['Venta'],2));;
-
-
-            $i++;
-        }
-
-    }else{
-        $dta[$i]['FACTURA']   = "0000000";
-        $dta[$i]['FACTURA']   = "N*D";
-        $dta[$i]['FECHA']     = "00/00/0000";
-        $dta[$i]['MONTO']     = number_format(0.00,2);
-
-
+    foreach ($query as $key) {
+        $dta[$i]['FACTURA']    = $key['FACTURA'];
+        $dta[$i]['FECHA']      = $key['Dia']->format('d/m/Y');
+        $dta[$i]['CLIENTE']    = $key['Cliente'];
+        $dta[$i]['MONTO']      = str_replace(",", "",number_format($key['Venta'],2));
+        $i++;
     }
 
     $sqlsrv->close();
