@@ -244,6 +244,67 @@ EOF;
             </div>
 
             <br>
+
+             <!--Add Users-->
+
+            <div class="pmd-card pmd-z-depth">
+                <div class="pmd-card-body">
+
+                    <div class="group-fields clearfix row">
+                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                            <div class="lead">SHIPPING</div>
+                        </div>
+                    </div>
+
+                    <div class="group-fields clearfix row">
+                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                            <div class="form-group pmd-textfield">
+                                <?php
+                                    while ($data = mysqli_fetch_array($shipping_result)) {
+                                ?>
+
+                                <div class="pmd-chip pmd-chip-no-icon"><?php echo $data['shipping_name'];?>
+                                    <a class="pmd-chip-action" href="delete-shipping.php?id=<?php echo $data['shipping_id'];?>" onclick="return confirm('Are you sure want to delete this shipping?')">
+                                        <i class="material-icons">close</i>
+                                    </a>
+                                </div>
+                                <?php } ?>
+
+                                <button data-target="#shipping-dialog" data-toggle="modal" class="btn pmd-btn-flat pmd-ripple-effect btn-primary" type="button">ADD NEW</button>
+
+                                <div tabindex="-1" class="modal fade" id="shipping-dialog" style="display: none;" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+                                    <div class="modal-dialog modal-lg">
+                                        <div class="modal-content">
+                                            <div class="modal-header pmd-modal-bordered">
+                                                <button aria-hidden="true" data-dismiss="modal" class="close" type="button">×</button>
+                                                <h2 class="pmd-card-title-text">Add Shipping</h2>
+                                            </div>
+                                            <form id="validationForm" method="post">            
+                                            <div class="modal-body">
+                                                    <div class="form-group pmd-textfield pmd-textfield-floating-label">
+                                                        <label class="control-label">Shiping Name</label>
+                                                        <input type="text" name="shipping_name" id="shipping_name" class="form-control" required>
+                                                    </div>
+                                            </div>
+                                            <div class="pmd-modal-action">
+                                                <div align="right">
+                                                <button data-dismiss="modal" class="btn pmd-ripple-effect btn-default" type="button">Cancel</button>
+                                                <button class="btn pmd-ripple-effect btn-danger" type="submit" name="submit_shipping">Submit</button>
+                                                </div>
+                                            </div>
+                                        </form>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <br>
+
             <form id="validationForm" method="post" enctype="multipart/form-data">
             <div class="pmd-card pmd-z-depth">
                 <div class="pmd-card-body">

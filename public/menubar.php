@@ -49,6 +49,14 @@ EOF;
 	$sql_pending_result = "SELECT * FROM tbl_order WHERE status = '0' ORDER BY id DESC LIMIT 5";
 	$result = mysqli_query($connect, $sql_pending_result);   
             
+	//user permission
+
+	$sql_permission = "SELECT id, permisos FROM tbl_admin WHERE id = '".$data['id']."' ";
+	$result_permission = mysqli_query($connect, $sql_permission);
+	$result_permission = mysqli_fetch_array($result_permission);
+	$result_permission = $result_permission;
+
+
 ?>
 
 <!doctype html>
@@ -194,81 +202,184 @@ EOF;
 				<li><a href="logout.php">Salir</a></li>
 			</ul>
 		</li><!-- End user info -->
+
+		<?php
+
+		switch ($result_permission['permisos']) {
+			case '1': 
+			?>
+				<li> 
+					<a class="pmd-ripple-effect" href="dashboard.php">	
+						<i class="media-left media-middle material-icons">dashboard</i>
+						<span class="media-body">Dashboard</span>
+					</a> 
+				</li>
+				<li> 
+					<a class="pmd-ripple-effect" href="manage-order.php">	
+						<i class="media-left media-middle material-icons">content_paste</i>
+						<span class="media-body">Bandeja de Ordenes</span>
+					</a>
+				</l>
+
+				<li class="dropdown pmd-dropdown" style="display: none">
+					<a aria-expanded="false" data-toggle="dropdown" class="btn-user dropdown-toggle media" data-sidebar="true" href="javascript:void(0);">	
+						<i class="material-icons media-left pmd-sm">dns</i> 
+						<span class="media-body">Categoria</span>
+						<div class="media-right media-bottom"><i class="dic-more-vert dic"></i></div>
+					</a> 
+					<ul class="dropdown-menu">
+						<li><a href="add-category.php">Agregar Nuevo</a></li>
+						<li><a href="manage-category.php">Lista de Categorias</a></li>
+						<li style="display:none;"><a href="edit-category.php"></a></li>
+					</ul>
+				</li>
+
+				<li class="dropdown pmd-dropdown" >
+					<a aria-expanded="false" data-toggle="dropdown" class="btn-user dropdown-toggle media" data-sidebar="true" href="javascript:void(0);">	
+						<i class="material-icons media-left pmd-sm">local_mall</i> 
+						<span class="media-body">Productos</span>
+						<div class="media-right media-bottom"><i class="dic-more-vert dic"></i></div>
+					</a> 
+					<ul class="dropdown-menu">
+						<li><a href="add-product.php">Agregar Nuevo</a></li>
+						<li><a href="manage-product.php">Lista de productos</a></li>
+						<li style="display:none;"><a href="edit-product.php"></a></li>
+						<li style="display:none;"><a href="send-onesignal-product-notification.php"></a></li>
+					</ul>
+				</li>
+
+				<li class="dropdown pmd-dropdown" >
+					<a aria-expanded="false" data-toggle="dropdown" class="btn-user dropdown-toggle media" data-sidebar="true" href="javascript:void(0);">	
+						<i class="material-icons media-left pmd-sm">notifications</i>
+						<span class="media-body">Notificaciónes</span>
+						<div class="media-right media-bottom"><i class="dic-more-vert dic"></i></div>
+					</a> 
+					<ul class="dropdown-menu" >
+						<li><a href="add-notification.php">Nueva</a></li>
+						<li><a href="manage-notification.php">Lista de Notificaciónes </a></li>
+						<li style="display:none;"><a href="edit-notification.php"></a></li>
+						<li style="display:none;"><a href="send-onesignal-notification.php"></a></li>
+					</ul>
+				</li>		
+
+				<li class="dropdown pmd-dropdown" style="display: none">
+					<a aria-expanded="false" data-toggle="dropdown" class="btn-user dropdown-toggle media" data-sidebar="true" href="javascript:void(0);">	
+						<i class="material-icons media-left pmd-sm">live_help</i> 
+						<span class="media-body">Ayuda</span>
+						<div class="media-right media-bottom"><i class="dic-more-vert dic"></i></div>
+					</a> 
+					<ul class="dropdown-menu">
+						<li><a href="add-help.php">Agregar Nuevo</a></li>
+						<li><a href="manage-help.php">Lista de ayuda</a></li>
+						<li style="display:none;"><a href="edit-help.php"></a></li>
+					</ul>
+				</li>		
+
+				<li> 
+					<a class="pmd-ripple-effect" href="settings.php" >
+						<i class="media-left media-middle material-icons">settings</i>
+						<span class="media-body">Configuración</span>
+					</a> 
+				</li>
+				<li class="dropdown pmd-dropdown" >
+					<a aria-expanded="false" data-toggle="dropdown" class="btn-user dropdown-toggle media" data-sidebar="true" href="javascript:void(0);">	
+						<i class="material-icons media-left pmd-sm">people</i>
+						<span class="media-body">Usuarios</span>
+						<div class="media-right media-bottom"><i class="dic-more-vert dic"></i></div>
+					</a> 
+					<ul class="dropdown-menu">
+						<li><a href="add-user.php">Agregar Nuevo</a></li>
+						<li><a href="manage-user.php">Visualizar usuarios</a></li>
+						<!-- <li style="display:none;"><a href="edit-product.php"></a></li>
+						<li style="display:none;"><a href="send-onesignal-product-notification.php"></a></li> -->
+					</ul>
+				</li>
+			<?php
+				
+				break;
+			case '2': 
+			?>
+				<li> 
+					<a class="pmd-ripple-effect" href="manage-order.php">	
+						<i class="media-left media-middle material-icons">content_paste</i>
+						<span class="media-body">Bandeja de Ordenes</span>
+					</a>
+				</l>
+
+				<li class="dropdown pmd-dropdown" >
+					<a aria-expanded="false" data-toggle="dropdown" class="btn-user dropdown-toggle media" data-sidebar="true" href="javascript:void(0);">	
+						<i class="material-icons media-left pmd-sm">people</i>
+						<span class="media-body">Usuarios</span>
+						<div class="media-right media-bottom"><i class="dic-more-vert dic"></i></div>
+					</a> 
+					<ul class="dropdown-menu">
+						<li><a href="add-user.php">Agregar Nuevo</a></li>
+						<li><a href="manage-user.php">Visualizar usuarios</a></li>
+						<!-- <li style="display:none;"><a href="edit-product.php"></a></li>
+						<li style="display:none;"><a href="send-onesignal-product-notification.php"></a></li> -->
+					</ul>
+				</li>
+			<?php
+				
+				break;
+			case '3': 
+			?>
+
+			<li> 
+				<a class="pmd-ripple-effect" href="manage-order.php">	
+					<i class="media-left media-middle material-icons">content_paste</i>
+					<span class="media-body">Bandeja de Ordenes</span>
+				</a>
+			</li>
+				
+			<?php
+				
+				break;
+			case '4': 
+			?>
+			<li class="dropdown pmd-dropdown" >
+					<a aria-expanded="false" data-toggle="dropdown" class="btn-user dropdown-toggle media" data-sidebar="true" href="javascript:void(0);">	
+						<i class="material-icons media-left pmd-sm">local_mall</i> 
+						<span class="media-body">Productos</span>
+						<div class="media-right media-bottom"><i class="dic-more-vert dic"></i></div>
+					</a> 
+					<ul class="dropdown-menu">
+						<li><a href="add-product.php">Agregar Nuevo</a></li>
+						<li><a href="manage-product.php">Lista de productos</a></li>
+						<li style="display:none;"><a href="edit-product.php"></a></li>
+						<li style="display:none;"><a href="send-onesignal-product-notification.php"></a></li>
+					</ul>
+				</li>
+
+				<li class="dropdown pmd-dropdown" >
+					<a aria-expanded="false" data-toggle="dropdown" class="btn-user dropdown-toggle media" data-sidebar="true" href="javascript:void(0);">	
+						<i class="material-icons media-left pmd-sm">notifications</i>
+						<span class="media-body">Notificaciónes</span>
+						<div class="media-right media-bottom"><i class="dic-more-vert dic"></i></div>
+					</a> 
+					<ul class="dropdown-menu" >
+						<li><a href="add-notification.php">Nueva</a></li>
+						<li><a href="manage-notification.php">Lista de Notificaciónes </a></li>
+						<li style="display:none;"><a href="edit-notification.php"></a></li>
+						<li style="display:none;"><a href="send-onesignal-notification.php"></a></li>
+					</ul>
+				</li>
+				
+			<?php
+				
+				break;
+				
+			default:
+				# code...
+				break;
+		}
+
+		 ?>
 		
-		<li> 
-			<a class="pmd-ripple-effect" href="dashboard.php">	
-				<i class="media-left media-middle material-icons">dashboard</i>
-				<span class="media-body">Dashboard</span>
-			</a> 
-		</li>
+		
 
-		<li> 
-			<a class="pmd-ripple-effect" href="manage-order.php">	
-				<i class="media-left media-middle material-icons">content_paste</i>
-				<span class="media-body">Bandeja de Ordenes</span>
-			</a>
-		</li>
 
-		<li class="dropdown pmd-dropdown" style="display: none">
-			<a aria-expanded="false" data-toggle="dropdown" class="btn-user dropdown-toggle media" data-sidebar="true" href="javascript:void(0);">	
-				<i class="material-icons media-left pmd-sm">dns</i> 
-				<span class="media-body">Categoria</span>
-				<div class="media-right media-bottom"><i class="dic-more-vert dic"></i></div>
-			</a> 
-			<ul class="dropdown-menu">
-				<li><a href="add-category.php">Agregar Nuevo</a></li>
-				<li><a href="manage-category.php">Lista de Categorias</a></li>
-				<li style="display:none;"><a href="edit-category.php"></a></li>
-			</ul>
-		</li>
-
-		<li class="dropdown pmd-dropdown" >
-			<a aria-expanded="false" data-toggle="dropdown" class="btn-user dropdown-toggle media" data-sidebar="true" href="javascript:void(0);">	
-				<i class="material-icons media-left pmd-sm">local_mall</i> 
-				<span class="media-body">Productos</span>
-				<div class="media-right media-bottom"><i class="dic-more-vert dic"></i></div>
-			</a> 
-			<ul class="dropdown-menu">
-				<li><a href="add-product.php">Agregar Nuevo</a></li>
-				<li><a href="manage-product.php">Lista de productos</a></li>
-				<li style="display:none;"><a href="edit-product.php"></a></li>
-				<li style="display:none;"><a href="send-onesignal-product-notification.php"></a></li>
-			</ul>
-		</li>
-
-		<li class="dropdown pmd-dropdown" >
-			<a aria-expanded="false" data-toggle="dropdown" class="btn-user dropdown-toggle media" data-sidebar="true" href="javascript:void(0);">	
-				<i class="material-icons media-left pmd-sm">notifications</i>
-				<span class="media-body">Notificaciónes</span>
-				<div class="media-right media-bottom"><i class="dic-more-vert dic"></i></div>
-			</a> 
-			<ul class="dropdown-menu" >
-				<li><a href="add-notification.php">Nueva</a></li>
-				<li><a href="manage-notification.php">Lista de Notificaciónes </a></li>
-				<li style="display:none;"><a href="edit-notification.php"></a></li>
-				<li style="display:none;"><a href="send-onesignal-notification.php"></a></li>
-			</ul>
-		</li>		
-
-		<li class="dropdown pmd-dropdown" style="display: none">
-			<a aria-expanded="false" data-toggle="dropdown" class="btn-user dropdown-toggle media" data-sidebar="true" href="javascript:void(0);">	
-				<i class="material-icons media-left pmd-sm">live_help</i> 
-				<span class="media-body">Ayuda</span>
-				<div class="media-right media-bottom"><i class="dic-more-vert dic"></i></div>
-			</a> 
-			<ul class="dropdown-menu">
-				<li><a href="add-help.php">Agregar Nuevo</a></li>
-				<li><a href="manage-help.php">Lista de ayuda</a></li>
-				<li style="display:none;"><a href="edit-help.php"></a></li>
-			</ul>
-		</li>		
-
-		<li> 
-			<a class="pmd-ripple-effect" href="settings.php" >
-				<i class="media-left media-middle material-icons">settings</i>
-				<span class="media-body">Configuración</span>
-			</a> 
-		</li>
+		
 
 		<li> 
 			<a class="pmd-ripple-effect" href="logout.php">	
