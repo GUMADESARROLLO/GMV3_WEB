@@ -2,13 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="3e3f290f-2bcc-4311-b7fd-2231df28ec60" name="Default" comment="">
-      <change type="DELETED" beforePath="$PROJECT_DIR$/ecommerce_android_app.sql" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/tbl" afterPath="" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/modules.xml" afterPath="$PROJECT_DIR$/.idea/modules.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/public/data-order-detail.php" afterPath="$PROJECT_DIR$/public/data-order-detail.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/public/table-order.php" afterPath="$PROJECT_DIR$/public/table-order.php" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/.idea/ecommerce.iml" afterPath="$PROJECT_DIR$/.idea/gmv3.iml" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -20,12 +15,44 @@
   <component name="ExecutionTargetManager" SELECTED_TARGET="default_target" />
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="table-order.php" pinned="false" current-in-tab="true">
+      <file leaf-file-name="table-order.php" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/public/table-order.php">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="306">
               <caret line="18" column="13" lean-forward="true" selection-start-line="18" selection-start-column="13" selection-end-line="18" selection-end-column="13" />
+              <folding>
+                <marker date="1603298372626" expanded="true" signature="960:1000" ph="SELECT * FRO... tbl_order" />
+                <marker date="1603298372626" expanded="true" signature="1031:1089" ph="SELECT * FRO... tbl_order" />
+                <marker date="1603298372626" expanded="true" signature="2435:2486" ph="SELECT * FRO... tbl_order" />
+                <marker date="1603298372626" expanded="true" signature="2517:2586" ph="SELECT * FRO... tbl_order" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="order-detail.php" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/order-detail.php">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="323">
+              <caret line="19" column="35" lean-forward="false" selection-start-line="19" selection-start-column="35" selection-end-line="19" selection-end-column="35" />
               <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="data-order-detail.php" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/public/data-order-detail.php">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="187">
+              <caret line="155" column="35" lean-forward="false" selection-start-line="155" selection-start-column="35" selection-end-line="155" selection-end-column="35" />
+              <folding>
+                <marker date="1603299128423" expanded="true" signature="728:764" ph="SELECT * FRO... tbl_order" />
+                <marker date="1603299128423" expanded="true" signature="1492:1538" ph="SELECT * FRO... tbl_comment" />
+                <marker date="1603299128423" expanded="true" signature="2031:2070" ph="SELECT * FRO... tbl_config" />
+                <marker date="1603299128423" expanded="true" signature="4052:4166" ph="..." />
+                <marker date="1603299128423" expanded="true" signature="5971:6069" ph="..." />
+                <marker date="1603299128423" expanded="true" signature="7727:7812" ph="..." />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -34,6 +61,13 @@
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="IdeDocumentHistory">
+    <option name="CHANGED_PATHS">
+      <list>
+        <option value="$PROJECT_DIR$/public/data-order-detail.php" />
+      </list>
+    </option>
   </component>
   <component name="JsBuildToolGruntFileManager" detection-done="true" sorting="DEFINITION_ORDER" />
   <component name="JsBuildToolPackageJson" detection-done="true" sorting="DEFINITION_ORDER" />
@@ -121,12 +155,20 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1603298542937</updated>
-      <workItem from="1603298545665" duration="252000" />
+      <workItem from="1603298545665" duration="603000" />
     </task>
+    <task id="LOCAL-00001" summary="21/10/2020">
+      <created>1603298806905</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1603298806905</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="252000" />
+    <option name="totallyTimeSpent" value="603000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1936" height="1066" extended-state="6" />
@@ -157,6 +199,12 @@
   <component name="VcsContentAnnotationSettings">
     <option name="myLimit" value="2678400000" />
   </component>
+  <component name="VcsManagerConfiguration">
+    <option name="CHECK_CODE_SMELLS_BEFORE_PROJECT_COMMIT" value="false" />
+    <option name="CHECK_NEW_TODO" value="false" />
+    <MESSAGE value="21/10/2020" />
+    <option name="LAST_COMMIT_MESSAGE" value="21/10/2020" />
+  </component>
   <component name="XDebuggerManager">
     <breakpoint-manager />
     <watches-manager />
@@ -174,7 +222,35 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="306">
           <caret line="18" column="13" lean-forward="true" selection-start-line="18" selection-start-column="13" selection-end-line="18" selection-end-column="13" />
+          <folding>
+            <marker date="1603298372626" expanded="true" signature="960:1000" ph="SELECT * FRO... tbl_order" />
+            <marker date="1603298372626" expanded="true" signature="1031:1089" ph="SELECT * FRO... tbl_order" />
+            <marker date="1603298372626" expanded="true" signature="2435:2486" ph="SELECT * FRO... tbl_order" />
+            <marker date="1603298372626" expanded="true" signature="2517:2586" ph="SELECT * FRO... tbl_order" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/order-detail.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="323">
+          <caret line="19" column="35" lean-forward="false" selection-start-line="19" selection-start-column="35" selection-end-line="19" selection-end-column="35" />
           <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/public/data-order-detail.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="187">
+          <caret line="155" column="35" lean-forward="false" selection-start-line="155" selection-start-column="35" selection-end-line="155" selection-end-column="35" />
+          <folding>
+            <marker date="1603299128423" expanded="true" signature="728:764" ph="SELECT * FRO... tbl_order" />
+            <marker date="1603299128423" expanded="true" signature="1492:1538" ph="SELECT * FRO... tbl_comment" />
+            <marker date="1603299128423" expanded="true" signature="2031:2070" ph="SELECT * FRO... tbl_config" />
+            <marker date="1603299128423" expanded="true" signature="4052:4166" ph="..." />
+            <marker date="1603299128423" expanded="true" signature="5971:6069" ph="..." />
+            <marker date="1603299128423" expanded="true" signature="7727:7812" ph="..." />
+          </folding>
         </state>
       </provider>
     </entry>
