@@ -10,7 +10,7 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta content="width=device-width, initial-scale=1, user-scalable=no" name="viewport">
-<title>Unimark Store - Login</title>
+<title>PLATAFORMA DE PEDIDOS - UNIMARK</title>
 <link rel="shortcut icon" type="image/x-icon" href="assets/images/favicon.png">
 
 <!-- Google icon -->

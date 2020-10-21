@@ -5,6 +5,7 @@
  Source Server Type    : MySQL
  Source Server Version : 50726
  Source Host           : localhost:3306
+
  Source Schema         : ecommerce_android_app
 
  Target Server Type    : MySQL
@@ -70,7 +71,7 @@ CREATE TABLE `tbl_comment`  (
   `date_coment` datetime(0) NULL DEFAULT NULL,
   `player_id` varbinary(255) NULL DEFAULT NULL,
   PRIMARY KEY (`id_coment`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 3 CHARACTER SET = latin1 COLLATE = latin1_swedish_ci ROW_FORMAT = Dynamic;
+ENGINE = InnoDB AUTO_INCREMENT = 3 CHARACTER SET = latin1 COLLATE = latin1_swedish_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of tbl_comment
@@ -354,7 +355,7 @@ CREATE TABLE `tbl_order`  (
   `phone` varchar(500) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
   `address` varchar(500) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
   `shipping` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
-  `date_time` datetime(0) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+`date_time` datetime(0) NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `created_at` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
   `updated_at` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
   `order_list` text CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
@@ -363,7 +364,7 @@ CREATE TABLE `tbl_order`  (
   `status` varchar(1) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT '0',
   `player_id` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 49 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 49 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Compact;
 
 -- ----------------------------
 -- Records of tbl_order

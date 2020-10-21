@@ -66,8 +66,7 @@ EOF;
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="description" content="Propeller Admin Dashboard">
 <meta content="width=device-width, initial-scale=1, user-scalable=no" name="viewport">
-
-    <title>Unimark Store</title>
+    <title>PLATAFORMA DE PEDIDOS - UNIMARK</title>
 <meta name="description" content="Admin is a material design and bootstrap based responsive dashboard template created mainly for admin and backend applications."/>
 
 <link rel="shortcut icon" type="image/x-icon" href="assets/images/favicon.png">
@@ -173,7 +172,7 @@ EOF;
 		<div class="navbar-header">
 			<a href="javascript:void(0);" data-target="basicSidebar" data-placement="left" data-position="slidepush" is-open="true" is-open-width="1200" class="btn btn-sm pmd-btn-fab pmd-btn-flat pmd-ripple-effect pull-left margin-r8 pmd-sidebar-toggle"><i class="material-icons md-light">menu</i></a>	
 		  <a href="dashboard.php" class="navbar-brand">
-		  	UNIMARK STORE
+              PLATAFORMA DE PEDIDOS
 		  </a>
 		</div>
 	</div>

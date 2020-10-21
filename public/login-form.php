@@ -74,7 +74,7 @@
                     header("location: dashboard.php");
 
                 } else {
-                    $error['failed'] = "<center><div class='alert alert-warning'>Invalid Username or Password!</div></center>";
+                    $error['failed'] = "<center><div class='alert alert-warning'>Usuario o contraseña invalido!</div></center>";
                 }
             }
 
@@ -88,9 +88,9 @@
             <form method="POST">  
                 <div class="pmd-card-title card-header-border text-center">
                     <div class="loginlogo">
-                        <img src="assets/images/ic-logo.png" alt="Logo">
+                        <img src="assets/images/ic-logo.png" alt="Logo" style="width: 98px; height: 88px;">
                     </div>
-                    <div class="lead">UNIMARK STORE</div>
+                    <div class="lead">GESTOR DE PEDIDO</div>
                 </div>
                 
                 <div class="pmd-card-body">
