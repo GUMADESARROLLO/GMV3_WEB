@@ -25,12 +25,12 @@
 
         // check whether $username is empty or not
         if(empty($username)) {
-            $error['username'] = "*Se debe completar el nombre de usuario.";
+            $error['username'] = "*Campo Usuario no debe estar vacio.";
         }
 
         // check whether $password is empty or not
         if(empty($password)) {
-            $error['password'] = "*Debe completar la contraseña.";
+            $error['password'] = "*Campo Contraseña no debe estar vacio.";
         }
 
         // if username and password is not empty, check in database
@@ -45,7 +45,7 @@
             $password = hash('sha256',$KeysSecret.$password);
 
             // get data from user table
-            $sql_query = "SELECT * FROM tbl_admin WHERE username = ? AND password = ?";
+            $sql_query = "SELECT * FROM tbl_admin WHERE Activo = 'S' AND username = ? AND password = ? ";
 
             $stmt = $connect->stmt_init();
             if($stmt->prepare($sql_query)) {

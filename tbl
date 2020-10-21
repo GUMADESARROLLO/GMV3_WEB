@@ -1,18 +1,17 @@
 /*
  Navicat Premium Data Transfer
 
- Source Server         : Localhost
+ Source Server         : LOCALHOST
  Source Server Type    : MySQL
- Source Server Version : 50726
+ Source Server Version : 100113
  Source Host           : localhost:3306
-
  Source Schema         : ecommerce_android_app
 
  Target Server Type    : MySQL
- Target Server Version : 50726
+ Target Server Version : 100113
  File Encoding         : 65001
 
- Date: 20/10/2020 16:30:05
+ Date: 30/09/2020 10:16:54
 */
 
 SET NAMES utf8mb4;
@@ -29,20 +28,17 @@ CREATE TABLE `tbl_admin`  (
   `Telefono` varchar(100) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
   `password` text CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
   `email` varchar(100) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
-  `full_name` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
-  `user_role` enum('100','101','102') CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
-  `Activo` varchar(5) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'S',
-  `permisos` int(11) NOT NULL,
+  `full_name` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
+  `user_role` enum('100','101','102') CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
+  `Activo` varchar(5) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 7 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Compact;
+) ENGINE = InnoDB AUTO_INCREMENT = 3 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Compact;
 
 -- ----------------------------
 -- Records of tbl_admin
 -- ----------------------------
-INSERT INTO `tbl_admin` VALUES (1, 'admin', NULL, NULL, '48be5998bcb2860054f8628846081c91bd6d8dc09b4171da407a92b8d9b88893', 'endscom@gmail.com', 'Administrator', '100', 'S', 1);
-INSERT INTO `tbl_admin` VALUES (2, 'f10', 'ADELA MAYERLY SERRATO', '82449100', '83159f93dd189bebe488f23408fdec10f1c850613cc1f7230e0527b7cd9d46c0', 'F10@gmail.com', 'Administrator', '100', 'S', 1);
-INSERT INTO `tbl_admin` VALUES (5, 'suppsac', 'Sacarias SAC', '5127913419', '25acc3a2ff220b75bf196d8d6835ab2316b94d96a4a678e15bf3d111e1c8a778', 'sac', NULL, NULL, 'S', 2);
-INSERT INTO `tbl_admin` VALUES (6, 'sac', 'Noel Gutierrez Ovando', '88767878', '25acc3a2ff220b75bf196d8d6835ab2316b94d96a4a678e15bf3d111e1c8a778', 'sac2@gmail.com', 'Administrador', '100', 'S', 3);
+INSERT INTO `tbl_admin` VALUES (1, 'admin', NULL, NULL, '48be5998bcb2860054f8628846081c91bd6d8dc09b4171da407a92b8d9b88893', 'endscom@gmail.com', 'Administrator', '100', 'S');
+INSERT INTO `tbl_admin` VALUES (2, 'f10', 'ADELA MAYERLY SERRATO', '82449100', '83159f93dd189bebe488f23408fdec10f1c850613cc1f7230e0527b7cd9d46c0', 'F10@gmail.com', 'Administrator', '100', 'S');
 
 -- ----------------------------
 -- Table structure for tbl_category
@@ -53,7 +49,7 @@ CREATE TABLE `tbl_category`  (
   `category_name` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
   `category_image` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
   PRIMARY KEY (`category_id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 21 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 21 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Compact;
 
 -- ----------------------------
 -- Records of tbl_category
@@ -71,13 +67,12 @@ CREATE TABLE `tbl_comment`  (
   `date_coment` datetime(0) NULL DEFAULT NULL,
   `player_id` varbinary(255) NULL DEFAULT NULL,
   PRIMARY KEY (`id_coment`) USING BTREE
-ENGINE = InnoDB AUTO_INCREMENT = 3 CHARACTER SET = latin1 COLLATE = latin1_swedish_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = latin1 COLLATE = latin1_swedish_ci ROW_FORMAT = Compact;
 
 -- ----------------------------
 -- Records of tbl_comment
 -- ----------------------------
 INSERT INTO `tbl_comment` VALUES (1, 'F05-EJ6FMESQS', '<p>xq no existia articulo</p>\r\n', '2020-09-30 05:54:51', 0x61646D696E);
-INSERT INTO `tbl_comment` VALUES (2, 'F05-GIS3ZDVVQ', '<p>pedido debe llegar a las 10:00</p>\r\n', '2020-10-05 03:06:10', 0x61646D696E);
 
 -- ----------------------------
 -- Table structure for tbl_config
@@ -95,7 +90,7 @@ CREATE TABLE `tbl_config`  (
   `providers` varchar(45) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'onesignal',
   `protocol_type` varchar(10) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'http://',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Compact;
 
 -- ----------------------------
 -- Records of tbl_config
@@ -111,7 +106,7 @@ CREATE TABLE `tbl_currency`  (
   `currency_code` varchar(3) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   `currency_name` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   PRIMARY KEY (`currency_id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 165 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 165 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Compact;
 
 -- ----------------------------
 -- Records of tbl_currency
@@ -292,7 +287,7 @@ CREATE TABLE `tbl_fcm_template`  (
   `title` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'Notification',
   `link` varchar(500) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 31 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 31 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Compact;
 
 -- ----------------------------
 -- Records of tbl_fcm_template
@@ -311,9 +306,9 @@ CREATE TABLE `tbl_fcm_token`  (
   `os_version` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
   `device_model` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
   `device_manufacturer` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
-  `date` timestamp(0) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `date` timestamp(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0),
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Compact;
 
 -- ----------------------------
 -- Records of tbl_fcm_token
@@ -329,7 +324,7 @@ CREATE TABLE `tbl_help`  (
   `title` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
   `content` text CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 6 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 6 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Compact;
 
 -- ----------------------------
 -- Records of tbl_help
@@ -355,24 +350,19 @@ CREATE TABLE `tbl_order`  (
   `phone` varchar(500) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
   `address` varchar(500) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
   `shipping` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
-`date_time` datetime(0) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `created_at` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
-  `updated_at` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
+  `date_time` datetime(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0),
   `order_list` text CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
   `order_total` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
   `comment` varchar(500) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
   `status` varchar(1) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT '0',
   `player_id` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 49 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Compact;
+) ENGINE = InnoDB AUTO_INCREMENT = 46 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Compact;
 
 -- ----------------------------
 -- Records of tbl_order
 -- ----------------------------
-INSERT INTO `tbl_order` VALUES (45, 'F05-EJ6FMESQS', NULL, NULL, NULL, 'F05', '00062', 'FARMACIA DANCING - RUC  2012705470004L', 'DETALLE: SEMAFOROS DEL DANCING 1C AL SUR, MANAGUA', 'str_shipping', '2020-09-30 09:53:49', NULL, NULL, '5 [10118022] - ANASTROZOL 1 MG TAB RECUBIERTA 28/CAJA (NAPROD) 5+1 5625.45 NIO,\n\n\nOrden : 5625.45 NIO\nImpuesto : 0.0 % : 0.0 NIO\nTotal : 5625.45 NIO', '5625.45 NIO', '', '0', '1b654686-f67c-490b-ace5-631d729e26f9');
-INSERT INTO `tbl_order` VALUES (46, 'F05-BMBA1Z35W', NULL, NULL, NULL, 'F05', '00050', 'FARMACIA CORPUS CHRISTI #2', 'DETALLE: KM 8 CARRETERA NORTE ½C ABAJO, MANAGUA', 'str_shipping', '2020-09-30 11:42:53', NULL, NULL, '1 [10118101] - CISPLATINO 1MG/ML SOLUCION INY I.V 10 ML/VIAL 1/CAJA (NAPROD) 0 137.21 NIO,\n\n\nOrden : 137.21 NIO\nImpuesto : 0.0 % : 0.0 NIO\nTotal : 137.21 NIO', '137.21 NIO', '', '0', '1b654686-f67c-490b-ace5-631d729e26f9');
-INSERT INTO `tbl_order` VALUES (47, 'F05-R261O5FO2', NULL, NULL, NULL, 'F05', '00050', 'FARMACIA CORPUS CHRISTI #2', 'DETALLE: KM 8 CARRETERA NORTE ½C ABAJO, MANAGUA', 'str_shipping', '2020-09-30 12:05:04', '2020-09-30 12:04:57', '2020-09-30 20:09:58', '1 [10118072] - CARBOPLATINO 10MG/ML SOLUCION INY I.V 15 ML/FAM 1/CAJA  (NAPROD) 0 686.03 NIO,\n\n\nOrden : 686.03 NIO\nImpuesto : 0.0 % : 0.0 NIO\nTotal : 686.03 NIO', '686.03 NIO', '', '2', '1b654686-f67c-490b-ace5-631d729e26f9');
-INSERT INTO `tbl_order` VALUES (48, 'F05-GIS3ZDVVQ', NULL, NULL, NULL, 'F05', '01788', 'FARMACIA SANTA ANA - RUC 0010401750004G', 'DETALLE: REPARTO SHICK II ETAPA ESCUELA ADVENTISTA ½C ABAJO, MANAGUA', 'str_shipping', '2020-10-05 15:04:48', '2020-10-05 15:04:25', '2020-10-05 15:07:03', '10 [17303011] - SALBUTAMOL 100 MCG/DOSIS SUSPENSION PARA INHALACION FRASCO 1/CAJA  (HEILONGJIANG) 10+4 795.6 NIO,\n\n25 [17303041] - BROMURO DE IPRATROPIO 20 MCG/DOSIS SUSPENSION PARA INHALACION 200 DOSIS/FRASCO 1/CAJA  (HEILONGJIANG) 25+8 5021.25 NIO,\n\n10 [10415012] - ENOXAPARINA 40 MG /0.4 ML SOL. INY JERINGA 1/CAJA (GLAND PHARMA) 10+1 1667.1 NIO,\n\n\nOrden : 7483.950000000001 NIO\nImpuesto : 0.0 % : 0.0 NIO\nTotal : 7483.950000000001 NIO', '7483.950000000001 NIO', '', '1', '1b654686-f67c-490b-ace5-631d729e26f9');
+INSERT INTO `tbl_order` VALUES (45, 'F05-EJ6FMESQS', NULL, NULL, NULL, 'F05', '00062', 'FARMACIA DANCING - RUC  2012705470004L', 'DETALLE: SEMAFOROS DEL DANCING 1C AL SUR, MANAGUA', 'str_shipping', '2020-09-30 09:53:49', '5 [10118022] - ANASTROZOL 1 MG TAB RECUBIERTA 28/CAJA (NAPROD) 5+1 5625.45 NIO,\n\n\nOrden : 5625.45 NIO\nImpuesto : 0.0 % : 0.0 NIO\nTotal : 5625.45 NIO', '5625.45 NIO', '', '2', '1b654686-f67c-490b-ace5-631d729e26f9');
 
 -- ----------------------------
 -- Table structure for tbl_product
@@ -389,7 +379,7 @@ CREATE TABLE `tbl_product`  (
   `product_quantity` int(11) NOT NULL,
   `category_id` int(11) NOT NULL,
   PRIMARY KEY (`product_id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 138 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 138 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Compact;
 
 -- ----------------------------
 -- Records of tbl_product
@@ -419,7 +409,7 @@ CREATE TABLE `tbl_purchase_code`  (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `item_purchase_code` varchar(45) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 3 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 3 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Compact;
 
 -- ----------------------------
 -- Records of tbl_purchase_code
@@ -433,7 +423,7 @@ DROP TABLE IF EXISTS `tbl_setting`;
 CREATE TABLE `tbl_setting`  (
   `Variable` varchar(20) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
   `Value` varchar(5) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL
-) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Compact;
 
 -- ----------------------------
 -- Records of tbl_setting
@@ -449,7 +439,7 @@ CREATE TABLE `tbl_shipping`  (
   `shipping_id` int(11) NOT NULL AUTO_INCREMENT,
   `shipping_name` varchar(500) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
   PRIMARY KEY (`shipping_id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 3 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 3 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Compact;
 
 -- ----------------------------
 -- Records of tbl_shipping

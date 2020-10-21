@@ -1,26 +1,13 @@
-<?php 
-	
-	include 'functions.php';
-    include 'sql-query.php';
+<?php include 'functions.php'; ?>
 
-    if (isset($_GET['id'])) {
+<?php
 
-        // $sql = 'SELECT * FROM tbl_fcm_template WHERE id=\''.$_GET['id'].'\'';
-        // $img_rss = mysqli_query($connect, $sql);
-        // $img_rss_row = mysqli_fetch_assoc($img_rss);
-
-        // if ($img_rss_row['image'] != "") {
-        //     unlink('upload/notification/'.$img_rss_row['image']);
-        // }
-
-        Delete('tbl_order','id='.$_GET['id'].'');
-
-        header("location: manage-order.php");
-        exit;
-
-    }
+	$query = "SELECT currency_code FROM tbl_config, tbl_currency WHERE tbl_config.currency_id = tbl_currency.currency_id";
+	$result = mysqli_query($connect, $query);
+	$row = mysqli_fetch_assoc($result);
 
 ?>
+
 	<?php 
 		// create object of functions class
 		$function = new functions;
@@ -36,12 +23,23 @@
 			$keyword = "";
 			$bind_keyword = $keyword;
 		}
+			
 		
-		if (empty($keyword)) {
-			$sql_query = "SELECT * FROM tbl_order ORDER BY id DESC";
-		} else {
-			$sql_query = "SELECT * FROM tbl_order WHERE name LIKE ? ORDER BY id DESC";
-		}
+			if ($result_permission['permisos']==2) {
+			
+				if (empty($keyword)) {
+					$sql_query = "SELECT id, Name, Telefono, username, email, Activo, permisos FROM tbl_admin WHERE permisos IN (2,3)";
+				} else {
+					$sql_query = "SELECT id, Name, Telefono, username, email, Activo, permisos FROM tbl_admin WHERE permisos IN (2,3) AND Name LIKE ? ORDER BY id DESC";
+				}
+			}else{
+				if (empty($keyword)) {
+					$sql_query = "SELECT id, Name, Telefono, username, email, Activo, permisos  FROM tbl_admin";
+				} else {
+					$sql_query = "SELECT id, Name, Telefono, username, email, Activo, permisos FROM tbl_admin Where Name LIKE ? ORDER BY id DESC";
+				}
+			}
+
 		
 		
 		$stmt = $connect->stmt_init();
@@ -54,25 +52,16 @@
 			$stmt->execute();
 			// store result 
 			$stmt->store_result();
+
+			
 			$stmt->bind_result( 
 					$data['id'],
-					$data['code'],
-                    $data['code_vendedor'],
-                    $data['name_vendedor'],
-                    $data['code_cliente'],
-					$data['name'],
+					$data['Name'],
+					$data['Telefono'],
+	                $data['username'],
 					$data['email'],
-					$data['phone'],
-					$data['address'],
-					$data['shipping'],
-					$data['date_time'],
-                    $data['created_at'],
-                    $data['updated_at'],
-					$data['order_list'],
-					$data['order_total'],
-					$data['comment'],
-					$data['status'],
-					$data['player_id']
+					$data['Activo'],
+					$data['permisos']
 					);
 			// get total records
 			$total_records = $stmt->num_rows;
@@ -95,12 +84,26 @@
 			//if nothing was given in page request, lets load the first page
 			$from = 0;	
 		}	
+
+
+		if ($result_permission['permisos']==2) {
 		
-		if (empty($keyword)) {
-			$sql_query = "SELECT * FROM tbl_order ORDER BY id DESC LIMIT ?, ?";
-		} else {
-			$sql_query = "SELECT * FROM tbl_order WHERE name LIKE ? ORDER BY id DESC LIMIT ?, ?";
+			if (empty($keyword)) {
+				$sql_query = "SELECT id, Name, Telefono, username, email, Activo, permisos FROM tbl_admin WHERE permisos IN (2,3) ORDER BY id DESC LIMIT ?, ?";
+			} else {
+				$sql_query = "SELECT id, Name, Telefono, username, email, Activo, permisos FROM tbl_admin WHERE permisos IN(2,3) AND Name LIKE ? ORDER BY id DESC LIMIT ?, ?";
+			}
+
+		}else{
+
+			if (empty($keyword)) {
+				$sql_query = "SELECT id, Name, Telefono, username, email, Activo, permisos FROM tbl_admin ORDER BY id DESC LIMIT ?, ?";
+			} else {
+				$sql_query = "SELECT id, Name, Telefono, username, email, Activo, permisos FROM tbl_admin WHERE Name LIKE ? ORDER BY id DESC LIMIT ?, ?";
+			}
+
 		}
+
 		
 		$stmt_paging = $connect->stmt_init();
 		if ($stmt_paging ->prepare($sql_query)) {
@@ -116,24 +119,14 @@
 			$stmt_paging ->store_result();
 			$stmt_paging->bind_result(
 				$data['id'],
-				$data['code'],
-                $data['code_vendedor'],
-                $data['name_vendedor'],
-                $data['code_cliente'],
-				$data['name'],
+				$data['Name'],
+				$data['Telefono'],
+                $data['username'],
 				$data['email'],
-				$data['phone'],
-				$data['address'],
-				$data['shipping'],
-				$data['date_time'],
-                $data['created_at'],
-                $data['updated_at'],
-				$data['order_list'],
-				$data['order_total'],
-				$data['comment'],
-				$data['status'],
-				$data['player_id']
+				$data['Activo'],
+				$data['permisos']
 			);
+
 			// for paging purpose
 			$total_records_paging = $total_records; 
 		}
@@ -154,7 +147,7 @@
 		<!--breadcrum start-->
 		<ol class="breadcrumb text-left">
 		  <li><a href="dashboard.php">Dashboard</a></li>
-		  <li class="active">Bandeja de Ordenes</li>
+		  <li class="active">Visualizar Usuarios</li>
 		</ol><!--breadcrum end-->
 	
 		<div class="section"> 
@@ -165,11 +158,11 @@
 
 					<div class="group-fields clearfix row">
 						<div class="col-lg-9 col-md-9 col-sm-9 col-xs-12">
-							<div class="lead">BANDEJA DE ORDENES</div>
+							<div class="lead">Administrar Usuarios</div>
 						</div>
 						<div class="col-lg-3 col-md-3 col-sm-3 col-xs-12 pull-right">
 							<div class="form-group pmd-textfield">
-								<input type="text" name="keyword" class="form-control" placeholder="BUSCAR...">
+								<input type="text" name="keyword" class="form-control" placeholder="Buscar...">
 							</div>
 						</div>
 					</div>
@@ -179,22 +172,22 @@
 							<thead>
 								<tr>
 									<th>Nombre</th>
-									<th>Code</th>
-									<th>Total</th>
-									<th>Fecha</th>
-									<th>Status</th>
-									<th width="15%">Acciones</th>
+									<th>Teléfono</th>
+									<th>Usuario</th>
+									<th>Email</th>
+									<th>Permiso</th>
+									<th>Estado</th>
+									<th width="15%">Opciones</th>
 								</tr>
 							</thead>
 
 						</table>
-						<br>
-						<p align="center">whoops, no hay order aun :( !</p>
-						<br>
+						<p align="center">ops!, No se encontraron registros!</p>
+
 					</div>
 				</div>
 			</div> <!-- section content end -->  
-			<?php $function->doPages($offset, 'manage-order.php', '', $total_records, $keyword); ?>
+			<?php $function->doPages($offset, 'manage-product.php', '', $total_records, $keyword); ?>
 			</form>
 		</div>
 			
@@ -215,7 +208,7 @@
 		<!--breadcrum start-->
 		<ol class="breadcrumb text-left">
 		  <li><a href="dashboard.php">Dashboard</a></li>
-		  <li class="active">Bandeja de Ordenes</li>
+		  <li class="active">Visualizar Usuarios</li>
 		</ol><!--breadcrum end-->
 	
 		<div class="section"> 
@@ -226,25 +219,35 @@
 
 					<div class="group-fields clearfix row">
 						<div class="col-lg-9 col-md-9 col-sm-9 col-xs-12">
-							<div class="lead">BANDEJAS DE ORDENES</div>
+							<div class="lead">Administrar Usuarios</div>
 						</div>
 						<div class="col-lg-3 col-md-3 col-sm-3 col-xs-12 pull-right">
 							<div class="form-group pmd-textfield">
 								<input type="text" name="keyword" class="form-control" placeholder="Buscar...">
 							</div>
 						</div>
+
+                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                            <?php if(isset($_SESSION['msg'])) { ?>
+                                <div role="alert" class="alert alert-warning alert-dismissible">
+                                    <?php echo $_SESSION['msg']; ?>
+                                </div>
+                            <?php unset($_SESSION['msg']); }?>
+                        </div>
+
 					</div>
 
 					<div class="table-responsive"> 
 						<table cellspacing="0" cellpadding="0" class="table pmd-table table-hover" id="table-propeller">
 							<thead>
 								<tr>
-									<th>Nombre</th>
-									<th>Code</th>
-									<th>Total</th>
-									<th>Fecha</th>
-									<th>Status</th>
-									<th width="15%">Acciones</th>
+									<th>Nombre </th>
+									<th>Teléfono</th>
+									<th>Usuario</th>
+									<th>Email</th>
+									<th>Permiso</th>
+									<th>Estado</th>
+									<th width="15%">Opciones</th>
 								</tr>
 							</thead>
 
@@ -253,28 +256,43 @@
 
 							<tbody>
 								<tr>
-									<td><?php echo $data['name'];?></td>
-									<td><?php echo $data['code'];?></td>
-									<td><?php echo $data['order_total'];?></td>
-									<td><?php echo $data['date_time'];?></td>
+                                    <td><?php echo $data['Name'];?></td>
+									<td><?php echo $data['Telefono'];?></td>
+									<td><?php echo $data['username'];?></td>
+									<td><?php echo $data['email'];?></td>
+									<td><?php 
+										if ($data['permisos'] == 1) {
+											echo 'Administrador';
+										}else if ($data['permisos'] == 2){
+											echo 'Supp SAC';
+										}else if ($data['permisos'] == 3){
+											echo 'SAC';
+										}else{
+											echo 'Digitador';
+										}
+									?>
+									</td>
 									<td>
-										<?php if ($data['status'] == '1') { ?>
-										<span class="badge badge-success">PROCESSED</span>
-										<?php } else if ($data['status'] == '2') { ?>
-										<span class="badge">&nbsp;CANCELED&nbsp;</span>
+										<?php if ($data['Activo'] == 'S') { ?>
+										<span class="badge badge-success">ACTIVO</span>
 										<?php } else { ?>
-										<span class="badge badge-error">&nbsp;&nbsp;&nbsp;PENDING&nbsp;&nbsp;&nbsp;</span>
+										<span class="badge badge-error">INACTIVO</span>
 										<?php } ?>
 									</td>
 									<td>
-									    <a href="order-detail.php?id=<?php echo $data['id'];?>">
-									        <i class="material-icons">open_in_new</i>
+									    <a href="edit-user.php?id=<?php echo $data['id'];?>">
+									        <i class="material-icons">mode_edit</i>
 									    </a>
+
+
+									   <?php
+									   //usuario no puede eliminar su propio rgistro
+									    if ($result_permission['id'] != $data['id']) { ?>
 									                        
-									    <?php if ($result_permission['permisos'] != 2 && $result_permission['permisos'] != 3) {?>
-									    <a href="manage-order.php?id=<?php echo $data['id'];?>" onclick="return confirm('Are you sure want to permanently delete this order?')" >
-									                <i class="material-icons">delete</i>
-									    </a>
+										    <a href="delete-user.php?id=<?php echo $data['id'];?>" onclick="return confirm('Esta seguro que desea eliminar este Usuario?')" >
+										            <i class="material-icons">delete</i>
+										    </a>
+
 									     <?php }?>
 									</td>									
 								</tr>
@@ -287,7 +305,7 @@
 					</div>
 				</div>
 			</div> <!-- section content end -->  
-			<?php $function->doPages($offset, 'manage-order.php', '', $total_records, $keyword); ?>
+			<?php $function->doPages($offset, 'manage-product.php', '', $total_records, $keyword); ?>
 			</form>
 		</div>
 			

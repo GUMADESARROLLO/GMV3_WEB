@@ -22,6 +22,27 @@ if (isset($_GET['id_delete'])) {
     exit;
 
 }
+if (isset($_POST['submit_coment'])) {
+
+
+    $data = array(
+        'orden_comment'			=> $_POST['orden_commint'],
+        'date_coment'			=> date('Y-m-d h:i:s'),
+        'orden_code'  			=> $_POST['ordencode'],
+        'player_id'  			=> $_SESSION['user']
+    );
+
+    $qry = Insert('tbl_comment', $data);
+
+    //$_SESSION['msg'] = "";
+    $succes =<<<EOF
+					<script>
+					        alert('Comentario Agreagado...');
+					        window.location = 'manage-order.php' ;
+					</script>
+EOF;
+    echo $succes;
+    exit;
 
 
 
@@ -312,24 +333,27 @@ EOF;
 						<div class="col-lg-8 col-md-8 col-sm-8 col-xs-12">
 							<div class="lead">ORDEN DETALLES</div>
 						</div>
-						<div class="col-lg-4 col-md-4 col-sm-4 col-xs-12 right">
-							<div align="right">
+						 <?php if ($result_permission['permisos'] != 2 && $result_permission['permisos'] != 3) {?>
+							<div class="col-lg-4 col-md-4 col-sm-4 col-xs-12 right">
+								<div align="right">
 
-								<?php if ($data['status'] == '0') { ?>
-								<form id="validationForm" method="post">
-									<input type="submit" name="cancel_order" class="btn pmd-ripple-effect btn-default" value="CANCELAR" onclick="cancelClicked(event)"/>
+									<?php if ($data['status'] == '0') { ?>
+									<form id="validationForm" method="post">
+										<input type="submit" name="cancel_order" class="btn pmd-ripple-effect btn-default" value="CANCELAR" onclick="cancelClicked(event)"/>
 
-									<input type="submit" name="submit_order" class="btn pmd-ripple-effect btn-danger" value="PROCESAR" onclick="processClicked(event)" />
-								</form>
-								<?php } else if ($data['status'] == '1') { ?>
-								<form id="validationForm" method="post">
-									<input type="submit" name="cancel_order" class="btn pmd-ripple-effect btn-default" value="CANCELAR" onclick="cancelClicked(event)"/>
-								</form>
-								<?php } else if ($data['status'] == '2') { ?>
-									<input type="submit" name="cancel_order" class="btn pmd-ripple-effect btn-default" value="CANCELAR" disabled/>
-								<?php } ?>
+										<input type="submit" name="submit_order" class="btn pmd-ripple-effect btn-danger" value="PROCESAR" onclick="processClicked(event)" />
+									</form>
+									<?php } else if ($data['status'] == '1') { ?>
+									<form id="validationForm" method="post">
+										<input type="submit" name="cancel_order" class="btn pmd-ripple-effect btn-default" value="CANCELAR" onclick="cancelClicked(event)"/>
+									</form>
+									<?php } else if ($data['status'] == '2') { ?>
+										<input type="submit" name="cancel_order" class="btn pmd-ripple-effect btn-default" value="CANCELAR" disabled/>
+									<?php } ?>
+									
+								</div>
 							</div>
-						</div>
+						<?php } ?>
 					</div>
 
 					<div class="table-responsive">
