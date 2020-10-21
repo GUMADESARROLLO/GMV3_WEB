@@ -26,16 +26,16 @@ if (isset($_POST['submit_coment'])) {
 
 
     $data = array(
-        'orden_comment'			=> $_POST['orden_commint'],
-        'date_coment'			=> date('Y-m-d h:i:s'),
-        'orden_code'  			=> $_POST['ordencode'],
-        'player_id'  			=> $_SESSION['user']
+        'orden_comment' => $_POST['orden_commint'],
+        'date_coment' => date('Y-m-d h:i:s'),
+        'orden_code' => $_POST['ordencode'],
+        'player_id' => $_SESSION['user']
     );
 
     $qry = Insert('tbl_comment', $data);
 
     //$_SESSION['msg'] = "";
-    $succes =<<<EOF
+    $succes = <<<EOF
 					<script>
 					        alert('Comentario Agreagado...');
 					        window.location = 'manage-order.php' ;
@@ -44,7 +44,7 @@ EOF;
     echo $succes;
     exit;
 
-
+}
 
 
 	if (isset($_GET['id'])) {

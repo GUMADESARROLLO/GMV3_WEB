@@ -178,7 +178,7 @@
 						<table cellspacing="0" cellpadding="0" class="table pmd-table table-hover" id="table-propeller">
 							<thead>
 								<tr>
-									<th>Nombre</th>
+									<th>Ruta</th>
 									<th>Code</th>
 									<th>Total</th>
 									<th>Fecha</th>
@@ -239,8 +239,10 @@
 						<table cellspacing="0" cellpadding="0" class="table pmd-table table-hover" id="table-propeller">
 							<thead>
 								<tr>
-									<th>Nombre</th>
-									<th>Code</th>
+                                    <th>Nº</th>
+									<th>Ruta</th>
+                                    <th>Cliente</th>
+                                    <th>Nombre</th>
 									<th>Total</th>
 									<th>Fecha</th>
 									<th>Status</th>
@@ -253,8 +255,10 @@
 
 							<tbody>
 								<tr>
+                                    <td><?php echo $data['code'];?></td>
 									<td><?php echo $data['name'];?></td>
-									<td><?php echo $data['code'];?></td>
+                                    <td><?php echo $data['email'];?></td>
+                                    <td><?php echo $data['phone'];?></td>
 									<td><?php echo $data['order_total'];?></td>
 									<td><?php echo $data['date_time'];?></td>
 									<td>
