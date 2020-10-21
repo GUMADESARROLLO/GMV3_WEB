@@ -22,29 +22,7 @@ if (isset($_GET['id_delete'])) {
     exit;
 
 }
-if (isset($_POST['submit_coment'])) {
 
-
-    $data = array(
-        'orden_comment'	=> $_POST['orden_commint'],
-        'date_coment'		=> date('Y-m-d h:i:s'),
-        'orden_code'  			=> $_POST['ordencode'],
-        'player_id'  			=> $_SESSION['user']
-    );
-
-    $qry = Insert('tbl_comment', $data);
-
-    //$_SESSION['msg'] = "";
-    $succes =<<<EOF
-					<script>
-					        alert('Comentario Agreagado...');
-					        window.location = 'manage-order.php' ;
-					</script>
-EOF;
-    echo $succes;
-    exit;
-
-}
 
 
 
@@ -123,7 +101,71 @@ EOF;
   define("ONESIGNAL_REST_KEY", $onesignal_rest_api_key);
 
 ?>
+<?php
+if (isset($_POST['submit_coment'])) {
 
+
+    $userId 	    = $data['player_id'];
+    $buyerName      = $data['name'];
+    $buyerCode      = $data['code'];
+    $NameCliente    = $data['phone'];
+
+    $content = array(
+        "en" => "En el pedido de comomentario en : $NameCliente"
+    );
+
+
+    $data_noti_comentario = array(
+        'app_id' => ONESIGNAL_APP_ID,
+        'include_player_ids' => array($userId),
+        'data' => array("foo" => "bar", "cat_id"=> "1010101010"),
+        'headings'=> array("en" => "Nuevo Comentario"),
+        'contents' => $content
+    );
+
+
+    $data_noti_comentario = json_encode($data_noti_comentario);
+
+    print_r($data_noti_comentario);
+
+    $ch = curl_init();
+    curl_setopt($ch, CURLOPT_URL, "https://onesignal.com/api/v1/notifications");
+    curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json; charset=utf-8',
+        'Authorization: Basic '.ONESIGNAL_REST_KEY));
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
+    curl_setopt($ch, CURLOPT_HEADER, FALSE);
+    curl_setopt($ch, CURLOPT_POST, TRUE);
+    curl_setopt($ch, CURLOPT_POSTFIELDS, $data_noti_comentario);
+    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
+
+    $response = curl_exec($ch);
+    curl_close($ch);
+
+
+
+
+    $data = array(
+        'orden_comment'	=> $_POST['orden_commint'],
+        'date_coment'		=> date('Y-m-d h:i:s'),
+        'orden_code'  			=> $_POST['ordencode'],
+        'player_id'  			=> $_SESSION['user']
+    );
+
+    $qry = Insert('tbl_comment', $data);
+
+    //$_SESSION['msg'] = "";
+    $succes =<<<EOF
+					<script>
+					        alert('Comentario Agreagado...');
+					        window.location = 'manage-order.php' ;
+					</script>
+
+EOF;
+    echo $succes;
+    exit;
+
+}
+?>
 <?php 
 	
 	include_once('sql-query.php');
@@ -143,13 +185,13 @@ EOF;
                         'app_id' => ONESIGNAL_APP_ID,
                         'include_player_ids' => array($userId),
                         'data' => array("foo" => "bar", "cat_id"=> "1010101010"),
-                        'headings'=> array("en" => "Hola $buyerName,"),
+                        'headings'=> array("en" => "Procesado"),
                         'contents' => $content    
                         );
 
         $fields = json_encode($fields);
         print("\nJSON sent:\n");
-        print($fields);
+
 
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, "https://onesignal.com/api/v1/notifications");
@@ -199,7 +241,7 @@ EOF;
                         'app_id' => ONESIGNAL_APP_ID,
                         'include_player_ids' => array($userId),
                         'data' => array("foo" => "bar", "cat_id"=> "1010101010"),
-                        'headings'=> array("en" => "Hi $buyerName,"),
+                        'headings'=> array("en" => "Cancelada!"),
                         'contents' => $content    
                         );
 
@@ -400,7 +442,7 @@ EOF;
                         <div class="media">
                             <p class="pull-right"><small><?php echo $dComment['date_coment'];?></small></p>
                             <a class="media-left" href="#">
-                                <img src="http://lorempixel.com/40/40/people/1/">
+                                <img src="assets/themes/images/user-icon.png">
                             </a>
                             <div class="media-body">
                                 <h4 class="media-heading user_name"><?php echo $dComment['player_id'];?></h4>

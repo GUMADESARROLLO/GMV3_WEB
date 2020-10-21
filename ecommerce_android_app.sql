@@ -1,17 +1,17 @@
 /*
  Navicat Premium Data Transfer
 
- Source Server         : LOCALHOST
+ Source Server         : INN
  Source Server Type    : MySQL
  Source Server Version : 100113
- Source Host           : localhost:3306
+ Source Host           : 192.168.2.4:3306
  Source Schema         : ecommerce_android_app
 
  Target Server Type    : MySQL
  Target Server Version : 100113
  File Encoding         : 65001
 
- Date: 30/09/2020 10:16:54
+ Date: 20/10/2020 15:24:34
 */
 
 SET NAMES utf8mb4;
@@ -67,12 +67,13 @@ CREATE TABLE `tbl_comment`  (
   `date_coment` datetime(0) NULL DEFAULT NULL,
   `player_id` varbinary(255) NULL DEFAULT NULL,
   PRIMARY KEY (`id_coment`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = latin1 COLLATE = latin1_swedish_ci ROW_FORMAT = Compact;
+) ENGINE = InnoDB AUTO_INCREMENT = 3 CHARACTER SET = latin1 COLLATE = latin1_swedish_ci ROW_FORMAT = Compact;
 
 -- ----------------------------
 -- Records of tbl_comment
 -- ----------------------------
 INSERT INTO `tbl_comment` VALUES (1, 'F05-EJ6FMESQS', '<p>xq no existia articulo</p>\r\n', '2020-09-30 05:54:51', 0x61646D696E);
+INSERT INTO `tbl_comment` VALUES (2, 'F05-GIS3ZDVVQ', '<p>pedido debe llegar a las 10:00</p>\r\n', '2020-10-05 03:06:10', 0x61646D696E);
 
 -- ----------------------------
 -- Table structure for tbl_config
@@ -351,18 +352,23 @@ CREATE TABLE `tbl_order`  (
   `address` varchar(500) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
   `shipping` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
   `date_time` datetime(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0),
+  `created_at` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
+  `updated_at` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
   `order_list` text CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
   `order_total` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
   `comment` varchar(500) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
   `status` varchar(1) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT '0',
   `player_id` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 46 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Compact;
+) ENGINE = InnoDB AUTO_INCREMENT = 49 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Compact;
 
 -- ----------------------------
 -- Records of tbl_order
 -- ----------------------------
-INSERT INTO `tbl_order` VALUES (45, 'F05-EJ6FMESQS', NULL, NULL, NULL, 'F05', '00062', 'FARMACIA DANCING - RUC  2012705470004L', 'DETALLE: SEMAFOROS DEL DANCING 1C AL SUR, MANAGUA', 'str_shipping', '2020-09-30 09:53:49', '5 [10118022] - ANASTROZOL 1 MG TAB RECUBIERTA 28/CAJA (NAPROD) 5+1 5625.45 NIO,\n\n\nOrden : 5625.45 NIO\nImpuesto : 0.0 % : 0.0 NIO\nTotal : 5625.45 NIO', '5625.45 NIO', '', '2', '1b654686-f67c-490b-ace5-631d729e26f9');
+INSERT INTO `tbl_order` VALUES (45, 'F05-EJ6FMESQS', NULL, NULL, NULL, 'F05', '00062', 'FARMACIA DANCING - RUC  2012705470004L', 'DETALLE: SEMAFOROS DEL DANCING 1C AL SUR, MANAGUA', 'str_shipping', '2020-09-30 09:53:49', NULL, NULL, '5 [10118022] - ANASTROZOL 1 MG TAB RECUBIERTA 28/CAJA (NAPROD) 5+1 5625.45 NIO,\n\n\nOrden : 5625.45 NIO\nImpuesto : 0.0 % : 0.0 NIO\nTotal : 5625.45 NIO', '5625.45 NIO', '', '0', '1b654686-f67c-490b-ace5-631d729e26f9');
+INSERT INTO `tbl_order` VALUES (46, 'F05-BMBA1Z35W', NULL, NULL, NULL, 'F05', '00050', 'FARMACIA CORPUS CHRISTI #2', 'DETALLE: KM 8 CARRETERA NORTE ½C ABAJO, MANAGUA', 'str_shipping', '2020-09-30 11:42:53', NULL, NULL, '1 [10118101] - CISPLATINO 1MG/ML SOLUCION INY I.V 10 ML/VIAL 1/CAJA (NAPROD) 0 137.21 NIO,\n\n\nOrden : 137.21 NIO\nImpuesto : 0.0 % : 0.0 NIO\nTotal : 137.21 NIO', '137.21 NIO', '', '0', '1b654686-f67c-490b-ace5-631d729e26f9');
+INSERT INTO `tbl_order` VALUES (47, 'F05-R261O5FO2', NULL, NULL, NULL, 'F05', '00050', 'FARMACIA CORPUS CHRISTI #2', 'DETALLE: KM 8 CARRETERA NORTE ½C ABAJO, MANAGUA', 'str_shipping', '2020-09-30 12:05:04', '2020-09-30 12:04:57', '2020-09-30 20:09:58', '1 [10118072] - CARBOPLATINO 10MG/ML SOLUCION INY I.V 15 ML/FAM 1/CAJA  (NAPROD) 0 686.03 NIO,\n\n\nOrden : 686.03 NIO\nImpuesto : 0.0 % : 0.0 NIO\nTotal : 686.03 NIO', '686.03 NIO', '', '2', '1b654686-f67c-490b-ace5-631d729e26f9');
+INSERT INTO `tbl_order` VALUES (48, 'F05-GIS3ZDVVQ', NULL, NULL, NULL, 'F05', '01788', 'FARMACIA SANTA ANA - RUC 0010401750004G', 'DETALLE: REPARTO SHICK II ETAPA ESCUELA ADVENTISTA ½C ABAJO, MANAGUA', 'str_shipping', '2020-10-05 15:04:48', '2020-10-05 15:04:25', '2020-10-05 15:07:03', '10 [17303011] - SALBUTAMOL 100 MCG/DOSIS SUSPENSION PARA INHALACION FRASCO 1/CAJA  (HEILONGJIANG) 10+4 795.6 NIO,\n\n25 [17303041] - BROMURO DE IPRATROPIO 20 MCG/DOSIS SUSPENSION PARA INHALACION 200 DOSIS/FRASCO 1/CAJA  (HEILONGJIANG) 25+8 5021.25 NIO,\n\n10 [10415012] - ENOXAPARINA 40 MG /0.4 ML SOL. INY JERINGA 1/CAJA (GLAND PHARMA) 10+1 1667.1 NIO,\n\n\nOrden : 7483.950000000001 NIO\nImpuesto : 0.0 % : 0.0 NIO\nTotal : 7483.950000000001 NIO', '7483.950000000001 NIO', '', '1', '1b654686-f67c-490b-ace5-631d729e26f9');
 
 -- ----------------------------
 -- Table structure for tbl_product

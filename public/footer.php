@@ -5,7 +5,7 @@
  	<ul class="list-unstyled list-inline">
 	 	<li>
 			<span class="pmd-card-subtitle-text">IT Developer &copy; <span class="auto-update-year"></span>. Todos los Derechos Reservados.</span>
-			<h3 class="pmd-card-subtitle-text"><a href="#!" target="_blank">Unimark Store v3.0.1</a></h3>
+			<h3 class="pmd-card-subtitle-text"><a href="#!" target="_blank">PLATAFORMA DE PEDIDOS - UNIMARK v3.0.1</a></h3>
         </li>
         <li class="pull-right for-support">
 			<a href="mailto:elcorreo@gmail.com">
