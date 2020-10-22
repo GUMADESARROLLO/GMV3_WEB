@@ -550,6 +550,29 @@ if (isset($_GET['category_id'])) {
     }
     header('Content-Type: application/json; charset=utf-8');
     echo $val = str_replace('\\/', '/', json_encode($dta));
+}else if (isset($_GET['post_update_datos'])) {
+
+    $Email        = $_POST['code'];
+    $Telefono     = $_POST['name'];
+    $Password     = $_POST['email'];
+
+    $KeysSecret = "A7M";
+
+    $data = array(
+        'email'  		  	=> $_POST['Email'],
+        'Telefono'  		=> $_POST['Telefono'],
+        'password'  		=> hash('sha256',$KeysSecret.$_POST['Contrasenna'])
+    );
+
+    $hasil = Update('tbl_admin', $data, "WHERE id = ".$_POST['Ruta']."");
+
+
+    if ($hasil > 0) {
+        //include_once ('php-mail.php');
+        echo 'Data Inserted Successfully';
+    } else {
+        echo 'Try Again';
+    }
 }else{
     header('Content-Type: application/json; charset=utf-8');
     echo "no method found!";
