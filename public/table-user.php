@@ -305,7 +305,7 @@
 					</div>
 				</div>
 			</div> <!-- section content end -->  
-			<?php $function->doPages($offset, 'manage-product.php', '', $total_records, $keyword); ?>
+			<?php $function->doPages($offset, 'manage-user.php', '', $total_records, $keyword); ?>
 			</form>
 		</div>
 			

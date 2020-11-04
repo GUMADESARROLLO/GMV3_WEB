@@ -18,8 +18,8 @@
       <file leaf-file-name="edit-user-form.php" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/public/edit-user-form.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-1207">
-              <caret line="4" column="29" lean-forward="false" selection-start-line="4" selection-start-column="29" selection-end-line="4" selection-end-column="29" />
+            <state relative-caret-position="1020">
+              <caret line="87" column="0" lean-forward="true" selection-start-line="87" selection-start-column="0" selection-end-line="87" selection-end-column="0" />
               <folding>
                 <marker date="1604430677269" expanded="true" signature="84:135" ph="SELECT * FRO... tbl_Admin" />
                 <marker date="1604430677269" expanded="true" signature="1265:1373" ph="..." />
@@ -34,18 +34,18 @@
       <file leaf-file-name="table-user.php" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/public/table-user.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="177">
-              <caret line="168" column="0" lean-forward="true" selection-start-line="168" selection-start-column="0" selection-end-line="168" selection-end-column="0" />
+            <state relative-caret-position="354">
+              <caret line="301" column="0" lean-forward="true" selection-start-line="301" selection-start-column="0" selection-end-line="301" selection-end-column="0" />
               <folding>
-                <marker date="1604527137064" expanded="true" signature="53:159" ph="SELECT curre... tbl_config" />
-                <marker date="1604527137064" expanded="true" signature="726:825" ph="SELECT id, N... tbl_admin" />
-                <marker date="1604527137064" expanded="true" signature="860:992" ph="SELECT id, N... tbl_admin" />
-                <marker date="1604527137064" expanded="true" signature="1057:1133" ph="SELECT id, N... tbl_admin" />
-                <marker date="1604527137064" expanded="true" signature="1168:1278" ph="SELECT id, N... tbl_admin" />
-                <marker date="1604527137064" expanded="true" signature="2341:2468" ph="SELECT id, N... tbl_admin" />
-                <marker date="1604527137064" expanded="true" signature="2501:2643" ph="SELECT id, N... tbl_admin" />
-                <marker date="1604527137064" expanded="true" signature="2706:2809" ph="SELECT id, N... tbl_admin" />
-                <marker date="1604527137064" expanded="true" signature="2842:2963" ph="SELECT id, N... tbl_admin" />
+                <marker date="1604527361531" expanded="true" signature="53:159" ph="SELECT curre... tbl_config" />
+                <marker date="1604527361531" expanded="true" signature="726:825" ph="SELECT id, N... tbl_admin" />
+                <marker date="1604527361531" expanded="true" signature="860:992" ph="SELECT id, N... tbl_admin" />
+                <marker date="1604527361531" expanded="true" signature="1057:1133" ph="SELECT id, N... tbl_admin" />
+                <marker date="1604527361531" expanded="true" signature="1168:1278" ph="SELECT id, N... tbl_admin" />
+                <marker date="1604527361531" expanded="true" signature="2341:2468" ph="SELECT id, N... tbl_admin" />
+                <marker date="1604527361531" expanded="true" signature="2501:2643" ph="SELECT id, N... tbl_admin" />
+                <marker date="1604527361531" expanded="true" signature="2706:2809" ph="SELECT id, N... tbl_admin" />
+                <marker date="1604527361531" expanded="true" signature="2842:2963" ph="SELECT id, N... tbl_admin" />
               </folding>
             </state>
           </provider>
@@ -260,7 +260,7 @@
       <workItem from="1603722207212" duration="1344000" />
       <workItem from="1603986805847" duration="6158000" />
       <workItem from="1604421687870" duration="598000" />
-      <workItem from="1604525983115" duration="1140000" />
+      <workItem from="1604525983115" duration="1296000" />
     </task>
     <task id="LOCAL-00001" summary="21/10/2020">
       <created>1603298806905</created>
@@ -283,11 +283,18 @@
       <option name="project" value="LOCAL" />
       <updated>1603404309430</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="04/11/2020">
+      <created>1604527223364</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1604527223364</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="12801000" />
+    <option name="totallyTimeSpent" value="12957000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1936" height="1066" extended-state="6" />
@@ -324,7 +331,8 @@
     <MESSAGE value="21/10/2020" />
     <MESSAGE value="21/10/2020&#10;.- Correccion de bug al envio de notificaciones de nuevos comentarios" />
     <MESSAGE value="22/10/2020&#10;.- Actualizacion de datos desde el movil" />
-    <option name="LAST_COMMIT_MESSAGE" value="22/10/2020&#10;.- Actualizacion de datos desde el movil" />
+    <MESSAGE value="04/11/2020" />
+    <option name="LAST_COMMIT_MESSAGE" value="04/11/2020" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager />
@@ -372,15 +380,15 @@
         <state relative-caret-position="4063">
           <caret line="239" column="51" lean-forward="false" selection-start-line="239" selection-start-column="51" selection-end-line="239" selection-end-column="51" />
           <folding>
-            <marker date="1604527137064" expanded="true" signature="53:159" ph="SELECT curre... tbl_config" />
-            <marker date="1604527137064" expanded="true" signature="726:825" ph="SELECT id, N... tbl_admin" />
-            <marker date="1604527137064" expanded="true" signature="860:992" ph="SELECT id, N... tbl_admin" />
-            <marker date="1604527137064" expanded="true" signature="1057:1133" ph="SELECT id, N... tbl_admin" />
-            <marker date="1604527137064" expanded="true" signature="1168:1278" ph="SELECT id, N... tbl_admin" />
-            <marker date="1604527137064" expanded="true" signature="2341:2468" ph="SELECT id, N... tbl_admin" />
-            <marker date="1604527137064" expanded="true" signature="2501:2643" ph="SELECT id, N... tbl_admin" />
-            <marker date="1604527137064" expanded="true" signature="2706:2809" ph="SELECT id, N... tbl_admin" />
-            <marker date="1604527137064" expanded="true" signature="2842:2963" ph="SELECT id, N... tbl_admin" />
+            <marker date="1604527361531" expanded="true" signature="53:159" ph="SELECT curre... tbl_config" />
+            <marker date="1604527361531" expanded="true" signature="726:825" ph="SELECT id, N... tbl_admin" />
+            <marker date="1604527361531" expanded="true" signature="860:992" ph="SELECT id, N... tbl_admin" />
+            <marker date="1604527361531" expanded="true" signature="1057:1133" ph="SELECT id, N... tbl_admin" />
+            <marker date="1604527361531" expanded="true" signature="1168:1278" ph="SELECT id, N... tbl_admin" />
+            <marker date="1604527361531" expanded="true" signature="2341:2468" ph="SELECT id, N... tbl_admin" />
+            <marker date="1604527361531" expanded="true" signature="2501:2643" ph="SELECT id, N... tbl_admin" />
+            <marker date="1604527361531" expanded="true" signature="2706:2809" ph="SELECT id, N... tbl_admin" />
+            <marker date="1604527361531" expanded="true" signature="2842:2963" ph="SELECT id, N... tbl_admin" />
           </folding>
         </state>
       </provider>
@@ -467,15 +475,15 @@
         <state relative-caret-position="4063">
           <caret line="239" column="51" lean-forward="false" selection-start-line="239" selection-start-column="51" selection-end-line="239" selection-end-column="51" />
           <folding>
-            <marker date="1604527137064" expanded="true" signature="53:159" ph="SELECT curre... tbl_config" />
-            <marker date="1604527137064" expanded="true" signature="726:825" ph="SELECT id, N... tbl_admin" />
-            <marker date="1604527137064" expanded="true" signature="860:992" ph="SELECT id, N... tbl_admin" />
-            <marker date="1604527137064" expanded="true" signature="1057:1133" ph="SELECT id, N... tbl_admin" />
-            <marker date="1604527137064" expanded="true" signature="1168:1278" ph="SELECT id, N... tbl_admin" />
-            <marker date="1604527137064" expanded="true" signature="2341:2468" ph="SELECT id, N... tbl_admin" />
-            <marker date="1604527137064" expanded="true" signature="2501:2643" ph="SELECT id, N... tbl_admin" />
-            <marker date="1604527137064" expanded="true" signature="2706:2809" ph="SELECT id, N... tbl_admin" />
-            <marker date="1604527137064" expanded="true" signature="2842:2963" ph="SELECT id, N... tbl_admin" />
+            <marker date="1604527361531" expanded="true" signature="53:159" ph="SELECT curre... tbl_config" />
+            <marker date="1604527361531" expanded="true" signature="726:825" ph="SELECT id, N... tbl_admin" />
+            <marker date="1604527361531" expanded="true" signature="860:992" ph="SELECT id, N... tbl_admin" />
+            <marker date="1604527361531" expanded="true" signature="1057:1133" ph="SELECT id, N... tbl_admin" />
+            <marker date="1604527361531" expanded="true" signature="1168:1278" ph="SELECT id, N... tbl_admin" />
+            <marker date="1604527361531" expanded="true" signature="2341:2468" ph="SELECT id, N... tbl_admin" />
+            <marker date="1604527361531" expanded="true" signature="2501:2643" ph="SELECT id, N... tbl_admin" />
+            <marker date="1604527361531" expanded="true" signature="2706:2809" ph="SELECT id, N... tbl_admin" />
+            <marker date="1604527361531" expanded="true" signature="2842:2963" ph="SELECT id, N... tbl_admin" />
           </folding>
         </state>
       </provider>
@@ -794,8 +802,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/public/edit-user-form.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-1207">
-          <caret line="4" column="29" lean-forward="false" selection-start-line="4" selection-start-column="29" selection-end-line="4" selection-end-column="29" />
+        <state relative-caret-position="1020">
+          <caret line="87" column="0" lean-forward="true" selection-start-line="87" selection-start-column="0" selection-end-line="87" selection-end-column="0" />
           <folding>
             <marker date="1604430677269" expanded="true" signature="84:135" ph="SELECT * FRO... tbl_Admin" />
             <marker date="1604430677269" expanded="true" signature="1265:1373" ph="..." />
@@ -808,18 +816,18 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/public/table-user.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="177">
-          <caret line="168" column="0" lean-forward="true" selection-start-line="168" selection-start-column="0" selection-end-line="168" selection-end-column="0" />
+        <state relative-caret-position="354">
+          <caret line="301" column="0" lean-forward="true" selection-start-line="301" selection-start-column="0" selection-end-line="301" selection-end-column="0" />
           <folding>
-            <marker date="1604527137064" expanded="true" signature="53:159" ph="SELECT curre... tbl_config" />
-            <marker date="1604527137064" expanded="true" signature="726:825" ph="SELECT id, N... tbl_admin" />
-            <marker date="1604527137064" expanded="true" signature="860:992" ph="SELECT id, N... tbl_admin" />
-            <marker date="1604527137064" expanded="true" signature="1057:1133" ph="SELECT id, N... tbl_admin" />
-            <marker date="1604527137064" expanded="true" signature="1168:1278" ph="SELECT id, N... tbl_admin" />
-            <marker date="1604527137064" expanded="true" signature="2341:2468" ph="SELECT id, N... tbl_admin" />
-            <marker date="1604527137064" expanded="true" signature="2501:2643" ph="SELECT id, N... tbl_admin" />
-            <marker date="1604527137064" expanded="true" signature="2706:2809" ph="SELECT id, N... tbl_admin" />
-            <marker date="1604527137064" expanded="true" signature="2842:2963" ph="SELECT id, N... tbl_admin" />
+            <marker date="1604527361531" expanded="true" signature="53:159" ph="SELECT curre... tbl_config" />
+            <marker date="1604527361531" expanded="true" signature="726:825" ph="SELECT id, N... tbl_admin" />
+            <marker date="1604527361531" expanded="true" signature="860:992" ph="SELECT id, N... tbl_admin" />
+            <marker date="1604527361531" expanded="true" signature="1057:1133" ph="SELECT id, N... tbl_admin" />
+            <marker date="1604527361531" expanded="true" signature="1168:1278" ph="SELECT id, N... tbl_admin" />
+            <marker date="1604527361531" expanded="true" signature="2341:2468" ph="SELECT id, N... tbl_admin" />
+            <marker date="1604527361531" expanded="true" signature="2501:2643" ph="SELECT id, N... tbl_admin" />
+            <marker date="1604527361531" expanded="true" signature="2706:2809" ph="SELECT id, N... tbl_admin" />
+            <marker date="1604527361531" expanded="true" signature="2842:2963" ph="SELECT id, N... tbl_admin" />
           </folding>
         </state>
       </provider>
