@@ -247,7 +247,7 @@
 									        <i class="material-icons">mode_edit</i>
 									    </a>
 									                        
-									    <a href="delete-product.php?product_id=<?php echo $data['product_id'];?>" onclick="return confirm('Are you sure want to delete this product?')" >
+									    <a href="delete-product.php?product_id=<?php echo $data['product_id'];?>" onclick="return confirm('¿Estás seguro de que deseas eliminar este producto?')" >
 									                <i class="material-icons">delete</i>
 									    </a>
 									</td>									

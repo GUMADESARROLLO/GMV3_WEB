@@ -4,6 +4,7 @@ include_once ('../includes/config.php');
 include_once ('../includes/config_comentario.php');
 include_once ('../includes/Sqlsrv.php');
 
+
 $connect->set_charset('utf8');
 
 $connect_comentario->set_charset('utf8');
@@ -37,7 +38,7 @@ if (isset($_GET['category_id'])) {
     $json = array();
 
     foreach ($query as $fila) {
-        $set_img ="ND.jpg";
+        $set_img ="SinImagen.png";
         $set_des = "";
 
         $query = "SELECT p.product_image,p.product_description FROM tbl_product p WHERE p.product_sku= '".$fila["ARTICULO"]."'";
@@ -51,7 +52,7 @@ if (isset($_GET['category_id'])) {
 
 
         $json[$i]['product_id']               = $fila["ARTICULO"];
-        $json[$i]['product_name']             = utf8_encode(strtoupper($fila['DESCRIPCION']));
+        $json[$i]['product_name']             = strtoupper($fila['DESCRIPCION']);
         $json[$i]['category_id']              = "20";
         $json[$i]['category_name']            = "Medicina";
         $json[$i]['product_price']            = number_format($fila['PRECIO_IVA'],2,'.','');
@@ -170,7 +171,7 @@ if (isset($_GET['category_id'])) {
     $json = array();
 
     foreach ($query as $fila) {
-        $set_img ="ND.jpg";
+        $set_img ="SinImagen.png";
         $set_des = "";
 
         $query = "SELECT p.product_image,p.product_description FROM tbl_product p WHERE p.product_sku= '".$fila["ARTICULO"]."'";
@@ -317,9 +318,24 @@ if (isset($_GET['category_id'])) {
     $query = $sqlsrv->fetchArray("SELECT * FROM GMV_FACTURA_DETALLE_HISTORICO WHERE FACTURA='".$_GET['get_detalle_factura']."' ", SQLSRV_FETCH_ASSOC);
     if (count($query)>0) {
         foreach ($query as $key) {
+
+
+        $set_img ="SinImagen.png";
+        $set_des = "";
+
+        $query = "SELECT p.product_image,p.product_description FROM tbl_product p WHERE p.product_sku= '".$key["ARTICULO"]."'";
+        $resouter = mysqli_query($connect, $query);
+        $total_records = mysqli_num_rows($resouter);
+        if($total_records >= 1) {
+            $link = mysqli_fetch_array($resouter, MYSQLI_ASSOC);
+            $set_img = $link['product_image'];            
+        }
+
+
             $dta[$i]['ARTICULO']        = $key['ARTICULO'];
-            $dta[$i]['DESCRIPCION']     = $key['DESCRIPCION'];
+            $dta[$i]['DESCRIPCION']     = strtoupper($key['DESCRIPCION']);;
             $dta[$i]['CANTIDAD']        = number_format($key['CANTIDAD'],2);
+            $dta[$i]['IMAGEN']          = $set_img;
             $dta[$i]['VENTA']           = $key['VENTA'];
             $i++;
         }
@@ -327,6 +343,7 @@ if (isset($_GET['category_id'])) {
     }else{
         $dta[$i]['ARTICULO']        = "N/D";
         $dta[$i]['DESCRIPCION']     = "N/D";
+         $dta[$i]['IMAGEN']          = "SinImagen.png";
         $dta[$i]['CANTIDAD']        = number_format(0.00,2);
         $dta[$i]['VENTA']           = number_format(0.00,2);
     }
@@ -341,10 +358,25 @@ if (isset($_GET['category_id'])) {
 
     $query = $sqlsrv->fetchArray("SELECT * FROM GMV3_hstCompra_3M WHERE Cliente='".$_GET['last_3m']."' ORDER BY Dia", SQLSRV_FETCH_ASSOC);
     foreach ($query as $key) {
+
+        $set_img ="SinImagen.png";
+        $set_des = "";
+
+        $query = "SELECT p.product_image,p.product_description FROM tbl_product p WHERE p.product_sku= '".$key["ARTICULO"]."'";
+        $resouter = mysqli_query($connect, $query);
+        $total_records = mysqli_num_rows($resouter);
+        if($total_records >= 1) {
+            $link = mysqli_fetch_array($resouter, MYSQLI_ASSOC);
+            $set_img = $link['product_image'];            
+        }
+
+
+
         $dta[$i]['ARTICULO']        = $key['ARTICULO'];
-        $dta[$i]['DESCRIPCION']     = $key['DESCRIPCION'];
+        $dta[$i]['DESCRIPCION']     = strtoupper($key['DESCRIPCION']);
         $dta[$i]['CANTIDAD']        = number_format($key['CANTIDAD'],2);
         $dta[$i]['VENTA']           = $key['Venta'];
+        $dta[$i]['IMAGEN']          = $set_img;
         $dta[$i]['FECHA']           = $key['Dia'];
         $i++;
     }
@@ -505,6 +537,7 @@ if (isset($_GET['category_id'])) {
             $array[$i]['Contenido'] = $key['Contenido'];
             $array[$i]['Fecha']     = $key['Fecha'];
             $array[$i]['Autor']     = $key['Autor'];
+            $array[$i]['Imagen']    = $key['Imagen'];
             $i++;
         }
     }
@@ -520,9 +553,17 @@ if (isset($_GET['category_id'])) {
     $CodRuta        = $_POST['sndCodigo'];
     $NamRuta        = $_POST['sndNombre'];
     $Comentario     = $_POST['snd_comentario'];
+    $imagektp       = $_POST['snd_image'];
 
 
-    $query = "INSERT INTO tbl_comentarios (Titulo,Contenido, Autor, Nombre,Fecha) VALUES ('$Nombre','$Comentario', '$CodRuta', '$NamRuta','$Fecha')";
+    if($imagektp !=""){
+        $nama_imagen = time() . '-' . rand(0, 99999) . ".jpg";
+        $pathktp = "../upload/news/" . $nama_imagen;
+        file_put_contents($pathktp, base64_decode($imagektp));    
+    }
+
+
+    $query = "INSERT INTO tbl_comentarios (Titulo,Contenido, Autor, Nombre,Fecha,Imagen) VALUES ('$Nombre','$Comentario', '$CodRuta', '$NamRuta','$Fecha','$nama_imagen')";
 
     if (mysqli_query($connect_comentario, $query)) {
         //include_once ('php-mail.php');
@@ -552,19 +593,41 @@ if (isset($_GET['category_id'])) {
     echo $val = str_replace('\\/', '/', json_encode($dta));
 }else if (isset($_GET['post_update_datos'])) {
 
-    $Email        = $_POST['code'];
-    $Telefono     = $_POST['name'];
-    $Password     = $_POST['email'];
+	include('../public/sql-query.php');
 
-    $KeysSecret = "A7M";
+    $KeysSecret 	= "A7M";
+    $table_name 	= 'tbl_admin';
+    $where_clause	= "WHERE username = '".$_POST['Ruta']."'";
+	$whereSQL 		= '';
 
-    $data = array(
+    $form_data = array(
         'email'  		  	=> $_POST['Email'],
         'Telefono'  		=> $_POST['Telefono'],
         'password'  		=> hash('sha256',$KeysSecret.$_POST['Contrasenna'])
     );
 
-    $hasil = Update('tbl_admin', $data, "WHERE id = ".$_POST['Ruta']."");
+
+        if(!empty($where_clause)) {
+            if(substr(strtoupper(trim($where_clause)), 0, 5) != 'WHERE') {
+                $whereSQL = " WHERE ".$where_clause;
+            } else {
+                $whereSQL = " ".trim($where_clause);
+            }
+        }
+        $sql = "UPDATE ".$table_name." SET ";
+        $sets = array();
+        foreach($form_data as $column => $value) {
+             $sets[] = "`".$column."` = '".$value."'";
+        }
+        $sql .= implode(', ', $sets);
+        $sql .= $whereSQL;
+        echo $sql;
+        $hasil = mysqli_query($connect, $sql);
+
+
+
+
+   // $hasil = Update('tbl_admin', $data, "WHERE username = ".$_POST['Ruta']."");
 
 
     if ($hasil > 0) {

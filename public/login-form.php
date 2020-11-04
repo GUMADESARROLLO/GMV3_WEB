@@ -35,7 +35,8 @@
 
         // if username and password is not empty, check in database
         if(!empty($username) && !empty($password)) {
-
+          
+        
             // change username to lowercase
             $username = strtolower($username);
 
@@ -45,8 +46,11 @@
             $password = hash('sha256',$KeysSecret.$password);
 
             // get data from user table
-            $sql_query = "SELECT * FROM tbl_admin WHERE Activo = 'S' AND username = ? AND password = ? ";
+            $sql_query = "SELECT Activo,username,password,permisos,GRUPO FROM view_tbl_usuario WHERE Activo = 'S' AND username = ? AND password = ? ";
 
+
+
+          
             $stmt = $connect->stmt_init();
             if($stmt->prepare($sql_query)) {
                 // Bind your variables to replace the ?s
@@ -55,10 +59,14 @@
                 $stmt->execute();
                 /* store result */
                 $stmt->store_result();
+                $stmt -> bind_result($rActivo, $rUserName,$rPassword,$rPermisos,$rGrupo); 
+                $stmt -> fetch();
                 $num = $stmt->num_rows;
-                // Close statement object
-                $stmt->close();
+
+                // Close statement object               
+               // $stmt->close();
                 if($num == 1) {
+                    
                    /* if (strlen($purchase_code) >= 36) {
                         $_SESSION['user'] = $username;
                         $_SESSION['timeout'] = $currentTime + $expired;
@@ -68,8 +76,10 @@
                         $_SESSION['timeout'] = $currentTime + $expired;
                         header("location: verify-purchase-code.php");
                     }*/
-
+                   
                     $_SESSION['user'] = $username;
+                    $_SESSION['grupos'] = $rGrupo;
+                    $_SESSION['permisos'] = $rPermisos;
                     $_SESSION['timeout'] = $currentTime + $expired;
                     header("location: dashboard.php");
 

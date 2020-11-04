@@ -133,7 +133,7 @@
 			</div>
 		 </div> <!--end Today's Site Activity -->
 
-		 <div class="col-xs-12 col-sm-12 col-md-5 col-lg-5">
+		 <div class="col-xs-12 col-sm-12 col-md-5 col-lg-5" style="display:none">
 			<div class="pmd-card pmd-z-depth">
 				<div class="pmd-card-title" align="center">
 					<h1 class="pmd-card-title-text typo-fill-secondary propeller-title">INFO</h1>
@@ -165,7 +165,7 @@
 			</div>
 		</div>
 
-		<div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
+		<div class="col-xs-12 col-sm-12 col-md-4 col-lg-4" style="display:none">
 			<div class="pmd-card pmd-z-depth">
 				<div class="pmd-card-title" align="center">
 					<h1 class="pmd-card-title-text typo-fill-secondary propeller-title">Configuración</h1>
@@ -202,7 +202,7 @@
 			</div>
 		</div>
 
-		<div class="col-xs-12 col-sm-12 col-md-3 col-lg-3">
+		<div class="col-xs-12 col-sm-12 col-md-3 col-lg-3" style="display:none">
 			<div class="pmd-card pmd-z-depth">
 				<div class="pmd-card-title" align="center">
 					<h1 class="pmd-card-title-text typo-fill-secondary propeller-title">Acerca</h1>

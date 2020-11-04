@@ -7,7 +7,7 @@
 	}
 			
 	// delete data from menu table
-	$sql_query = "DELETE FROM tbl_shipping WHERE shipping_id = ?";
+	$sql_query = "DELETE FROM tbl_grupos WHERE id_linea = ?";
 			
 	$stmt = $connect->stmt_init();
 	if ($stmt->prepare($sql_query)) {	

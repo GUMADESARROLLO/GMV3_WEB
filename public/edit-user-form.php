@@ -50,6 +50,30 @@ EOF;
 
 	}
 
+
+
+
+
+
+
+
+	$sql_query_rutas = "SELECT * FROM tbl_grupos WHERE id_user = '".$_GET['id']."' ";
+    $rutas_result = mysqli_query($connect, $sql_query_rutas);
+
+    
+
+$sql_rutas="SELECT
+				* 
+			FROM
+				tbl_admin T0
+			WHERE
+				T0.permisos = 0  AND T0.Activo = 'S' 
+				 AND T0.username NOT IN ( SELECT T1.Ruta FROM tbl_grupos T1 WHERE T1.id_user = '".$_GET['id']."' )";
+
+
+
+    $rRutas = mysqli_query($connect, $sql_rutas);
+
  // 	$sql_query = "SELECT * FROM tbl_category ORDER BY category_name ASC";
 	// $ringtone_qry_cat = mysqli_query($connect, $sql_query);
 
@@ -123,7 +147,7 @@ EOF;
 
 						<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
 							<div class="form-group pmd-textfield">       
-								<label>Permiso *</label>
+								<label>Estado *</label>
 								<select class="select-simple form-control pmd-select2" name="user_activo">
 									<option <?php if($row['Activo'] == 'S'){ echo 'selected';} ?> value="S">Activo</option>
 									<option  <?php if($row['Activo'] == 'N'){ echo 'selected';} ?> value="N">Inactivo</option>
@@ -133,7 +157,7 @@ EOF;
 
 						<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
 							<div class="form-group pmd-textfield">       
-								<label>Estado *</label>
+								<label>Permiso *</label>
 								<select class="select-simple form-control pmd-select2" name="user_permisos">
 									<?php if ($result_permission['permisos'] == 2) {?>
 										<option <?php if($row['permisos'] == 2){ echo 'selected';} ?> value="2">Supp SAC</option>
@@ -148,14 +172,64 @@ EOF;
 							</div>
 						</div>
 
-						<input type="hidden" name="user_id" value="<?php echo $row['id'];?>">
+						<?php if($row['permisos'] == '3') { ?>
+						<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+							<div class="form-group pmd-textfield">       
+								<label>Rutas *</label>
+							</div>
+								<?php while ($data = mysqli_fetch_array($rutas_result)) { ?>
+
+                                <div class="pmd-chip pmd-chip-no-icon"><?php echo $data['Ruta'];?>
+                                    <a class="pmd-chip-action" href="delete-shipping.php?id=<?php echo $data['id_linea'];?>" onclick="return confirm('¿Está seguro de que desea eliminar esta ruta?')">
+                                        <i class="material-icons">close</i>
+                                    </a>
+                                </div>
+                                <?php } ?>
+
+                                <button data-target="#shipping-dialog" data-toggle="modal" class="btn pmd-btn-flat pmd-ripple-effect btn-primary" type="button">ASIGNAR</button>
+
+                               
+
+						</div>
+
+						<?php }?>
+
+
+						<div class="modal fade" tabindex="-1" role="dialog" id="shipping-dialog" >
+						  <div class="modal-dialog" role="document">
+						    <div class="modal-content">
+						      <div class="modal-header">
+						        <h5 class="modal-title">LISTA DE RUTAS</h5>
+						        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+						          <span aria-hidden="true">&times;</span>
+						        </button>
+						      </div>
+						      <div class="modal-body">						      
+						        <select class="form-control" id="form_ruta">
+									<?php while ($data_rutas = mysqli_fetch_array($rRutas)) { ?>
+										<option value="<?php echo $data_rutas['username'];?>"><?php echo $data_rutas['username'];?></option>
+									<?php } ?>
+								</select>
+						      </div>
+						      <div class="modal-footer">
+						        <button data-dismiss="modal" class="btn pmd-ripple-effect btn-default" type="button">Cancelar</button>
+                                <button id="btn_save_ruta" class="btn pmd-ripple-effect btn-danger" type="button" name="submit_ruta">Asignar</button>
+						      </div>
+						    </div>
+						  </div>
+						</div>
+
+						 
+
+						<input type="hidden" id="txt_id_user" name="user_id" value="<?php echo $row['id'];?>">
 
 						<div class="pmd-card-actions col-lg-12 col-md-12 col-sm-12 col-xs-12">
 							<p align="right">
 							<button type="submit" class="btn pmd-ripple-effect btn-danger" name="submitEditUser">ACTUALIZAR</button>
 							</p>
-						</div>						
+						</div>		
 
+						
 						</div>
 
 				</div>

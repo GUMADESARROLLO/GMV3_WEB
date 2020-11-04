@@ -216,7 +216,7 @@ EOF;
 				<li> 
 					<a class="pmd-ripple-effect" href="manage-order.php">	
 						<i class="media-left media-middle material-icons">content_paste</i>
-						<span class="media-body">Bandeja de Ordenes</span>
+						<span class="media-body">Pedidos</span>
 					</a>
 				</l>
 
@@ -261,7 +261,7 @@ EOF;
 					</ul>
 				</li>		
 
-				<li class="dropdown pmd-dropdown" style="display: none">
+				<li class="dropdown pmd-dropdown" style="display:none">
 					<a aria-expanded="false" data-toggle="dropdown" class="btn-user dropdown-toggle media" data-sidebar="true" href="javascript:void(0);">	
 						<i class="material-icons media-left pmd-sm">live_help</i> 
 						<span class="media-body">Ayuda</span>

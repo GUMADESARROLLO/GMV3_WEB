@@ -36,20 +36,23 @@
 			$keyword = "";
 			$bind_keyword = $keyword;
 		}
+		$retVal = ($_SESSION['permisos'] == '3') ? "WHERE name in (".$_SESSION['grupos'].")" : "" ;
+
+		$prefijo = ($_SESSION['permisos'] == '3') ? "AND" : "WHERE" ;
 		
 		if (empty($keyword)) {
-			$sql_query = "SELECT * FROM tbl_order ORDER BY id DESC";
+			$sql_query = "SELECT * FROM tbl_order ".$retVal." ORDER BY id DESC";
 		} else {
-			$sql_query = "SELECT * FROM tbl_order WHERE name LIKE ? ORDER BY id DESC";
+			$sql_query = "SELECT * FROM tbl_order ".$retVal." ".$prefijo." phone LIKE '%".$keyword."%' ORDER BY id DESC";
 		}
+
+
 		
 		
 		$stmt = $connect->stmt_init();
 		if ($stmt->prepare($sql_query)) {	
 			// Bind your variables to replace the ?s
-			if (!empty($keyword)) {
-				$stmt->bind_param('s', $bind_keyword);
-			}
+			
 			// Execute query
 			$stmt->execute();
 			// store result 
@@ -96,20 +99,19 @@
 			$from = 0;	
 		}	
 		
+		$retVal = ($_SESSION['permisos'] == '3') ? "WHERE name in (".$_SESSION['grupos'].")" : "" ;
+
+		$prefijo = ($_SESSION['permisos'] == '3') ? "AND" : "WHERE" ;
+		
 		if (empty($keyword)) {
-			$sql_query = "SELECT * FROM tbl_order ORDER BY id DESC LIMIT ?, ?";
+			$sql_query = "SELECT * FROM tbl_order ".$retVal." ORDER BY id DESC";
 		} else {
-			$sql_query = "SELECT * FROM tbl_order WHERE name LIKE ? ORDER BY id DESC LIMIT ?, ?";
+			$sql_query = "SELECT * FROM tbl_order ".$retVal." ".$prefijo." phone LIKE '%".$keyword."%' ORDER BY id DESC";
 		}
 		
 		$stmt_paging = $connect->stmt_init();
 		if ($stmt_paging ->prepare($sql_query)) {
-			// Bind your variables to replace the ?s
-			if (empty($keyword)) {
-				$stmt_paging ->bind_param('ss', $from, $offset);
-			} else {
-				$stmt_paging ->bind_param('sss', $bind_keyword, $from, $offset);
-			}
+			
 			// Execute query
 			$stmt_paging ->execute();
 			// store result 
@@ -219,7 +221,6 @@
 		</ol><!--breadcrum end-->
 	
 		<div class="section"> 
-
 			<form id="validationForm" method="get">
 			<div class="pmd-card pmd-z-depth">
 				<div class="pmd-card-body">
@@ -263,11 +264,11 @@
 									<td><?php echo $data['date_time'];?></td>
 									<td>
 										<?php if ($data['status'] == '1') { ?>
-										<span class="badge badge-success">PROCESSED</span>
+										<span class="badge badge-success">PROCESADO</span>
 										<?php } else if ($data['status'] == '2') { ?>
-										<span class="badge">&nbsp;CANCELED&nbsp;</span>
+										<span class="badge">&nbsp;CANCELADO&nbsp;</span>
 										<?php } else { ?>
-										<span class="badge badge-error">&nbsp;&nbsp;&nbsp;PENDING&nbsp;&nbsp;&nbsp;</span>
+										<span class="badge badge-error">&nbsp;&nbsp;&nbsp;PENDIENTE&nbsp;&nbsp;&nbsp;</span>
 										<?php } ?>
 									</td>
 									<td>
@@ -276,7 +277,7 @@
 									    </a>
 									                        
 									    <?php if ($result_permission['permisos'] != 2 && $result_permission['permisos'] != 3) {?>
-									    <a href="manage-order.php?id=<?php echo $data['id'];?>" onclick="return confirm('Are you sure want to permanently delete this order?')" >
+									    <a href="manage-order.php?id=<?php echo $data['id'];?>" onclick="return confirm('¿Está seguro de que desea eliminar este pedido de forma permanente?')" >
 									                <i class="material-icons">delete</i>
 									    </a>
 									     <?php }?>

@@ -288,129 +288,134 @@ EOF;
 	}
 
 ?>
-
 <!--content area start-->
 <div id="content" class="pmd-content content-area dashboard">
 
-	<!--tab start-->
-	<div class="container-fluid full-width-container">
 
-		<h1 class="section-title" id="services"></h1>
+        <!--breadcrum start-->
+        <ol class="breadcrumb text-left">
+          <li><a href="dashboard.php">Dashboard</a></li>
+          <li><a href="manage-order.php">Bandeja de Ordenes</a></li>
+          <li class="active">Ordenes detalles</li>
+        </ol><!--breadcrum end-->
 
-		<!--breadcrum start-->
-		<ol class="breadcrumb text-left">
-		  <li><a href="dashboard.php">Dashboard</a></li>
-		  <li><a href="manage-order.php">Bandeja de Ordenes</a></li>
-		  <li class="active">Ordenes detalles</li>
-		</ol><!--breadcrum end-->
+        <div id="invoice">
+
+    <div class="toolbar hidden-print">
+        <div class="text-right">
+
+            <?php if ($data['status'] == '0') {
+                echo '
+                <form id="validationForm" method="post">
+                    <input type="submit" name="cancel_order" class="btn btn-info" value="CANCELAR" onclick="cancelClicked(event)"/>
+                    <input type="submit" name="submit_order" class="btn btn-info" value="PROCESAR" onclick="processClicked(event)" />
+                </form>';
+            } else if ($data['status'] == '1') {
+                echo'
+                <form id="validationForm" method="post">
+                    <input type="submit" name="cancel_order" class="btn btn-info" value="CANCELAR" onclick="cancelClicked(event)"/>
+                </form>';
+            } else if ($data['status'] == '2') {
+                echo '<button id="printInvoice" class="btn btn-info"><i class="fa fa-print"></i> Print</button><input type="submit" name="cancel_order" class="btn btn-default" value="CANCELAR" disabled/>';
+            } 
+            ?>
+
+        </div>
+        <hr>
+    </div>
+    <div class="invoice overflow-auto">
+        <div style="min-width: 600px">
+            <header>
+                <div class="row">
+                    <div class="col">
+                        
+                            <img src="assets/images/logo-umk.png" width="500px" height="100px"/>
+                            
+                    </div>
+                    <div class="col company-details">
+                        <h2 class="name">
+                            <?php echo $data['email'].$data['phone']; ?>
+                        </h2>
+                        <div><?php echo $data['address']; ?></div>
+                        
+                    </div>
+                </div>
+            </header>
+            <main>
+                <div class="row contacts">                   
+                    <div class="col invoice-details">
+                        <h1 class="invoice-id"><?php echo $data['code']; ?></h1>
+                        <div class="date">Realizado por <?php echo $data['name']; ?></div>
+                        <div class="date">Fecha: <?php echo $data['date_time']; ?></div>
+                    </div>
+                </div>
+                <table border="0" cellspacing="0" cellpadding="0">
+                    <thead>
+                        <tr>
+                            <th class="unit">ARTICULO</th>
+                            <th class="text-left">DESCRIPCION</th>
+                            <th class="unit">CANTIDAD</th>
+                            <th class="text-center">BONIFICADO</th>
+                            <th class="total text-right">VALOR</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    <?php
+                                $OrdenList  = $data['order_list'];
+                                $Lineas     = explode("],", $OrdenList);
+                                $cLineas    = count($Lineas) -1;
+                                $set_img ="SinImagen.png";
+
+                                for ($l=0; $l < $cLineas ; $l++){
+                                    $Lineas_detalles     = explode(";", $Lineas[$l]);
+                                   
 
 
-		<div class="section" >
 
-			<div class="pmd-card pmd-z-depth">
-				<div class="pmd-card-body">
 
-					<div class="group-fields clearfix row">
-						<div class="col-lg-8 col-md-8 col-sm-8 col-xs-12">
-							<div class="lead">ORDEN DETALLES</div>
-						</div>
-						 <?php if ($result_permission['permisos'] != 2 && $result_permission['permisos'] != 3) {?>
-							<div class="col-lg-4 col-md-4 col-sm-4 col-xs-12 right">
-								<div align="right">
 
-									<?php if ($data['status'] == '0') { ?>
-									<form id="validationForm" method="post">
-										<input type="submit" name="cancel_order" class="btn pmd-ripple-effect btn-default" value="CANCELAR" onclick="cancelClicked(event)"/>
+                                    echo '<tr>
+                                            <td class="unit">'.$Lineas_detalles[1].'</td>
+                                            <td class="text-left">'.$Lineas_detalles[2].'</td>
+                                            <td class="unit">'.str_replace('[', '', $Lineas_detalles[0]).'</td>
+                                            <td class="qty">'.$Lineas_detalles[3].'</td>
+                                            <td class="total text-right">'.$Lineas_detalles[4].'</td>
+                                        </tr>';
+                                    }
+                            ?>
+                       
+                    </tbody>
+                    <?php $Orden_Resumen     = explode(";", str_replace(array("[Orden :","Impuesto :","Total :","]"), "", $Lineas[$cLineas])); ?>
 
-										<input type="submit" name="submit_order" class="btn pmd-ripple-effect btn-danger" value="PROCESAR" onclick="processClicked(event)" />
-									</form>
-									<?php } else if ($data['status'] == '1') { ?>
-									<form id="validationForm" method="post">
-										<input type="submit" name="cancel_order" class="btn pmd-ripple-effect btn-default" value="CANCELAR" onclick="cancelClicked(event)"/>
-									</form>
-									<?php } else if ($data['status'] == '2') { ?>
-										<input type="submit" name="cancel_order" class="btn pmd-ripple-effect btn-default" value="CANCELAR" disabled/>
-									<?php } ?>
-									
-								</div>
-							</div>
-						<?php } ?>
-					</div>
-
-					<div class="table-responsive">
-						<table cellspacing="0" cellpadding="0" class="table pmd-table table-hover" id="table-propeller">
-							<tbody>
-
-								<tr>
-									<td>RUTA</td>
-									<td>:</td>
-									<td><?php echo $data['name']; ?></td>
-								</tr>
-
-								<tr>
-									<td width="15%">Code</td>
-									<td width="1%">:</td>
-									<td><?php echo $data['code']; ?></td>
-								</tr>
-
-								<tr>
-									<td>Status</td>
-									<td>:</td>
-									<td>
-										<?php if ($data['status'] == '1') { ?>
-										<span class="badge badge-success">PROCESADO</span>
-										<?php } else if ($data['status'] == '2') { ?>
-										<span class="badge">CANCELADO</span>
-										<?php } else { ?>
-										<span class="badge badge-error">PENDIENTE</span>
-										<?php } ?>
-									</td>
-								</tr>
-
-								<tr>
-									<td>Codigo Cliente</td>
-									<td>:</td>
-									<td><?php echo $data['email']; ?></td>
-								</tr>
-
-								<tr>
-									<td>Farmacia</td>
-									<td>:</td>
-									<td><?php echo $data['phone']; ?></td>
-								</tr>
-
-								<tr>
-									<td>Direccion</td>
-									<td>:</td>
-									<td><?php echo $data['address']; ?></td>
-								</tr>
-								<tr>
-									<td>Fecha</td>
-									<td>:</td>
-									<td><?php echo $data['date_time']; ?></td>
-								</tr>
-
-								<tr>
-									<td>Orden</td>
-									<td>:</td>
-									<td><pre class="my-pre"><?php echo $data['order_list']; ?></pre></td>
-								</tr>
-
-								<?php if ($data['comment'] != '') { ?>
-								<tr>
-									<td>Comentario</td>
-									<td>:</td>
-									<td><?php echo $data['comment']; ?></td>
-								</tr>
-								<?php } ?>
-
-							</tbody>
-						</table>
-
-					</div>
-				</div>
-			</div> <!-- section content end -->
-		</div>
+                    <tfoot>
+                        <tr>
+                            <td colspan="2"></td>
+                            <td colspan="2">SUBTOTAL</td>
+                            <td><?php echo $Orden_Resumen[0]; ?></td>
+                        </tr>
+                        <tr>
+                            <td colspan="2"></td>
+                            <td colspan="2">IMPUESTO</td>
+                            <td><?php echo $Orden_Resumen[1]; ?></td>
+                        </tr>
+                        <tr>
+                            <td colspan="2"></td>
+                            <td colspan="2">TOTAL</td>
+                            <td><?php echo $Orden_Resumen[2]; ?></td>
+                        </tr>
+                    </tfoot>
+                </table>
+                <div class="thanks">Gracias!</div>
+                <div class="notices">
+                    <div>Comentario:</div>
+                    <div class="notice">
+                        <?php if ($data['comment'] != '')  echo $data['comment']; ?>
+                    </div>
+                </div>
+            </main>
+            <footer>
+                Puede agregar algun comentario al pedido.
+            </footer>
 
         <div class="section" >
             <div class="pmd-card pmd-z-depth">
@@ -420,8 +425,7 @@ EOF;
                         <input type="text" value="<?php echo $data['code']; ?>" name="ordencode">
                         <input type="text" value="<?php echo $_GET['id']; ?>" name="ordenid">
                         </div>
-                    <div class="form-group pmd-textfield">
-                        <label class="control-label">Agregar Comentario</label>
+                    <div class="form-group pmd-textfield">                        
                         <textarea required class="form-control" name="orden_commint"></textarea>
                         <script>
                             CKEDITOR.replace( 'orden_commint' );
@@ -436,7 +440,13 @@ EOF;
             </div>
         </div>
 
-        <div class="row">
+        </div>
+        <!--DO NOT DELETE THIS div. IT is responsible for showing footer always at the bottom-->
+        <div>
+            
+        </div>
+    </div>
+    <div class="row">
             <div class="col-md-12">
                 <div class="page-header">
                     <h1><small class="pull-right"><?php echo $stmt_comment->num_rows;?> Comentarios</small> Comentarios </h1>
@@ -459,12 +469,14 @@ EOF;
             </div>
         </div>
 
-	</div><!-- tab end -->
+    </div><!-- tab end -->
+    </div>
+
+</script>
 
 
 
-</div><!--end content area-->
-
+</div>
 <?php
 $stmt_comment->close();?>
 

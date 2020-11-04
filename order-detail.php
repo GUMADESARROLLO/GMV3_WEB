@@ -1,5 +1,6 @@
 <?php include 'session.php'; ?>
 <?php include 'public/menubar.php'; ?>
+<link rel="stylesheet" type="text/css" href="assets/css/invoice.css">
 <style type="text/css">
 	.my-pre {
 		font-size: 16px;
@@ -16,5 +17,6 @@
         border-bottom: 1px dotted #ccc;
     }
 </style>
+
     <script src="assets/js/ckeditor/ckeditor.js"></script>
 <?php include 'public/data-order-detail.php'; ?>
