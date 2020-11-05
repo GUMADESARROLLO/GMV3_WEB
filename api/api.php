@@ -216,6 +216,13 @@ if (isset($_GET['category_id'])) {
     if (count($query)>0) {
         foreach ($query as $key) {
 
+
+            $query = "SELECT * FROM tlb_verificacion WHERE Cliente = '".$key['CLIENTE']."'";
+            $resouter = mysqli_query($connect, $query);
+            $total_records = mysqli_num_rows($resouter);
+
+            $Verificaco = ($total_records == 0) ? "N" : "S" ;
+
             $retVal = ($key['MOROSO'] == 'S') ? $key['NOMBRE']." [MOROSO]" : $key['NOMBRE'] ;
 
             $dta[$i]['CLIENTE']     = $key['CLIENTE'];
@@ -227,6 +234,7 @@ if (isset($_GET['category_id'])) {
             $dta[$i]['MOROSO']      = $key['MOROSO'];
             $dta[$i]['TELE']        = "Tels. ".$key['TELEFONO1'].' / '.$key['TELEFONO2'];
             $dta[$i]['CONDPA']      = "Cond. Pago: ".$key['CONDICION_PAGO'].' Dias';
+            $dta[$i]['VERIFICADO']  = $Verificaco;
             $i++;
         }
 
@@ -621,7 +629,7 @@ if (isset($_GET['category_id'])) {
         }
         $sql .= implode(', ', $sets);
         $sql .= $whereSQL;
-        echo $sql;
+
         $hasil = mysqli_query($connect, $sql);
 
 
@@ -636,6 +644,74 @@ if (isset($_GET['category_id'])) {
     } else {
         echo 'Try Again';
     }
+}else if (isset($_GET['post_verificacion'])) {
+    $Lati        = $_POST['Lati'];
+    $Logi        = $_POST['Logi'];
+    $cliente     = $_POST['cliente'];
+    $date        = $_POST['date'];
+
+
+    $query = "SELECT * FROM tlb_verificacion WHERE Cliente = '".$cliente."'";
+    $resouter = mysqli_query($connect, $query);
+    $total_records = mysqli_num_rows($resouter);
+
+    if($total_records >= 1){
+
+
+
+
+        $table_name 	= 'tlb_verificacion';
+        $where_clause	= "WHERE Cliente = '".$cliente."'";
+        $whereSQL 		= '';
+
+        $form_data = array(
+            'Lati'  		=> $Lati,
+            'Longi'  		=> $Logi,
+            'updated_at'  		=> $date
+        );
+        if(!empty($where_clause)) {
+            if(substr(strtoupper(trim($where_clause)), 0, 5) != 'WHERE') {
+                $whereSQL = " WHERE ".$where_clause;
+            } else {
+                $whereSQL = " ".trim($where_clause);
+            }
+        }
+        $sql = "UPDATE ".$table_name." SET ";
+        $sets = array();
+        foreach($form_data as $column => $value) {
+            $sets[] = "`".$column."` = '".$value."'";
+        }
+        $sql .= implode(', ', $sets);
+        $sql .= $whereSQL;
+
+
+        $hasil = mysqli_query($connect, $sql);
+
+        if ($hasil > 0) {
+            echo 'Data Inserted Successfully';
+        } else {
+            echo 'Try Again';
+        }
+
+
+
+    }else{
+     $query = "INSERT INTO tlb_verificacion (Cliente,Lati,Longi,created_at) VALUES ('$cliente','$Lati', '$Logi', '$date')";
+     if (mysqli_query($connect, $query)) {
+         echo 'Data Inserted Successfully';
+     } else {
+         echo 'Try Again';
+     }
+    }
+
+
+
+
+
+
+
+
+    mysqli_close($connect);
 }else{
     header('Content-Type: application/json; charset=utf-8');
     echo "no method found!";
