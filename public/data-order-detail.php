@@ -69,6 +69,7 @@ if (isset($_GET['id_delete'])) {
 
     $eComment = array();
     $dComment = array();
+    $var_name_vendedor ="N/D";
 
     $sql_comment = "SELECT * FROM tbl_comment WHERE orden_code = ?";
     $stmt_comment = $connect->stmt_init();
@@ -84,6 +85,17 @@ if (isset($_GET['id_delete'])) {
             $dComment['player_id']
         );
     }
+
+    $qName_Vendedor = "SELECT * FROM tbl_admin WHERE username= '".$data["name"]."'";
+    $rName_vendedor= mysqli_query($connect, $qName_Vendedor);
+    $ttRowVendedor = mysqli_num_rows($rName_vendedor);
+
+    if($ttRowVendedor >= 1) {
+        $link = mysqli_fetch_array($ttRowVendedor, MYSQLI_ASSOC);
+        $var_name_vendedor = $link['Name'];
+    }
+
+
 ?>
 
 <?php
@@ -345,7 +357,7 @@ EOF;
                 <div class="row contacts">                   
                     <div class="col invoice-details">
                         <h1 class="invoice-id"><?php echo $data['code']; ?></h1>
-                        <div class="date">Realizado por <?php echo $data['name']; ?></div>
+                        <div class="date">Realizado por <?php echo $data['name'] . " " . $var_name_vendedor; ?></div>
                         <div class="date">Fecha: <?php echo $data['date_time']; ?></div>
                     </div>
                 </div>
