@@ -91,7 +91,7 @@ if (isset($_GET['id_delete'])) {
     $ttRowVendedor = mysqli_num_rows($rName_vendedor);
 
     if($ttRowVendedor >= 1) {
-        $link = mysqli_fetch_array($ttRowVendedor, MYSQLI_ASSOC);
+        $link = mysqli_fetch_array($rName_vendedor, MYSQLI_ASSOC);
         $var_name_vendedor = $link['Name'];
     }
 
