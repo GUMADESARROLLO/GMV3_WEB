@@ -316,20 +316,28 @@ EOF;
     <div class="toolbar hidden-print">
         <div class="text-right">
 
-            <?php if ($data['status'] == '0') {
-                echo '
-                <form id="validationForm" method="post">
-                    <input type="submit" name="cancel_order" class="btn btn-info" value="CANCELAR" onclick="cancelClicked(event)"/>
-                    <input type="submit" name="submit_order" class="btn btn-info" value="PROCESAR" onclick="processClicked(event)" />
-                </form>';
-            } else if ($data['status'] == '1') {
-                echo'
-                <form id="validationForm" method="post">
-                    <input type="submit" name="cancel_order" class="btn btn-info" value="CANCELAR" onclick="cancelClicked(event)"/>
-                </form>';
-            } else if ($data['status'] == '2') {
-                echo '<button id="printInvoice" class="btn btn-info"><i class="fa fa-print"></i> Print</button><input type="submit" name="cancel_order" class="btn btn-default" value="CANCELAR" disabled/>';
-            } 
+
+
+            <?php 
+            if($_SESSION['permisos'] == 3 || $_SESSION['permisos'] == 1){
+
+                if ($data['status'] == '0') {
+                    echo '
+                    <form id="validationForm" method="post">
+                        <input type="submit" name="cancel_order" class="btn btn-info" value="CANCELAR" onclick="cancelClicked(event)"/>
+                        <input type="submit" name="submit_order" class="btn btn-info" value="PROCESAR" onclick="processClicked(event)" />
+                    </form>';
+                } else if ($data['status'] == '1') {
+                    echo'
+                    <form id="validationForm" method="post">
+                        <input type="submit" name="cancel_order" class="btn btn-info" value="CANCELAR" onclick="cancelClicked(event)"/>
+                    </form>';
+                } else if ($data['status'] == '2') {
+                    echo '<button id="printInvoice" class="btn btn-info"><i class="fa fa-print"></i> Print</button><input type="submit" name="cancel_order" class="btn btn-default" value="CANCELAR" disabled/>';
+                } 
+
+            }
+            
             ?>
 
         </div>
