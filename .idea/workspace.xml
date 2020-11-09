@@ -3,7 +3,7 @@
   <component name="ChangeListManager">
     <list default="true" id="3e3f290f-2bcc-4311-b7fd-2231df28ec60" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/public/menubar.php" afterPath="$PROJECT_DIR$/public/menubar.php" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/public/table-order.php" afterPath="$PROJECT_DIR$/public/table-order.php" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -111,7 +111,7 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="menubar.php" pinned="false" current-in-tab="true">
+      <file leaf-file-name="menubar.php" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/public/menubar.php">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="323">
@@ -131,16 +131,16 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="table-order.php" pinned="false" current-in-tab="false">
+      <file leaf-file-name="table-order.php" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/public/table-order.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="289">
-              <caret line="38" column="91" lean-forward="false" selection-start-line="38" selection-start-column="58" selection-end-line="38" selection-end-column="91" />
+            <state relative-caret-position="459">
+              <caret line="54" column="34" lean-forward="true" selection-start-line="54" selection-start-column="34" selection-end-line="54" selection-end-column="34" />
               <folding>
-                <marker date="1604936849201" expanded="true" signature="1119:1174" ph="SELECT * FRO... tbl_order" />
-                <marker date="1604936849201" expanded="true" signature="1205:1301" ph="SELECT * FRO... tbl_order" />
-                <marker date="1604936849201" expanded="true" signature="2740:2795" ph="SELECT * FRO... tbl_order" />
-                <marker date="1604936849201" expanded="true" signature="2826:2922" ph="SELECT * FRO... tbl_order" />
+                <marker date="1604942280572" expanded="true" signature="1119:1185" ph="SELECT * FRO... tbl_order" />
+                <marker date="1604942280572" expanded="true" signature="1216:1323" ph="SELECT * FRO... tbl_order" />
+                <marker date="1604942280572" expanded="true" signature="2974:3029" ph="SELECT * FRO... tbl_order" />
+                <marker date="1604942280572" expanded="true" signature="3060:3156" ph="SELECT * FRO... tbl_order" />
               </folding>
             </state>
           </provider>
@@ -191,10 +191,10 @@
       <list>
         <option value="$PROJECT_DIR$/public/table-user.php" />
         <option value="$PROJECT_DIR$/api/api.php" />
-        <option value="$PROJECT_DIR$/public/table-order.php" />
         <option value="$PROJECT_DIR$/public/data-order-detail.php" />
         <option value="$PROJECT_DIR$/public/dashboard-menu.php" />
         <option value="$PROJECT_DIR$/public/menubar.php" />
+        <option value="$PROJECT_DIR$/public/table-order.php" />
       </list>
     </option>
   </component>
@@ -389,7 +389,7 @@
       <workItem from="1604525983115" duration="3824000" />
       <workItem from="1604610200984" duration="2519000" />
       <workItem from="1604699829761" duration="1374000" />
-      <workItem from="1604930966922" duration="3948000" />
+      <workItem from="1604930966922" duration="4601000" />
     </task>
     <task id="LOCAL-00001" summary="21/10/2020">
       <created>1603298806905</created>
@@ -468,11 +468,18 @@
       <option name="project" value="LOCAL" />
       <updated>1604940772183</updated>
     </task>
-    <option name="localTasksCounter" value="12" />
+    <task id="LOCAL-00012" summary="09/11/2020">
+      <created>1604940872798</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1604940872799</updated>
+    </task>
+    <option name="localTasksCounter" value="13" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="23326000" />
+    <option name="totallyTimeSpent" value="23979000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1936" height="1066" extended-state="6" />
@@ -1226,19 +1233,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/public/table-order.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="289">
-          <caret line="38" column="91" lean-forward="false" selection-start-line="38" selection-start-column="58" selection-end-line="38" selection-end-column="91" />
-          <folding>
-            <marker date="1604936849201" expanded="true" signature="1119:1174" ph="SELECT * FRO... tbl_order" />
-            <marker date="1604936849201" expanded="true" signature="1205:1301" ph="SELECT * FRO... tbl_order" />
-            <marker date="1604936849201" expanded="true" signature="2740:2795" ph="SELECT * FRO... tbl_order" />
-            <marker date="1604936849201" expanded="true" signature="2826:2922" ph="SELECT * FRO... tbl_order" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/public/data-order-detail.php">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="374">
@@ -1304,6 +1298,19 @@
             <marker date="1604940867684" expanded="true" signature="1590:1695" ph="SELECT * FRO... tbl_order" />
             <marker date="1604940867684" expanded="true" signature="1740:1807" ph="SELECT * FRO... tbl_order" />
             <marker date="1604940867684" expanded="true" signature="1930:1993" ph="SELECT id, p... tbl_admin" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/public/table-order.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="459">
+          <caret line="54" column="34" lean-forward="true" selection-start-line="54" selection-start-column="34" selection-end-line="54" selection-end-column="34" />
+          <folding>
+            <marker date="1604942280572" expanded="true" signature="1119:1185" ph="SELECT * FRO... tbl_order" />
+            <marker date="1604942280572" expanded="true" signature="1216:1323" ph="SELECT * FRO... tbl_order" />
+            <marker date="1604942280572" expanded="true" signature="2974:3029" ph="SELECT * FRO... tbl_order" />
+            <marker date="1604942280572" expanded="true" signature="3060:3156" ph="SELECT * FRO... tbl_order" />
           </folding>
         </state>
       </provider>

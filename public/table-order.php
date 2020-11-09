@@ -41,9 +41,9 @@
 		$prefijo = ($_SESSION['permisos'] == '3') ? "AND" : "WHERE" ;
 		
 		if (empty($keyword)) {
-			$sql_query = "SELECT * FROM tbl_order ".$retVal." ORDER BY status asc";
+			$sql_query = "SELECT * FROM tbl_order ".$retVal." ORDER BY status asc LIMIT ?, ?";
 		} else {
-			$sql_query = "SELECT * FROM tbl_order ".$retVal." ".$prefijo." phone LIKE '%".$keyword."%' ORDER BY status asc";
+			$sql_query = "SELECT * FROM tbl_order ".$retVal." ".$prefijo." phone LIKE '%".$keyword."%' ORDER BY status asc LIMIT ?, ?";
 		}
 
 
@@ -52,7 +52,11 @@
 		$stmt = $connect->stmt_init();
 		if ($stmt->prepare($sql_query)) {	
 			// Bind your variables to replace the ?s
-			
+            if (empty($keyword)) {
+                $stmt_paging ->bind_param('ss', $from, $offset);
+            } else {
+                $stmt_paging ->bind_param('sss', $bind_keyword, $from, $offset);
+            }
 			// Execute query
 			$stmt->execute();
 			// store result 
