@@ -41,9 +41,9 @@
 		$prefijo = ($_SESSION['permisos'] == '3') ? "AND" : "WHERE" ;
 		
 		if (empty($keyword)) {
-			$sql_query = "SELECT * FROM tbl_order ".$retVal." ORDER BY id DESC";
+			$sql_query = "SELECT * FROM tbl_order ".$retVal." ORDER BY status asc";
 		} else {
-			$sql_query = "SELECT * FROM tbl_order ".$retVal." ".$prefijo." phone LIKE '%".$keyword."%' ORDER BY id DESC";
+			$sql_query = "SELECT * FROM tbl_order ".$retVal." ".$prefijo." phone LIKE '%".$keyword."%' ORDER BY status asc";
 		}
 
 
@@ -104,9 +104,9 @@
 		$prefijo = ($_SESSION['permisos'] == '3') ? "AND" : "WHERE" ;
 		
 		if (empty($keyword)) {
-			$sql_query = "SELECT * FROM tbl_order ".$retVal." ORDER BY id DESC";
+			$sql_query = "SELECT * FROM tbl_order ".$retVal." ORDER BY status asc";
 		} else {
-			$sql_query = "SELECT * FROM tbl_order ".$retVal." ".$prefijo." phone LIKE '%".$keyword."%' ORDER BY id DESC";
+			$sql_query = "SELECT * FROM tbl_order ".$retVal." ".$prefijo." phone LIKE '%".$keyword."%' ORDER BY status asc";
 		}
 		
 		$stmt_paging = $connect->stmt_init();
@@ -152,7 +152,7 @@
 	<div class="container-fluid full-width-container">
 	
 		<h1 class="section-title" id="services"></h1>
-			
+
 		<!--breadcrum start-->
 		<ol class="breadcrumb text-left">
 		  <li><a href="dashboard.php">Dashboard</a></li>
@@ -211,7 +211,7 @@
 
 	<!--tab start-->
 	<div class="container-fluid full-width-container">
-	
+
 		<h1 class="section-title" id="services"></h1>
 			
 		<!--breadcrum start-->
