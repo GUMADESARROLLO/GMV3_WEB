@@ -41,12 +41,12 @@ EOF;
     }
 
 	// pending order
-	$sql_pending = "SELECT COUNT(*) as num FROM tbl_order WHERE status = '0' ";
+	$sql_pending = "SELECT COUNT(*) as num FROM tbl_order WHERE status = '0' AND name in (".$_SESSION['grupos'].")";
 	$total_pending = mysqli_query($connect, $sql_pending);
 	$total_pending = mysqli_fetch_array($total_pending);
 	$total_pending = $total_pending['num'];
 
-	$sql_pending_result = "SELECT * FROM tbl_order WHERE status = '0' ORDER BY id DESC LIMIT 5";
+	$sql_pending_result = "SELECT * FROM tbl_order WHERE status = '0' AND name in (".$_SESSION['grupos'].") ORDER BY id DESC LIMIT 5";
 	$result = mysqli_query($connect, $sql_pending_result);   
             
 	//user permission

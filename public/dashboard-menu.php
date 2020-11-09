@@ -1,25 +1,26 @@
 <?php 
 
 	// pending order
-	$sql_pending = "SELECT COUNT(*) as num FROM tbl_order WHERE status = '0' ";
+
+	$sql_pending = "SELECT COUNT(*) as num FROM tbl_order WHERE status = '0' AND name in (".$_SESSION['grupos'].") ";
 	$total_pending = mysqli_query($connect, $sql_pending);
 	$total_pending = mysqli_fetch_array($total_pending);
 	$total_pending = $total_pending['num'];
 
 	// processed order
-	$sql_processed = "SELECT COUNT(*) as num FROM tbl_order WHERE status = '1' ";
+	$sql_processed = "SELECT COUNT(*) as num FROM tbl_order WHERE status = '1'  AND name in (".$_SESSION['grupos'].")";
 	$total_processed = mysqli_query($connect, $sql_processed);
 	$total_processed = mysqli_fetch_array($total_processed);
 	$total_processed = $total_processed['num'];
 
 	// canceled order
-	$sql_canceled = "SELECT COUNT(*) as num FROM tbl_order WHERE status = '2' ";
+	$sql_canceled = "SELECT COUNT(*) as num FROM tbl_order WHERE status = '2'  AND name in (".$_SESSION['grupos'].")";
 	$total_canceled = mysqli_query($connect, $sql_canceled);
 	$total_canceled = mysqli_fetch_array($total_canceled);
 	$total_canceled = $total_canceled['num'];	
 
 	// total order
-	$sql_total_order = "SELECT COUNT(*) as num FROM tbl_order";
+	$sql_total_order = "SELECT COUNT(*) as num FROM tbl_order  WHERE name in (".$_SESSION['grupos'].")";
 	$total_order = mysqli_query($connect, $sql_total_order);
 	$total_order = mysqli_fetch_array($total_order);
 	$total_order = $total_order['num'];
