@@ -81,7 +81,7 @@
                     $_SESSION['grupos'] = $rGrupo;
                     $_SESSION['permisos'] = $rPermisos;
                     $_SESSION['timeout'] = $currentTime + $expired;
-                    header("location: dashboard.php");
+                    header("location: manage-order.php");
 
                 } else {
                     $error['failed'] = "<center><div class='alert alert-warning'>Usuario o contraseña invalido!</div></center>";

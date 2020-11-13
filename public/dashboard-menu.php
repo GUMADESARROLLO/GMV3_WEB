@@ -1,244 +1,146 @@
-<?php 
-
-	// pending order
-
-    if($_SESSION['permisos'] == 3){
-        $sql_pending = "SELECT COUNT(*) as num FROM tbl_order WHERE status = '0' AND name in (".$_SESSION['grupos'].") ";
-    }else{
-        $sql_pending = "SELECT COUNT(*) as num FROM tbl_order WHERE status = '0'  ";
-    }
-
-
-
-	$total_pending = mysqli_query($connect, $sql_pending);
-	$total_pending = mysqli_fetch_array($total_pending);
-	$total_pending = $total_pending['num'];
-
-	// processed order
-    if($_SESSION['permisos'] == 3){
-        $sql_processed = "SELECT COUNT(*) as num FROM tbl_order WHERE status = '1'  AND name in (".$_SESSION['grupos'].")";
-    }else{
-        $sql_processed = "SELECT COUNT(*) as num FROM tbl_order WHERE status = '1' ";
-    }
-
-	$total_processed = mysqli_query($connect, $sql_processed);
-	$total_processed = mysqli_fetch_array($total_processed);
-	$total_processed = $total_processed['num'];
-
-	// canceled order
-    if($_SESSION['permisos'] == 3){
-        $sql_canceled = "SELECT COUNT(*) as num FROM tbl_order WHERE status = '2'  AND name in (".$_SESSION['grupos'].")";
-    }else{
-        $sql_canceled = "SELECT COUNT(*) as num FROM tbl_order WHERE status = '2'  ";
-    }
-
-	$total_canceled = mysqli_query($connect, $sql_canceled);
-	$total_canceled = mysqli_fetch_array($total_canceled);
-	$total_canceled = $total_canceled['num'];	
-
-	// total order
-    if($_SESSION['permisos'] == 3){
-        $sql_total_order = "SELECT COUNT(*) as num FROM tbl_order  WHERE name in (".$_SESSION['grupos'].")";
-    }else{
-        $sql_total_order = "SELECT COUNT(*) as num FROM tbl_order ";
-    }
-
-	$total_order = mysqli_query($connect, $sql_total_order);
-	$total_order = mysqli_fetch_array($total_order);
-	$total_order = $total_order['num'];
-
-	// total category
-	$sql_total_category = "SELECT COUNT(*) as num FROM tbl_category";
-	$total_category = mysqli_query($connect, $sql_total_category);
-	$total_category = mysqli_fetch_array($total_category);
-	$total_category = $total_category['num'];
-
-	// total product
-	$sql_total_product = "SELECT COUNT(*) as num FROM tbl_product";
-	$total_product = mysqli_query($connect, $sql_total_product);
-	$total_product = mysqli_fetch_array($total_product);
-	$total_product = $total_product['num'];
-
-	// total template
-	$sql_total_template = "SELECT COUNT(*) as num FROM tbl_fcm_template";
-	$total_template = mysqli_query($connect, $sql_total_template);
-	$total_template = mysqli_fetch_array($total_template);
-	$total_template = $total_template['num'];
-
-	// total help
-	$sql_total_help = "SELECT COUNT(*) as num FROM tbl_help";
-	$total_help = mysqli_query($connect, $sql_total_help);
-	$total_help = mysqli_fetch_array($total_help);
-	$total_help = $total_help['num'];
-
-	$sql_setting = "SELECT currency_code, currency_name, tax FROM tbl_config, tbl_currency WHERE tbl_config.currency_id = tbl_currency.currency_id";
-	$setting_result = mysqli_query($connect, $sql_setting);
-	$setting_row = mysqli_fetch_assoc($setting_result);	
-
-	$sql_notif = "SELECT app_fcm_key, onesignal_app_id, onesignal_rest_api_key FROM tbl_config WHERE id = 1";
-	$notif_result = mysqli_query($connect, $sql_notif);
-	$notif_row = mysqli_fetch_assoc($notif_result);
-
-    $username = $_SESSION['user'];
-    $sql_query = "SELECT id FROM tbl_admin WHERE username = ?";
-    $data = array();
-    $stmt = $connect->stmt_init();
-    if($stmt->prepare($sql_query)) {
-        $stmt->bind_param('s', $username);
-        $stmt->execute();
-        $stmt->store_result();
-        $stmt->bind_result(
-            $data['id']
-            );
-        $stmt->fetch();
-        $stmt->close();
-    }		
-
+<?php
+    include 'sql-query.php';
+    $Stat = explode(";", getStat());
 ?>
 
-<style>
-  .borderless tr, .borderless td, .borderless th {
-    border: none !important;
-   }
-</style>
 <!--content area start-->
 <div id="content" class="pmd-content content-area dashboard">
 
-	<!--tab start-->
-	<div class="container-fluid full-width-container">
-	
-		<!-- Title -->
-		<h1 class="section-title" id="services">
-		</h1><!-- End Title -->
-			
-		<!--breadcrum start-->
-		<ol class="breadcrumb text-left">
-		  <li class="active">Dashboard</li>
-		</ol><!--breadcrum end-->
-	
-		<div class="section"> 
+    <!--tab start-->
+    <div class="container-fluid full-width-container">
 
-<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-			<div class="pmd-card pmd-z-depth">      
-				<div class="pmd-card-title">
-					<div class="media-body media-middle" align="center">
-						<h1 class="pmd-card-title-text typo-fill-secondary propeller-title">ORDENES</h1>
-					</div>
-				</div>
-				<br>
-				<div class="pmd-card-body">
-					<div class="col-lg-3 col-md-3 col-sm-3 col-xs-3" align="center">
-						<div class="statistic-img-circle">
-							<div data-badge="<?php echo $total_pending; ?>" class="material-icons pmd-lg pmd-badge pmd-badge-overlap">access_time</div>
-						</div>
-						<div class="source-semibold typo-fill-secondary">PENDIENTE</div>
-					</div>
-					<div class="col-lg-3 col-md-3 col-sm-3 col-xs-3" align="center">
-						<div class="statistic-img-circle">
-							<div data-badge="<?php echo $total_processed; ?>" class="material-icons pmd-lg pmd-badge pmd-badge-overlap">check_circle</div>
-						</div>
-						<div class="source-semibold typo-fill-secondary">PROCESADOS</div>
-					</div>
-					<div class="col-lg-3 col-md-3 col-sm-3 col-xs-3" align="center">
-						<div class="statistic-img-circle">
-							<div data-badge="<?php echo $total_canceled; ?>" class="material-icons pmd-lg pmd-badge pmd-badge-overlap">cancel</div>
-						</div>
-						<div class="source-semibold typo-fill-secondary">CANCELADOS</div>
-					</div>
-					<div class="col-lg-3 col-md-3 col-sm-3 col-xs-3" align="center">
-						<div class="statistic-img-circle">
-							<div data-badge="<?php echo $total_order; ?>" class="material-icons pmd-lg pmd-badge pmd-badge-overlap">done_all</div>
-						</div>
-						<div class="source-semibold typo-fill-secondary">TOTAL</div>
-					</div>
-				</div>
-				<br>
-			</div>
-		 </div> <!--end Today's Site Activity -->
+        <!-- Title -->
+        <h1 class="section-title" id="services">
+        </h1><!-- End Title -->
 
-		 <div class="col-xs-12 col-sm-12 col-md-5 col-lg-5" style="display:none">
-			<div class="pmd-card pmd-z-depth">
-				<div class="pmd-card-title" align="center">
-					<h1 class="pmd-card-title-text typo-fill-secondary propeller-title">INFO</h1>
-				</div>
-				<div class="pmd-card-body">
-					<table class="table pmd-table" id="table-propeller">
-						<tr style="display: none">
-							<td>Categorias</td>
-							<td>:</td>
-							<td><?php echo $total_category; ?></td>
-						</tr>
-						<tr style="display: none">
-							<td>Productos</td>
-							<td>:</td>
-							<td><?php echo $total_product; ?></td>
-						</tr>
-						<tr >
-							<td>Plantilla de Notificaciones</td>
-							<td>:</td>
-							<td><?php echo $total_template; ?></td>
-						</tr>
-						<tr style="display: none">
-							<td>Menu de Ayuda</td>
-							<td>:</td>
-							<td><?php echo $total_help; ?></td>
-						</tr>
-					</table>
-				</div>
-			</div>
-		</div>
+        <!--breadcrum start-->
+        <ol class="breadcrumb text-left">
+            <li class="active">Dashboard</li>
+        </ol><!--breadcrum end-->
 
-		<div class="col-xs-12 col-sm-12 col-md-4 col-lg-4" style="display:none">
-			<div class="pmd-card pmd-z-depth">
-				<div class="pmd-card-title" align="center">
-					<h1 class="pmd-card-title-text typo-fill-secondary propeller-title">Configuración</h1>
-				</div>
-				<div class="pmd-card-body" align="center">
-					<table class="table pmd-table" id="table-propeller">
-						<tr>
-							<td>Moneda</td>
-							<td>:</td>
-							<td><?php echo $setting_row['currency_code']; ?></td>
-						</tr>
-						<tr>
-							<td>Impuesto</td>
-							<td>:</td>
-							<td><?php echo $setting_row['tax']; ?> %</td>
-						</tr>
-						<tr>
-							<td>Notificaiones</td>
-							<td>:</td>
 
-							<?php if ($notif_row['app_fcm_key'] == '0' || $notif_row['onesignal_app_id'] == '0' || $notif_row['onesignal_rest_api_key'] == '0') { ?>
-							<td>Not Configured</td>
-							<?php } else { ?>
-							<td>Ok</td>
-							<?php } ?>
-						</tr>
-						<tr style="display: none">
-							<td>Aministrador</td>
-							<td>:</td>
-							<td><a href="edit-profile.php?id=<?php echo $data['id']; ?>">Edit</a></td>
-						</tr>
-					</table>
-				</div>
-			</div>
-		</div>
+        <!-- Begin Page Content -->
+        <div class="container-fluid">
 
-		<div class="col-xs-12 col-sm-12 col-md-3 col-lg-3" style="display:none">
-			<div class="pmd-card pmd-z-depth">
-				<div class="pmd-card-title" align="center">
-					<h1 class="pmd-card-title-text typo-fill-secondary propeller-title">Acerca</h1>
-				</div>
-				<div class="pmd-card-body" align="center">
-					<p>Desarrollado por IT Unimak S,A</p>
-					<p>analista.guma@gmail.com</p>
-				</div>
-			</div>
-		</div>
 
-		</div>
-			
-	</div>
 
-</div>
+            <!-- Content Row -->
+            <div class="row">
+
+                <!-- FACTURADO (Monthly) -->
+                <div class="col-xl-3 col-md-6 mb-4">
+                    <div class="card border-left-primary shadow h-100 py-2">
+                        <div class="card-body">
+                            <div class="row no-gutters align-items-center">
+                                <div class="col mr-2">
+                                    <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                                        FACTURADO (ESTA SEMANA)</div>
+                                    <div class="h5 mb-0 font-weight-bold text-gray-800">C$ <?php echo number_format(($Stat[1]),2,'.',',');?></div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Earnings (Monthly) Card Example -->
+                <div class="col-xl-3 col-md-6 mb-4">
+                    <div class="card border-left-success shadow h-100 py-2">
+                        <div class="card-body">
+                            <div class="row no-gutters align-items-center">
+                                <div class="col mr-2">
+                                    <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                                        FACTURADO (MES)</div>
+                                    <div class="h5 mb-0 font-weight-bold text-gray-800">C$ <?php echo number_format((is_null($Stat[0])) ? 0 : $Stat[0] ,2,'.',',');?></div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Earnings (Monthly) Card Example -->
+                <div class="col-xl-3 col-md-6 mb-4">
+                    <div class="card border-left-info shadow h-100 py-2">
+                        <div class="card-body">
+                            <div class="row no-gutters align-items-center">
+                                <div class="col mr-2">
+                                    <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Pedidos en el mes
+                                    </div>
+                                    <div class="h5 mb-0 font-weight-bold text-gray-800"><?php echo number_format($Stat[2],0,'.',',');?></div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Pending Requests Card Example -->
+                <div class="col-xl-3 col-md-6 mb-4">
+                    <div class="card border-left-warning shadow h-100 py-2">
+                        <div class="card-body">
+                            <div class="row no-gutters align-items-center">
+                                <div class="col mr-2">
+                                    <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
+                                        Pedidos pendientes</div>
+                                    <div class="h5 mb-0 font-weight-bold text-gray-800"><?php echo number_format($Stat[3],0,'.',',');?></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Content Row -->
+
+            <div class="row">
+
+                <!-- Area Chart -->
+                <div class="col-xl-6 col-lg-7">
+                    <div class="card shadow mb-4">
+                        <!-- Card Header - Dropdown -->
+                        <div
+                                class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                            <h6 class="m-0 font-weight-bold text-primary">Comportamiento de ventas</h6>
+                        </div>
+                        <!-- Card Body -->
+                        <div class="card-body">
+                            <div class="chart-area">
+                                <canvas id="myAreaChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Pie Chart -->
+                <div class="col-xl-6 col-lg-5">
+                    <!-- Bar Chart -->
+                    <div class="card shadow mb-4">
+                        <div class="card-header py-3">
+                            <h6 class="m-0 font-weight-bold text-primary">Comportamiento de Ruta</h6>
+                        </div>
+                        <div class="card-body">
+                            <div class="chart-bar">
+                                <canvas id="myBarChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+
+        </div>
+        <!-- /.container-fluid -->
+
+    </div>
+    <!-- End of Main Content -->
+
+
+
+
+    </div>
+
+
+
+    </div>

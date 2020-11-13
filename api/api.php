@@ -220,8 +220,10 @@ if (isset($_GET['category_id'])) {
             $query = "SELECT * FROM tlb_verificacion WHERE Cliente = '".$key['CLIENTE']."'";
             $resouter = mysqli_query($connect, $query);
             $total_records = mysqli_num_rows($resouter);
+            $link = mysqli_fetch_array($resouter, MYSQLI_ASSOC);
 
-            $Verificaco = ($total_records == 0) ? "N" : "S" ;
+            $Verificaco = ($total_records == 0) ? "N;0.00;0.00" : "S;".$link['Lati'].";".$link['Longi'] ;
+            //$Verificaco = ($total_records == 0) ? "N" : "S" ;
 
             $retVal = ($key['MOROSO'] == 'S') ? $key['NOMBRE']." [MOROSO]" : $key['NOMBRE'] ;
 
@@ -341,6 +343,7 @@ if (isset($_GET['category_id'])) {
 
 
             $dta[$i]['ARTICULO']        = $key['ARTICULO'];
+            $dta[$i]['OBSERVACIONES']        = $key['OBSERVACIONES'];
             $dta[$i]['DESCRIPCION']     = strtoupper($key['DESCRIPCION']);;
             $dta[$i]['CANTIDAD']        = number_format($key['CANTIDAD'],2);
             $dta[$i]['IMAGEN']          = $set_img;
@@ -351,6 +354,7 @@ if (isset($_GET['category_id'])) {
     }else{
         $dta[$i]['ARTICULO']        = "N/D";
         $dta[$i]['DESCRIPCION']     = "N/D";
+        $dta[$i]['OBSERVACIONES']        = "";
          $dta[$i]['IMAGEN']          = "SinImagen.png";
         $dta[$i]['CANTIDAD']        = number_format(0.00,2);
         $dta[$i]['VENTA']           = number_format(0.00,2);
@@ -589,12 +593,33 @@ if (isset($_GET['category_id'])) {
     $sqlsrv = new Sqlsrv();
     $dta = array(); $i=0;
 
-    $query = $sqlsrv->fetchArray("SELECT T1.ARTICULO,T1.DESCRIPCION FROM GMV_mstr_articulos T1 WHERE  T1.ARTICULO NOT IN (SELECT dbo.GROUP_CONCAT ( T0.ARTICULO  )  FROM GMV3_hstCompra_3M T0 WHERE T0.Cliente='".$_GET['articulos_sin_facturar']."' GROUP BY T0.Cliente) AND EXISTENCIA > 0", SQLSRV_FETCH_ASSOC);
+
+    $query = $sqlsrv->fetchArray("SELECT * FROM GMV_mstr_articulos T1 WHERE  T1.ARTICULO NOT IN (SELECT T0.ARTICULO  FROM GMV3_hstCompra_3M T0 WHERE T0.Cliente='".$_GET['articulos_sin_facturar']."' ) AND EXISTENCIA > 1", SQLSRV_FETCH_ASSOC);
 
 
     foreach ($query as $key) {
-        $dta[$i]['ARTICULO']        = $key['ARTICULO'];
-        $dta[$i]['DESCRIPCION']     = strtoupper($key['DESCRIPCION']);
+        $set_img ="SinImagen.png";
+
+
+        $query = "SELECT p.product_image,p.product_description FROM tbl_product p WHERE p.product_sku= '".$key["ARTICULO"]."'";
+        $resouter = mysqli_query($connect, $query);
+        $total_records = mysqli_num_rows($resouter);
+        if($total_records >= 1) {
+            $link = mysqli_fetch_array($resouter, MYSQLI_ASSOC);
+            $set_img = $link['product_image'];
+        }
+
+
+
+        $dta[$i]['ARTICULO']            = $key['ARTICULO'];
+        $dta[$i]['DESCRIPCION']         = strtoupper($key['DESCRIPCION']);
+        $dta[$i]['IMAGEN']              = $set_img;
+        $dta[$i]['CANTIDAD']            = str_replace(',', '', number_format($key['EXISTENCIA'],2));
+        $dta[$i]['VENTA']               = str_replace(',', '', number_format($key['PRECIO_IVA'],2));
+
+        $dta[$i]['OBSERVACIONES']       = $key["UNIDAD_MEDIDA"];
+
+
         $i++;
     }
     header('Content-Type: application/json; charset=utf-8');

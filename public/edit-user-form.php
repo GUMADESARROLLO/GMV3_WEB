@@ -159,7 +159,7 @@ $sql_rutas="SELECT
 							<div class="form-group pmd-textfield">       
 								<label>Permiso *</label>
 								<select class="select-simple form-control pmd-select2" name="user_permisos">
-									<?php if ($result_permission['permisos'] == 2) {?>
+									<?php if ($result_permission['permisos'] == 2 ) {?>
 										<option <?php if($row['permisos'] == 2){ echo 'selected';} ?> value="2">Supp SAC</option>
 										<option <?php if($row['permisos'] == 3){ echo 'selected';} ?> value="3">SAC</option>
 									<?php  }else{?>
@@ -172,7 +172,7 @@ $sql_rutas="SELECT
 							</div>
 						</div>
 
-						<?php if($row['permisos'] == '3') { ?>
+						<?php if($row['permisos'] == '3' || $row['permisos'] == '2') { ?>
 						<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
 							<div class="form-group pmd-textfield">       
 								<label>Rutas *</label>

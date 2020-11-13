@@ -1,5 +1,24 @@
 <?php
 
+    function getStat() {
+
+        try {
+            include 'includes/config.php';
+            $pdo = new PDO("mysql:host=$host;dbname=$database", $user, $pass);
+            $sql = 'CALL proc_stat_mes(@Mes, @Semana,@cPedidosProcesados,@PendidosPendientes);';
+            $stmt = $pdo->prepare($sql);
+            $stmt->execute();
+            $stmt->closeCursor();
+            $row = $pdo->query('SELECT CONCAT(IFNULL(@Mes,0),";",IFNULL(@Semana,0),";",IFNULL(@cPedidosProcesados,0),";",IFNULL(@PendidosPendientes,0)) as StatValue')->fetch(PDO::FETCH_ASSOC);
+            if ($row) {
+                return $row !== false ? $row['StatValue'] : null;
+            }
+        } catch (PDOException $e) {
+            die("Error occurred:" . $e->getMessage());
+        }
+        return null;
+    }
+
     function Insert($table, $data) {
 
         include 'includes/config.php';

@@ -235,7 +235,7 @@ EOF;
 		    $succes =<<<EOF
 				<script>
 				alert('Felicidades, esta orden ha sido procesada.');
-				window.history.go(-1);
+				 window.location = 'manage-order.php' ;
 				</script>
 EOF;
 			echo $succes;
@@ -474,15 +474,16 @@ EOF;
                 <div class="comments-list">
                     <?php
                     while ($stmt_comment->fetch()) { ?>
-                        <div class="media">
-                            <p class="pull-right"><small><?php echo $dComment['date_coment'];?></small></p>
-                            <a class="media-left" href="#">
-                                <img src="assets/themes/images/user-icon.png">
-                            </a>
-                            <div class="media-body">
-                                <h4 class="media-heading user_name"><?php echo $dComment['player_id'];?></h4>
-                                <?php echo $dComment['orden_comment'];?>
-                                <p><small><a href="order-detail.php?id=<?php echo $_GET['id'];?>&id_delete=<?php echo $dComment['id_coment'];?>">Borrar</a> </small></p>
+                        <div class="col-xl-12 col-md-6 mb-4">
+                            <div class="card border-left-info shadow h-100 py-2">
+                                <div class="card-body">
+                                    <div class="align-items-left" >
+                                        <h4 class="small font-weight-bold"><?php echo $dComment['player_id'];?><span
+                                                class="float-right"><?php echo $dComment['date_coment'];?></span></h4>
+                                    <p><?php echo $dComment['orden_comment'];?></p>
+                                </div>
+                                <a class="float-right" href="order-detail.php?id=<?php echo $_GET['id'];?>&id_delete=<?php echo $dComment['id_coment'];?>">Borrar</a>
+                                </div>
                             </div>
                         </div>
                     <?php } ?>
@@ -496,7 +497,6 @@ EOF;
 
 
 
-</div>
 <?php
 $stmt_comment->close();?>
 

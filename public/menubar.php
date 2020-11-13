@@ -109,7 +109,13 @@ EOF;
 <link rel="stylesheet" type="text/css" href="assets/themes/css/propeller-theme.css" />
 
 <!-- Propeller admin theme css-->
-<link rel="stylesheet" type="text/css" href="assets/themes/css/propeller-admin.css">
+<link rel="stylesheet" type="text/css" href="assets/themes/css/propeller-admin.css"/>
+
+    <link rel="stylesheet" type="text/css" href="assets/css/sb-admin-2.css"/>
+    <link rel="stylesheet" type="text/css" href="assets/css/dataTables.bootstrap4.css"/>
+    <link rel="stylesheet" type="text/css" href="assets/css/fontawesome-free/css/all.css"/>
+
+
 
 </head>
 
@@ -149,10 +155,14 @@ EOF;
 
 					<?php } else { ?>
 
-					<?php while($row = mysqli_fetch_array($result)) { ?>						
+					<?php while($row = mysqli_fetch_array($result)) { ?>
+
+
+
 						<li class="list-group-item unread">
 							<a href="order-detail.php?id=<?php echo $row['id'];?>">
 								<div class="media-body">
+
 									<span class="list-group-item-heading">
 										<span><?php echo $row['name'];?></span>
 									</span>
@@ -161,6 +171,13 @@ EOF;
 								</div>
 							</a>
 						</li>
+
+
+
+
+
+
+
 					<?php } ?>
 						<li class="list-group-item unread">
 							<a href="manage-order.php">
@@ -258,7 +275,7 @@ EOF;
 					</ul>
 				</li>
 
-				<li class="dropdown pmd-dropdown" >
+				<li class="dropdown pmd-dropdown" style="display: none">
 					<a aria-expanded="false" data-toggle="dropdown" class="btn-user dropdown-toggle media" data-sidebar="true" href="javascript:void(0);">	
 						<i class="material-icons media-left pmd-sm">notifications</i>
 						<span class="media-body">Notificaciónes</span>
@@ -309,24 +326,30 @@ EOF;
 				break;
 			case '2': 
 			?>
+			<li> 
+					<a class="pmd-ripple-effect" href="dashboard.php">	
+						<i class="media-left media-middle material-icons">dashboard</i>
+						<span class="media-body">Dashboard</span>
+					</a> 
+				</li>
 				<li> 
 					<a class="pmd-ripple-effect" href="manage-order.php">	
 						<i class="media-left media-middle material-icons">content_paste</i>
-						<span class="media-body">Bandeja de Ordenes</span>
+						<span class="media-body">Pedidos</span>
 					</a>
 				</l>
 
 				<li class="dropdown pmd-dropdown" >
 					<a aria-expanded="false" data-toggle="dropdown" class="btn-user dropdown-toggle media" data-sidebar="true" href="javascript:void(0);">	
-						<i class="material-icons media-left pmd-sm">people</i>
-						<span class="media-body">Usuarios</span>
+						<i class="material-icons media-left pmd-sm">local_mall</i> 
+						<span class="media-body">Productos</span>
 						<div class="media-right media-bottom"><i class="dic-more-vert dic"></i></div>
 					</a> 
 					<ul class="dropdown-menu">
-						<li><a href="add-user.php">Agregar Nuevo</a></li>
-						<li><a href="manage-user.php">Visualizar usuarios</a></li>
-						<!-- <li style="display:none;"><a href="edit-product.php"></a></li>
-						<li style="display:none;"><a href="send-onesignal-product-notification.php"></a></li> -->
+						<li><a href="add-product.php">Agregar Nuevo</a></li>
+						<li><a href="manage-product.php">Lista de productos</a></li>
+						<li style="display:none;"><a href="edit-product.php"></a></li>
+						<li style="display:none;"><a href="send-onesignal-product-notification.php"></a></li>
 					</ul>
 				</li>
 			<?php
@@ -338,7 +361,7 @@ EOF;
 			<li> 
 				<a class="pmd-ripple-effect" href="manage-order.php">	
 					<i class="media-left media-middle material-icons">content_paste</i>
-					<span class="media-body">Bandeja de Ordenes</span>
+					<span class="media-body">Pedidos</span>
 				</a>
 			</li>
 				
@@ -361,7 +384,7 @@ EOF;
 					</ul>
 				</li>
 
-				<li class="dropdown pmd-dropdown" >
+				<li class="dropdown pmd-dropdown" style="display: none">
 					<a aria-expanded="false" data-toggle="dropdown" class="btn-user dropdown-toggle media" data-sidebar="true" href="javascript:void(0);">	
 						<i class="material-icons media-left pmd-sm">notifications</i>
 						<span class="media-body">Notificaciónes</span>

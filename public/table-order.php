@@ -1,17 +1,7 @@
-<?php 
-	
-	include 'functions.php';
+<?php
+    include 'functions.php';
     include 'sql-query.php';
-
     if (isset($_GET['id'])) {
-
-        // $sql = 'SELECT * FROM tbl_fcm_template WHERE id=\''.$_GET['id'].'\'';
-        // $img_rss = mysqli_query($connect, $sql);
-        // $img_rss_row = mysqli_fetch_assoc($img_rss);
-
-        // if ($img_rss_row['image'] != "") {
-        //     unlink('upload/notification/'.$img_rss_row['image']);
-        // }
 
         Delete('tbl_order','id='.$_GET['id'].'');
 
@@ -21,287 +11,175 @@
     }
 
 ?>
-	<?php 
-		// create object of functions class
-		$function = new functions;
-		
-		// create array variable to store data from database
-		$data = array();
-		
-		if(isset($_GET['keyword'])) {	
-			// check value of keyword variable
-			$keyword = $function->sanitize($_GET['keyword']);
-			$bind_keyword = "%".$keyword."%";
-		} else {
-			$keyword = "";
-			$bind_keyword = $keyword;
-		}
-		$retVal = ($_SESSION['permisos'] == '3') ? "WHERE name in (".$_SESSION['grupos'].")" : "" ;
 
-		$prefijo = ($_SESSION['permisos'] == '3') ? "AND" : "WHERE" ;
-		
-		if (empty($keyword)) {
-			$sql_query = "SELECT * FROM tbl_order ".$retVal." ORDER BY status asc LIMIT ?, ?";
-		} else {
-			$sql_query = "SELECT * FROM tbl_order ".$retVal." ".$prefijo." phone LIKE '%".$keyword."%' ORDER BY status asc LIMIT ?, ?";
-		}
+    <!--content area start-->
+
+    <div id="content" class="pmd-content content-area dashboard">
+
+        <!--tab start-->
+        <div class="container-fluid full-width-container">
+
+            <h1 class="section-title" id="services"></h1>
 
 
-		
-		
-		$stmt = $connect->stmt_init();
-		if ($stmt->prepare($sql_query)) {	
-			// Bind your variables to replace the ?s
-            if (empty($keyword)) {
-                $stmt_paging ->bind_param('ss', $from, $offset);
-            } else {
-                $stmt_paging ->bind_param('sss', $bind_keyword, $from, $offset);
-            }
-			// Execute query
-			$stmt->execute();
-			// store result 
-			$stmt->store_result();
-			$stmt->bind_result( 
-					$data['id'],
-					$data['code'],
-                    $data['code_vendedor'],
-                    $data['name_vendedor'],
-                    $data['code_cliente'],
-					$data['name'],
-					$data['email'],
-					$data['phone'],
-					$data['address'],
-					$data['shipping'],
-					$data['date_time'],
-                    $data['created_at'],
-                    $data['updated_at'],
-					$data['order_list'],
-					$data['order_total'],
-					$data['comment'],
-					$data['status'],
-					$data['player_id']
-					);
-			// get total records
-			$total_records = $stmt->num_rows;
-		}
-			
-		// check page parameter
-		if (isset($_GET['page'])) {
-			$page = $_GET['page'];
-		} else {
-			$page = 1;
-		}
-						
-		// number of data that will be display per page		
-		$offset = 10;
-						
-		//lets calculate the LIMIT for SQL, and save it $from
-		if ($page) {
-			$from 	= ($page * $offset) - $offset;
-		} else {
-			//if nothing was given in page request, lets load the first page
-			$from = 0;	
-		}	
-		
-		$retVal = ($_SESSION['permisos'] == '3') ? "WHERE name in (".$_SESSION['grupos'].")" : "" ;
+            <!-- Content Row -->
+            <span class="float-right" id="xls_f1" style="display: none"><?php echo date('Y-m-d')?></span>
+            <span class="float-right" id="xls_f2" style="display: none"><?php echo date('Y-m-d')?></span>
+            <div class="section">
+                <!-- Begin Page Content -->
+                <div class="container-fluid">
 
-		$prefijo = ($_SESSION['permisos'] == '3') ? "AND" : "WHERE" ;
-		
-		if (empty($keyword)) {
-			$sql_query = "SELECT * FROM tbl_order ".$retVal." ORDER BY status asc";
-		} else {
-			$sql_query = "SELECT * FROM tbl_order ".$retVal." ".$prefijo." phone LIKE '%".$keyword."%' ORDER BY status asc";
-		}
-		
-		$stmt_paging = $connect->stmt_init();
-		if ($stmt_paging ->prepare($sql_query)) {
-			
-			// Execute query
-			$stmt_paging ->execute();
-			// store result 
-			$stmt_paging ->store_result();
-			$stmt_paging->bind_result(
-				$data['id'],
-				$data['code'],
-                $data['code_vendedor'],
-                $data['name_vendedor'],
-                $data['code_cliente'],
-				$data['name'],
-				$data['email'],
-				$data['phone'],
-				$data['address'],
-				$data['shipping'],
-				$data['date_time'],
-                $data['created_at'],
-                $data['updated_at'],
-				$data['order_list'],
-				$data['order_total'],
-				$data['comment'],
-				$data['status'],
-				$data['player_id']
-			);
-			// for paging purpose
-			$total_records_paging = $total_records; 
-		}
 
-		// if no data on database show "No Reservation is Available"
-		if ($total_records_paging == 0) {
-	
-	?>
 
-<!--content area start-->
-<div id="content" class="pmd-content content-area dashboard">
+                    <div class="row" >
+                        <div class="col-md-12" >
+                            <a id="exp-to-excel" href="#!" class="btn btn-light text-success float-right"><i class="fas fa-file-excel"></i> Excel</a>
 
-	<!--tab start-->
-	<div class="container-fluid full-width-container">
-	
-		<h1 class="section-title" id="services"></h1>
+                        </div>
+                    </div>
+                    <br>
 
-		<!--breadcrum start-->
-		<ol class="breadcrumb text-left">
-		  <li><a href="dashboard.php">Dashboard</a></li>
-		  <li class="active">Bandeja de Ordenes</li>
-		</ol><!--breadcrum end-->
-	
-		<div class="section"> 
+                    <div class="row">
+                        <!-- Earnings (Monthly) Card Example -->
+                        <div class="col-xl-12 col-md-12 mb-4">
+                            <div class="card border-left-primary shadow h-100 py-2">
+                                <div class="card-body">
+                                    <div class="form-row">
+                                        <div class="form-group col-sm-6">
+                                            <input type="text" class="form-control bg-light border-0 small" placeholder="Buscar..." aria-label="Search" aria-describedby="basic-addon2" id="Id_Buscar_Orden">
+                                        </div>
+                                        
+                                        <div class="form-group col-sm-2">
+                                            <select id="selct_estados" class="form-control">
+                                                <option selected value="">Todo</option>
+                                                <<option value="0">PENDIENTE</option>
+                                                <option value="1">PROCESADO</option>
+                                                <option value="2">CANCELADO</option>
+                                            </select>
+                                        </div>
+                                        <div class="form-group col-sm-2">
+                                            <select id="frm_lab_row" class="form-control">
+                                                <option value="10">10</option>
+                                                <option value="20">20</option>
+                                                <option value="-1">*</option>
+                                            </select>
+                                        </div>
+                                        <div class="form-group col-sm-2 ">
+                                            <a href="#" id="dom-id" class="btn btn-info btn-icon-split float-right">
+                                            <span class="icon text-white-50">
+                                                <i class="fas fa-calendar-day"></i>
+                                            </span>
+                                                <span class="text">Fecha</span>
+                                            </a>
 
-			<form id="validationForm" method="get">
-			<div class="pmd-card pmd-z-depth">
-				<div class="pmd-card-body">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
 
-					<div class="group-fields clearfix row">
-						<div class="col-lg-9 col-md-9 col-sm-9 col-xs-12">
-							<div class="lead">BANDEJA DE ORDENES</div>
-						</div>
-						<div class="col-lg-3 col-md-3 col-sm-3 col-xs-12 pull-right">
-							<div class="form-group pmd-textfield">
-								<input type="text" name="keyword" class="form-control" placeholder="BUSCAR...">
-							</div>
-						</div>
-					</div>
 
-					<div class="table-responsive"> 
-						<table cellspacing="0" cellpadding="0" class="table pmd-table table-hover" id="table-propeller">
-							<thead>
-								<tr>
-									<th>Ruta</th>
-									<th>Code</th>
-									<th>Total</th>
-									<th>Fecha</th>
-									<th>Status</th>
-									<th width="15%">Acciones</th>
-								</tr>
-							</thead>
 
-						</table>
-						<br>
-						<p align="center">whoops, no hay order aun :( !</p>
-						<br>
-					</div>
-				</div>
-			</div> <!-- section content end -->  
-			<?php $function->doPages($offset, 'manage-order.php', '', $total_records, $keyword); ?>
-			</form>
-		</div>
-			
-	</div><!-- tab end -->
 
-</div><!--end content area-->
+                    <!-- DataTales Example -->
+                    <div class="card shadow mb-4">
+                        <div class="card-body">
+                            <div class="table-responsive">
+                               <h4 class="small font-weight-bold">Listado de Pedidos <span class="float-right"> <i class="fas fa-redo-alt fa-2x" style="margin-bottom: 10px" id="id_redo-alt"></i></span></h4>
 
-<?php } else { $row_number = $from + 1; ?>
+                                <table class="table table-bordered" id="dtPedidos" width="100%" cellspacing="0">
+                                    <thead>
+                                    <tr>
+                                        <th>Nº</th>
+                                        <th>Ruta</th>
+                                        <th>Cliente</th>
+                                        <th>Total</th>
+                                        <th>Fecha</th>
+                                        <th>Status</th>
+                                        <th></th>
+                                        <th>Accion</th>
+                                    </tr>
+                                    </thead>
+                                    <tfoot>
+                                    <tr>
+                                        <th>Nº</th>
+                                        <th>Ruta</th>
+                                        <th>Cliente</th>
+                                        <th>Total</th>
+                                        <th>Fecha</th>
+                                        <th>Status</th>
+                                        <th></th>
+                                        <th>Accion</th>
+                                    </tr>
+                                    </tfoot>
+                                    <tbody>
 
-<!--content area start-->
-<div id="content" class="pmd-content content-area dashboard">
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
 
-	<!--tab start-->
-	<div class="container-fluid full-width-container">
+                    <!-- Content Row -->
+                    <div class="row">
 
-		<h1 class="section-title" id="services"></h1>
-			
-		<!--breadcrum start-->
-		<ol class="breadcrumb text-left">
-		  <li><a href="dashboard.php">Dashboard</a></li>
-		  <li class="active">Bandeja de Ordenes</li>
-		</ol><!--breadcrum end-->
-	
-		<div class="section"> 
-			<form id="validationForm" method="get">
-			<div class="pmd-card pmd-z-depth">
-				<div class="pmd-card-body">
+                        <!-- Earnings (Monthly) Card Example -->
+                        <div class="col-xl-4 col-md-6 mb-4">
+                            <div class="card border-left-success shadow h-100 py-2">
+                                <div class="card-body">
+                                    <div class="row no-gutters align-items-center">
+                                        <div class="col mr-2">
+                                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                                                PROCESADO</div>
+                                            <div class="h5 mb-0 font-weight-bold text-gray-800" id="txt_procesado">0</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
 
-					<div class="group-fields clearfix row">
-						<div class="col-lg-9 col-md-9 col-sm-9 col-xs-12">
-							<div class="lead">BANDEJAS DE ORDENES</div>
-						</div>
-						<div class="col-lg-3 col-md-3 col-sm-3 col-xs-12 pull-right">
-							<div class="form-group pmd-textfield">
-								<input type="text" name="keyword" class="form-control" placeholder="Buscar...">
-							</div>
-						</div>
-					</div>
+                        <!-- Earnings (Monthly) Card Example -->
+                        <div class="col-xl-4 col-md-6 mb-4">
+                            <div class="card border-left-primary shadow h-100 py-2">
+                                <div class="card-body">
+                                    <div class="row no-gutters align-items-center">
+                                        <div class="col mr-2">
+                                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                                                PENDIENTE</div>
+                                            <div class="h5 mb-0 font-weight-bold text-gray-800" id="txt_pendiente">0</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
 
-					<div class="table-responsive"> 
-						<table cellspacing="0" cellpadding="0" class="table pmd-table table-hover" id="table-propeller">
-							<thead>
-								<tr>
-                                    <th>Nº</th>
-									<th>Ruta</th>
-                                    <th>Cliente</th>
-                                    <th>Nombre</th>
-									<th>Total</th>
-									<th>Fecha</th>
-									<th>Status</th>
-									<th width="15%">Acciones</th>
-								</tr>
-							</thead>
+                        <!-- Pending Requests Card Example -->
+                        <div class="col-xl-4 col-md-6 mb-4">
+                            <div class="card border-left-warning shadow h-100 py-2">
+                                <div class="card-body">
+                                    <div class="row no-gutters align-items-center">
+                                        <div class="col mr-2">
+                                            <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
+                                                CANCELADO</div>
+                                            <div class="h5 mb-0 font-weight-bold text-gray-800" id="txt_cancelado">0</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
 
-							<?php 
-								while ($stmt_paging->fetch()) { ?>
+                    <!-- Content Row -->
 
-							<tbody>
-								<tr>
-                                    <td><?php echo $data['code'];?></td>
-									<td><?php echo $data['name'];?></td>
-                                    <td><?php echo $data['email'];?></td>
-                                    <td><?php echo $data['phone'];?></td>
-									<td><?php echo $data['order_total'];?></td>
-									<td><?php echo $data['date_time'];?></td>
-									<td>
-										<?php if ($data['status'] == '1') { ?>
-										<span class="badge badge-success">PROCESADO</span>
-										<?php } else if ($data['status'] == '2') { ?>
-										<span class="badge">&nbsp;CANCELADO&nbsp;</span>
-										<?php } else { ?>
-										<span class="badge badge-error">&nbsp;&nbsp;&nbsp;PENDIENTE&nbsp;&nbsp;&nbsp;</span>
-										<?php } ?>
-									</td>
-									<td>
-									    <a href="order-detail.php?id=<?php echo $data['id'];?>">
-									        <i class="material-icons">open_in_new</i>
-									    </a>
-									                        
-									    <?php if ($result_permission['permisos'] != 2 && $result_permission['permisos'] != 3) {?>
-									    <a href="manage-order.php?id=<?php echo $data['id'];?>" onclick="return confirm('¿Está seguro de que desea eliminar este pedido de forma permanente?')" >
-									                <i class="material-icons">delete</i>
-									    </a>
-									     <?php }?>
-									</td>									
-								</tr>
-							</tbody>
+                </div>
+                <!-- /.container-fluid -->
 
-							<?php } ?>
+            </div>
+            <!-- End of Main Content -->
+            </div>
 
-						</table>
+        </div><!-- tab end -->
 
-					</div>
-				</div>
-			</div> <!-- section content end -->  
-			<?php $function->doPages($offset, 'manage-order.php', '', $total_records, $keyword); ?>
-			</form>
-		</div>
-			
-	</div><!-- tab end -->
+    </div><!--end content area-->
 
-</div><!--end content area-->
-
-<?php } ?>
