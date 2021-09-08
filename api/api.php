@@ -42,7 +42,8 @@ if (isset($_GET['category_id'])) {
 
     if($PRE_VENTA){
         //INGRESO DE ARTICULOS EN PRE-VENTA
-        $query = $sqlsrv->fetchArray("SELECT * FROM GMV_mstr_articulos WHERE ARTICULO IN ('15016023','19231011','15012011','15012021') ORDER BY CALIFICATIVO,DESCRIPCION ASC", SQLSRV_FETCH_ASSOC);
+        $query = $sqlsrv->fetchArray("SELECT * FROM GMV_mstr_articulos_dev WHERE ARTICULO IN ('15016023','19231011','15012011','15012021') ORDER BY CALIFICATIVO,DESCRIPCION ASC", SQLSRV_FETCH_ASSOC);
+        
         foreach ($query as $fila) {
             $set_img ="SinImagen.png";
             $set_des = "";
@@ -88,7 +89,9 @@ if (isset($_GET['category_id'])) {
     
 
 
-    $query = $sqlsrv->fetchArray("SELECT * FROM GMV_mstr_articulos WHERE EXISTENCIA > 1 ORDER BY CALIFICATIVO,DESCRIPCION ASC", SQLSRV_FETCH_ASSOC);
+    $query = $sqlsrv->fetchArray("SELECT * FROM GMV_mstr_articulos_dev WHERE EXISTENCIA > 1 OR ARTICULO LIKE 'VU%' ORDER BY CALIFICATIVO,DESCRIPCION ASC", SQLSRV_FETCH_ASSOC);
+
+    
     
 
     foreach ($query as $fila) {
@@ -111,17 +114,48 @@ if (isset($_GET['category_id'])) {
 
         $isPromo = ($total_records_promo >= 1) ? "S" : "N" ;
 
+        $Precio_Articulo = (strpos($fila["ARTICULO"], "VU") !== false) ? 1 : $fila['PRECIO_IVA'] ;
+        $Existe_Articulo = (strpos($fila["ARTICULO"], "VU") !== false) ? 1 : $fila['EXISTENCIA'] ;
+        if (strpos($fila["ARTICULO"], "VU") !== false) {
+            $set_des ='
+            <!DOCTYPE html>
+                <html>
+                <head>
+                    <style type="text/css">
+                    .alert-box {
+                        color:#555;
+                        border-radius:10px;
+                        font-family:Tahoma,Geneva,Arial,sans-serif;font-size:11px;
+                        padding:10px 36px;
+                        margin:10px;
+                    }
+                    .alert-box span {
+                        font-weight:bold;
+                        text-transform:uppercase;
+                    }
+                    .error {
+                        border:3px solid #f5aca6;
+                    }
+                    </style>
+                </head>
+                <body>
+                    <div class="alert-box error"><span>Importante: </span>Los Valores de precio y Existencia son informativos.</div>
+                </body>
+            </html>';
+        }
+
+
 
 
         $json[$i]['product_id']               = $fila["ARTICULO"];
         $json[$i]['product_name']             = strtoupper($fila['DESCRIPCION']);
         $json[$i]['category_id']              = "20";
         $json[$i]['category_name']            = "Medicina";
-        $json[$i]['product_price']            = number_format($fila['PRECIO_IVA'],2,'.','');
+        $json[$i]['product_price']            = number_format($Precio_Articulo,2,'.','');
         $json[$i]['product_status']           = "Available";
         $json[$i]['product_image']            = $set_img;
         $json[$i]['product_description']      = $set_des;
-        $json[$i]['product_quantity']         = str_replace(',', '', number_format($fila['EXISTENCIA'],2));
+        $json[$i]['product_quantity']         = str_replace(',', '', number_format($Existe_Articulo,2));
         $json[$i]['currency_id']              = "105";
         $json[$i]['tax']                      = "0";
         $json[$i]['currency_code']            = "NIO";
