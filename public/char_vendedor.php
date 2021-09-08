@@ -1,9 +1,11 @@
 <?php
+session_start();
 header('Content-Type: application/json');
 
 
 $conn = mysqli_connect("localhost","root","a7m1425.","ecommerce_android_app");
-$sqlQuery = "SELECT T0.Ruta,Sum(T0.Valor) AS VALOR FROM view_master_pedidos T0 WHERE T0.Mes = MONTH(NOW()) GROUP BY T0.Ruta;";
+$retVal = ($_SESSION['permisos'] == '3' || $_SESSION['permisos'] == '2') ? " AND Ruta in (".$_SESSION['grupos'].") " : "" ;
+$sqlQuery = "SELECT T0.Ruta,Sum(T0.Valor) AS VALOR FROM view_master_pedidos T0 WHERE  T0.status = 1 and T0.Mes = MONTH(NOW()) ".$retVal." GROUP BY T0.Ruta;";
 
 $result = mysqli_query($conn,$sqlQuery);
 

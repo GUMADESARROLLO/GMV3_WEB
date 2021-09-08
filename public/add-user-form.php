@@ -131,6 +131,7 @@ EOF;
 									<option value="2">SuppSAC</option>
 									<option value="3">SAC</option>
 									<option value="4">Digitador</option>
+                                    <option value="5">Mercadeo</option>
 								<?php }?>
 									
 									

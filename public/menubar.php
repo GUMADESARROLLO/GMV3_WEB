@@ -89,6 +89,7 @@ EOF;
 <link rel="stylesheet" type="text/css" href="assets/css/bootstrap.min.css">
 <link rel="stylesheet" type="text/css" href="assets/css/dropify.css">
 
+
 <!-- Propeller css -->
 <!-- build:[href] assets/css/ -->
 <link rel="stylesheet" type="text/css" href="assets/css/propeller.min.css">
@@ -114,6 +115,7 @@ EOF;
     <link rel="stylesheet" type="text/css" href="assets/css/sb-admin-2.css"/>
     <link rel="stylesheet" type="text/css" href="assets/css/dataTables.bootstrap4.css"/>
     <link rel="stylesheet" type="text/css" href="assets/css/fontawesome-free/css/all.css"/>
+
 
 
 
@@ -248,6 +250,20 @@ EOF;
 					</a>
 				</l>
 
+                <li>
+                    <a class="pmd-ripple-effect" href="manage-banner.php">
+                        <i class="media-left media-middle material-icons">content_paste</i>
+                        <span class="media-body">Banners</span>
+                    </a>
+                </li>
+                <li>
+                    <a class="pmd-ripple-effect" href="manage-promos.php">
+                        <i class="media-left media-middle material-icons">content_paste</i>
+                        <span class="media-body">Promociones</span>
+                    </a>
+                </li>
+
+
 				<li class="dropdown pmd-dropdown" style="display: none">
 					<a aria-expanded="false" data-toggle="dropdown" class="btn-user dropdown-toggle media" data-sidebar="true" href="javascript:void(0);">	
 						<i class="material-icons media-left pmd-sm">dns</i> 
@@ -275,7 +291,7 @@ EOF;
 					</ul>
 				</li>
 
-				<li class="dropdown pmd-dropdown" style="display: none">
+				<li class="dropdown pmd-dropdown" >
 					<a aria-expanded="false" data-toggle="dropdown" class="btn-user dropdown-toggle media" data-sidebar="true" href="javascript:void(0);">	
 						<i class="material-icons media-left pmd-sm">notifications</i>
 						<span class="media-body">Notificaciónes</span>
@@ -364,6 +380,14 @@ EOF;
 					<span class="media-body">Pedidos</span>
 				</a>
 			</li>
+			<?php if ($data['username']=='SAC01') { ?>
+					<li> 
+						<a class="pmd-ripple-effect" href="manage-user.php?keyword=SAC">	
+							<i class="media-left media-middle material-icons">people</i>
+							<span class="media-body">Usuario</span>
+						</a>
+					</li>
+				<?php } ?>
 				
 			<?php
 				
@@ -397,11 +421,26 @@ EOF;
 						<li style="display:none;"><a href="send-onesignal-notification.php"></a></li>
 					</ul>
 				</li>
-				
+                <?php
+
+                break;
+            case '5':
+                ?>
+                <li>
+                    <a class="pmd-ripple-effect" href="manage-banner.php">
+                        <i class="media-left media-middle material-icons">content_paste</i>
+                        <span class="media-body">Banners</span>
+                    </a>
+                </li>
+                <li>
+                    <a class="pmd-ripple-effect" href="manage-promos.php">
+                        <i class="media-left media-middle material-icons">content_paste</i>
+                        <span class="media-body">Promociones</span>
+                    </a>
+                </li>
 			<?php
 				
 				break;
-				
 			default:
 				# code...
 				break;

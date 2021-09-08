@@ -3,11 +3,13 @@
 include_once ('../includes/config.php');
 include_once ('../includes/config_comentario.php');
 include_once ('../includes/Sqlsrv.php');
+include_once ('../public/sql-query.php');
+
 
 
 $connect->set_charset('utf8');
 
-$connect_comentario->set_charset('utf8');
+@$connect_comentario->set_charset('utf8');
 
 $sql_query      = "SELECT * FROM tbl_admin ORDER BY id DESC LIMIT 1";
 $user_result    = mysqli_query($connect, $sql_query);
@@ -33,9 +35,61 @@ if (isset($_GET['category_id'])) {
 
     $sqlsrv = new Sqlsrv();
 
-    $query = $sqlsrv->fetchArray("SELECT * FROM GMV_mstr_articulos WHERE EXISTENCIA > 1 ORDER BY DESCRIPCION", SQLSRV_FETCH_ASSOC);
     $i = 0;
     $json = array();
+
+    $PRE_VENTA = false;
+
+    if($PRE_VENTA){
+        //INGRESO DE ARTICULOS EN PRE-VENTA
+        $query = $sqlsrv->fetchArray("SELECT * FROM GMV_mstr_articulos WHERE ARTICULO IN ('15016023','19231011','15012011','15012021') ORDER BY CALIFICATIVO,DESCRIPCION ASC", SQLSRV_FETCH_ASSOC);
+        foreach ($query as $fila) {
+            $set_img ="SinImagen.png";
+            $set_des = "";
+
+            $query = "SELECT p.product_image,p.product_description FROM tbl_product p WHERE p.product_sku= '".$fila["ARTICULO"]."'";
+            $resouter = mysqli_query($connect, $query);
+            $total_records = mysqli_num_rows($resouter);
+            if($total_records >= 1) {
+                $link = mysqli_fetch_array($resouter, MYSQLI_ASSOC);
+                $set_img = $link['product_image'];
+                $set_des = $link['product_description'];
+            }
+
+            $qPromo = "SELECT * FROM tbl_news WHERE banner_sku = '".$fila["ARTICULO"]."'";
+            $rsPromo = mysqli_query($connect, $qPromo);
+            $total_records_promo = mysqli_num_rows($rsPromo);
+
+            $isPromo = ($total_records_promo >= 1) ? "S" : "N" ;
+
+            $json[$i]['product_id']               = $fila["ARTICULO"];
+            $json[$i]['product_name']             = strtoupper($fila['DESCRIPCION']);
+            $json[$i]['category_id']              = "20";
+            $json[$i]['category_name']            = "Medicina";
+            $json[$i]['product_price']            = number_format($fila['PRECIO_IVA'],2,'.','');
+            $json[$i]['product_status']           = "Available";
+            $json[$i]['product_image']            = $set_img;
+            $json[$i]['product_description']      = $set_des;
+            $json[$i]['product_quantity']         = str_replace(',', '', number_format($fila['EXISTENCIA'],2));
+            $json[$i]['currency_id']              = "105";
+            $json[$i]['tax']                      = "0";
+            $json[$i]['currency_code']            = "NIO";
+            $json[$i]['currency_name']            = "Nicaraguan cordoba oro";
+            $json[$i]['product_bonificado']       = $fila["REGLAS"];
+            $json[$i]['product_lotes']            = trim($fila["LOTES"]);
+            $json[$i]['product_und']              = $fila["UNIDAD_MEDIDA"];
+            $json[$i]['CALIFICATIVO']             = $fila["CALIFICATIVO"];
+            $json[$i]['ISPROMO']                  = $isPromo ;
+            $i++;
+        }
+
+    }
+
+    
+
+
+    $query = $sqlsrv->fetchArray("SELECT * FROM GMV_mstr_articulos WHERE EXISTENCIA > 1 ORDER BY CALIFICATIVO,DESCRIPCION ASC", SQLSRV_FETCH_ASSOC);
+    
 
     foreach ($query as $fila) {
         $set_img ="SinImagen.png";
@@ -49,6 +103,14 @@ if (isset($_GET['category_id'])) {
             $set_img = $link['product_image'];
             $set_des = $link['product_description'];
         }
+
+
+        $qPromo = "SELECT * FROM tbl_news WHERE banner_sku = '".$fila["ARTICULO"]."'";
+        $rsPromo = mysqli_query($connect, $qPromo);
+        $total_records_promo = mysqli_num_rows($rsPromo);
+
+        $isPromo = ($total_records_promo >= 1) ? "S" : "N" ;
+
 
 
         $json[$i]['product_id']               = $fila["ARTICULO"];
@@ -67,6 +129,8 @@ if (isset($_GET['category_id'])) {
         $json[$i]['product_bonificado']       = $fila["REGLAS"];
         $json[$i]['product_lotes']            = trim($fila["LOTES"]);
         $json[$i]['product_und']              = $fila["UNIDAD_MEDIDA"];
+        $json[$i]['CALIFICATIVO']             = $fila["CALIFICATIVO"];
+        $json[$i]['ISPROMO']                  = $isPromo ;
         $i++;
     }
 
@@ -120,6 +184,7 @@ if (isset($_GET['category_id'])) {
     $server_url  = $_POST['server_url'];
 
     $query = "INSERT INTO tbl_order (code,name, email, phone,created_at, address, shipping, order_list, order_total, comment, player_id) VALUES ('$code','$name', '$email', '$phone','$date', '$address', '$shipping', '$order_list', '$order_total', '$comment', '$player_id')";
+
 
     if (mysqli_query($connect, $query)) {
         //include_once ('php-mail.php');
@@ -223,12 +288,17 @@ if (isset($_GET['category_id'])) {
             $link = mysqli_fetch_array($resouter, MYSQLI_ASSOC);
 
             $Verificaco = ($total_records == 0) ? "N;0.00;0.00" : "S;".$link['Lati'].";".$link['Longi'] ;
-            //$Verificaco = ($total_records == 0) ? "N" : "S" ;
+
+            $qPin = "SELECT * FROM tlb_pins WHERE Cliente = '".$key['CLIENTE']."'";
+            $rPin = mysqli_query($connect, $qPin);
+            $Pin_num_rows = mysqli_num_rows($rPin);
+
+            $isPin = ($Pin_num_rows == 0) ? "N" : "S";
 
             $retVal = ($key['MOROSO'] == 'S') ? $key['NOMBRE']." [MOROSO]" : $key['NOMBRE'] ;
 
             $dta[$i]['CLIENTE']     = $key['CLIENTE'];
-            $dta[$i]['NOMBRE']      = $retVal;
+            $dta[$i]['NOMBRE']      = str_replace ( "'", '', $retVal);
             $dta[$i]['DIRECCION']   = $key['DIRECCION'];
             $dta[$i]['DIPONIBLE']   = number_format($key['LIMITE_CREDITO'] - $key['SALDO'],2);
             $dta[$i]['LIMITE']      = number_format($key['LIMITE_CREDITO'],2);
@@ -237,16 +307,23 @@ if (isset($_GET['category_id'])) {
             $dta[$i]['TELE']        = "Tels. ".$key['TELEFONO1'].' / '.$key['TELEFONO2'];
             $dta[$i]['CONDPA']      = "Cond. Pago: ".$key['CONDICION_PAGO'].' Dias';
             $dta[$i]['VERIFICADO']  = $Verificaco;
+            $dta[$i]['PIN']         = $isPin;
             $i++;
         }
+        //echo json_encode($dta);
+        usort($dta, 'object_sorter');
+        echo json_encode($dta);
 
     }
 
-    //  echo false;
+
+
     $sqlsrv->close();
 
-    header('Content-Type: application/json; charset=utf-8');
-    echo $val = str_replace('\\/', '/', json_encode($dta));
+
+
+    //header('Content-Type: application/json; charset=utf-8');
+   // echo $val = str_replace('\\/', '/', json_encode($dta));
 
 
 } else if (isset($_GET['post_usuario'])) {
@@ -462,31 +539,31 @@ if (isset($_GET['category_id'])) {
 }else if (isset($_GET['get_stat_articulo'])){
 
 
-    $url = 'http://186.1.15.164:8448/gnet_api_movil/index.php/estadistica_articulos_ruta';
-    $data = array(
-        'Ruta' => $_GET['get_stat_articulo'],
-        'Empresa' => 'UNIMARK',
-        'Mes' => $_GET['sMes'],
-        'Annio' => $_GET['sAnno'],
-        'Filtro' => "",
-        'Grafica' => ""
-    );
+    $sqlsrv = new Sqlsrv();
+    $dta = array(); $i=0;
+    $query = $sqlsrv->fetchArray("SELECT * FROM GMV_PERFILES_RUTA WHERE VENDEDOR='".$_GET['get_stat_articulo']."' ", SQLSRV_FETCH_ASSOC);
+    foreach ($query as $key) {
+        $dta[$i]['NoVencidos']  = number_format($key['NoVencidos'],2);
+        $dta[$i]['Vencidos']    = number_format($key['Vencidos'],2);
+        $dta[$i]['Dias30']      = number_format($key['Dias30'],2);
+        $dta[$i]['Dias60']      = number_format($key['Dias60'],2);
+        $dta[$i]['Dias90']      = number_format($key['Dias90'],2);
+        $dta[$i]['Dias120']     = number_format($key['Dias120'],2);
+        $dta[$i]['Mas120']      = number_format($key['Mas120'],2);
+        $dta[$i]['FACT_PEND']   = $key['FACT_PEND'];
+        $i++;
+    }
 
-    $options = array(
-        'http' => array(
-            'header'  => "Content-type: application/x-www-form-urlencoded\r\n",
-            'method'  => 'POST',
-            'content' => http_build_query($data)
-        )
-    );
-    $context  = stream_context_create($options);
-    $result_V2 = file_get_contents($url, false, $context);
-    if ($result_V2 === FALSE) {  }
+    /*$dta['RECUPERA'][0]['META'] ="02";
+    $dta['RECUPERA'][0]['CREDITO'] ="02";
+    $dta['RECUPERA'][0]['CONTADO'] ="02";
+    $dta['RECUPERA'][0]['TOTAL'] ="02";
+    $dta['RECUPERA'][0]['CUMPL'] ="02";*/
 
-    $arr_2 = json_decode($result_V2, true);
+    $sqlsrv->close();
 
     header('Content-Type: application/json; charset=utf-8');
-    echo $val = str_replace('\\/', '/', json_encode($arr_2));
+    echo $val = str_replace('\\/', '/', json_encode($dta));
 }else if (isset($_GET['post_rpt_ruta'])){
     $ruta        = $_GET['post_rpt_ruta'];
     $desde       = date('Y-m-d H:i:s',strtotime(str_replace('/', '-', $_GET['desde'])));
@@ -591,39 +668,46 @@ if (isset($_GET['category_id'])) {
 
 }else if (isset($_GET['articulos_sin_facturar'])) {
     $sqlsrv = new Sqlsrv();
-    $dta = array(); $i=0;
 
+    $query = $sqlsrv->fetchArray("SELECT * FROM GMV_mstr_articulos T1 WHERE  T1.ARTICULO NOT IN (SELECT T0.ARTICULO  FROM GMV3_hstCompra_3M T0 WHERE T0.Cliente='".$_GET['articulos_sin_facturar']."' ) AND EXISTENCIA > 1 ORDER BY CALIFICATIVO ASC", SQLSRV_FETCH_ASSOC);
+    $i = 0;
+    $json = array();
 
-    $query = $sqlsrv->fetchArray("SELECT * FROM GMV_mstr_articulos T1 WHERE  T1.ARTICULO NOT IN (SELECT T0.ARTICULO  FROM GMV3_hstCompra_3M T0 WHERE T0.Cliente='".$_GET['articulos_sin_facturar']."' ) AND EXISTENCIA > 1", SQLSRV_FETCH_ASSOC);
-
-
-    foreach ($query as $key) {
+    foreach ($query as $fila) {
         $set_img ="SinImagen.png";
+        $set_des = "";
 
-
-        $query = "SELECT p.product_image,p.product_description FROM tbl_product p WHERE p.product_sku= '".$key["ARTICULO"]."'";
+        $query = "SELECT p.product_image,p.product_description FROM tbl_product p WHERE p.product_sku= '".$fila["ARTICULO"]."'";
         $resouter = mysqli_query($connect, $query);
         $total_records = mysqli_num_rows($resouter);
         if($total_records >= 1) {
             $link = mysqli_fetch_array($resouter, MYSQLI_ASSOC);
             $set_img = $link['product_image'];
+            $set_des = $link['product_description'];
         }
 
 
-
-        $dta[$i]['ARTICULO']            = $key['ARTICULO'];
-        $dta[$i]['DESCRIPCION']         = strtoupper($key['DESCRIPCION']);
-        $dta[$i]['IMAGEN']              = $set_img;
-        $dta[$i]['CANTIDAD']            = str_replace(',', '', number_format($key['EXISTENCIA'],2));
-        $dta[$i]['VENTA']               = str_replace(',', '', number_format($key['PRECIO_IVA'],2));
-
-        $dta[$i]['OBSERVACIONES']       = $key["UNIDAD_MEDIDA"];
-
-
+        $json[$i]['product_id']               = $fila["ARTICULO"];
+        $json[$i]['product_name']             = strtoupper($fila['DESCRIPCION']);
+        $json[$i]['category_id']              = "20";
+        $json[$i]['category_name']            = "Medicina";
+        $json[$i]['product_price']            = number_format($fila['PRECIO_IVA'],2,'.','');
+        $json[$i]['product_status']           = "Available";
+        $json[$i]['product_image']            = $set_img;
+        $json[$i]['product_description']      = $set_des;
+        $json[$i]['product_quantity']         = str_replace(',', '', number_format($fila['EXISTENCIA'],2));
+        $json[$i]['currency_id']              = "105";
+        $json[$i]['tax']                      = "0";
+        $json[$i]['currency_code']            = "NIO";
+        $json[$i]['currency_name']            = "Nicaraguan cordoba oro";
+        $json[$i]['product_bonificado']       = $fila["REGLAS"];
+        $json[$i]['product_lotes']            = trim($fila["LOTES"]);
+        $json[$i]['product_und']              = $fila["UNIDAD_MEDIDA"];
+        $json[$i]['CALIFICATIVO']              = $fila["CALIFICATIVO"];
         $i++;
     }
     header('Content-Type: application/json; charset=utf-8');
-    echo $val = str_replace('\\/', '/', json_encode($dta));
+    echo $val = str_replace('\\/', '/', json_encode($json));
 }else if (isset($_GET['post_update_datos'])) {
 
 	include('../public/sql-query.php');
@@ -729,17 +813,141 @@ if (isset($_GET['category_id'])) {
      }
     }
 
+    mysqli_close($connect);
+}else if (isset($_GET['get_banner'])) {
+
+    $query = "SELECT banner_id,banner_image,banner_description FROM tbl_banner where banner_status > 0  order by banner_id DESC";
+    $resouter = mysqli_query($connect, $query);
+
+    $set = array();
+    $total_records = mysqli_num_rows($resouter);
 
 
+    if($total_records >= 1) {
+        while ($link = mysqli_fetch_array($resouter, MYSQLI_ASSOC)){
+            $set[] = $link;
+        }
+    }else{
+        $set[0]['banner_id']    = "0";
+        $set[0]['banner_image']         = "SinImagen.png";
+        $set[0]['banner_description']      = "";
+
+    }
 
 
+    header('Content-Type: application/json; charset=utf-8');
+    echo $val = str_replace('\\/', '/', json_encode($set));
+}else if (isset($_GET['get_news'])) {
+    $query = "SELECT banner_id,banner_image,banner_description,created_at FROM tbl_news where banner_status > 0 order by banner_id DESC";
+    $resouter = mysqli_query($connect, $query);
+
+    $set = array();
+    $total_records = mysqli_num_rows($resouter);
+    if($total_records >= 1) {
+        while ($link = mysqli_fetch_array($resouter, MYSQLI_ASSOC)){
+            $set[] = $link;
+        }
+    }
 
 
+    header('Content-Type: application/json; charset=utf-8');
+    echo $val = str_replace('\\/', '/', json_encode($set));
+}else if (isset($_GET['push_pin'])) {
+
+    $cliente     = $_POST['cliente'];
+    $date        = date('Y-m-d h:i:s');
+
+
+    $query = "SELECT * FROM tlb_pins WHERE Cliente = '".$cliente."'";
+    $resouter = mysqli_query($connect, $query);
+    $total_records = mysqli_num_rows($resouter);
+
+    if($total_records >= 1){
+        $qDelete = "DELETE FROM tlb_pins WHERE Cliente = '".$cliente."'";
+        if (mysqli_query($connect, $qDelete)) {
+            echo 'Defijado';
+        } else {
+            echo 'Try Again';
+        }
+
+    }else{
+        $query = "INSERT INTO tlb_pins (Cliente,created_at) VALUES ('$cliente','$date')";
+        if (mysqli_query($connect, $query)) {
+            echo 'Fijado';
+        } else {
+            echo 'Try Again';
+        }
+    }
 
     mysqli_close($connect);
+}else if (isset($_GET['stat_recup'])) {
+    $sqlsrv = new Sqlsrv();
+    $dta = array(); $i = 0;
+
+    $anio = $_GET['sAnno'];
+    $mes  = $_GET['sMes'];
+    $Ruta = $_GET['stat_recup'];
+    $fecha       = date('Y-m-d',strtotime(str_replace('/', '-',($anio.'-'.$mes.'-01'))));
+
+    /*$anio = 2020;
+    $mes  = 11;
+    $Ruta = "F13";*/
+
+    $Meta_Recuperacion  =   0.00;
+    $Recup_Credito      =   0.00;
+    $Recup_Contado      =   0.00;
+    $Recup_Total        =   0.00;
+    $Recup_cumple       =   0.00;
+
+
+    $qRecuperacion= "SELECT * FROM umk_recuperacion WHERE fecha_recup = '".$fecha."' and ruta='".$Ruta."' and idCompanny = 1";
+    $rRecuperacion = mysqli_query($connect_comentario, $qRecuperacion);
+    $ttRecuperado = mysqli_num_rows($rRecuperacion);
+    if($ttRecuperado >= 1) {
+       $link_recuperacion = mysqli_fetch_array($rRecuperacion, MYSQLI_ASSOC);
+        $Recup_Credito = number_format($link_recuperacion["recuperado_credito"],2,".","");
+        $Recup_Contado = number_format($link_recuperacion["recuperado_contado"],2,".","");
+    }
+
+    $qMeta= "SELECT * FROM meta_recuperacion_exl WHERE fechaMeta = '".$fecha."' and ruta='".$Ruta."' and idCompanny = 1";
+    $rMeta = mysqli_query($connect_comentario, $qMeta);
+    $ttMeta = mysqli_num_rows($rRecuperacion);
+    if($ttMeta >= 1) {
+        $link_meta = mysqli_fetch_array($rMeta, MYSQLI_ASSOC);
+        $Meta_Recuperacion = number_format($link_meta['meta'],2,".","");
+    }
+
+    $Recup_Total = $Recup_Credito + $Recup_Contado;
+
+    $dta[$i]['Meta_Recuperacion']           = $Meta_Recuperacion;
+    $dta[$i]['Recup_Credito']               = $Recup_Credito;
+    $dta[$i]['Recup_Contado']               = $Recup_Contado;
+    $dta[$i]['Recup_Total']                 = number_format($Recup_Total,2,".","");
+    $dta[$i]['Recup_cumple']                = ($Meta_Recuperacion==0) ? "100.00" : number_format(((floatval($Recup_Total)/floatval($Meta_Recuperacion))*100),2);
+
+    header('Content-Type: application/json; charset=utf-8');
+    echo $val = str_replace('\\/', '/', json_encode($dta));
+
+
+}else if (isset($_GET['get_history_lotes'])) {
+    $sqlsrv = new Sqlsrv();
+
+    $query = $sqlsrv->fetchArray("SELECT * FROM GMV_Search_Lotes T0 WHERE  T0.LOTE ='".$_GET['get_history_lotes']."' AND T0.CCL='".$_GET['Cliente']."'  GROUP BY T0.CCL,T0.NCL,T0.LOTE,T0.FACTURA,T0.Dia,t0.ARTICULO,T0.DESCRIPCION", SQLSRV_FETCH_ASSOC);
+    $i = 0;
+    $json = array();
+
+    foreach ($query as $fila) {
+        $json[$i]['mLote']          = $fila['LOTE'];
+        $json[$i]['mFactura']       = $fila['FACTURA'];
+        $json[$i]['mDia']           = $fila['Dia'];
+        $json[$i]['mArticulo']      = $fila['CCL'];
+        $json[$i]['mDescripcion']   = $fila['NCL'];
+        $i++;
+    }
+    header('Content-Type: application/json; charset=utf-8');
+    echo $val = str_replace('\\/', '/', json_encode($json));
 }else{
     header('Content-Type: application/json; charset=utf-8');
     echo "no method found!";
 }
-
 ?>

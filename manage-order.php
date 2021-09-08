@@ -1,6 +1,7 @@
 <?php include 'session.php'; ?>
 <?php include 'public/menubar.php'; ?>
-    <link rel="stylesheet" type="text/css" href="assets/css/daterangepicker.min.css"/><style>
+    <link rel="stylesheet" type="text/css" href="assets/css/daterangepicker.min.css"/>
+<style>
     .date-picker-wrapper {
         border-radius: 10px;
         background-color: #f1f5f8!important;

@@ -30,6 +30,7 @@
 <script src="assets/js/bootstrap.min.js"></script>
 <script src="assets/js/propeller.min.js"></script>
 <script src="assets/js/dropify.js"></script>
+<script src="assets/js/Numeral.js"></script>
 
 
 
@@ -50,6 +51,18 @@
             var table = $('#dtPedidos').DataTable();
             table.page.len(this.value).draw();
         });
+
+
+        $("#Id_Buscar_Orden_modal").on('keyup',function(){
+            var table = $('#dtFacturas').DataTable();
+            table.search(this.value).draw();
+        });
+
+        $( "#frm_lab_row_moda_pedido").change(function() {
+            var table = $('#dtFacturas').DataTable();
+            table.page.len(this.value).draw();
+        });
+
         $( "#selct_estados").change(function() {
             var table = $('#dtPedidos').DataTable();
             //var selectedValue = this.selectedOptions[0].value;

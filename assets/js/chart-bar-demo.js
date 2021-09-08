@@ -26,6 +26,69 @@ function number_format(number, decimals, dec_point, thousands_sep) {
   }
   return s.join(dec);
 }
+function graphClickEvent(Ruta){
+    $('#exampleModal').modal('show');
+
+    $('#dtFacturas').DataTable({
+        "ajax": {
+            'type': 'POST',
+            'url': 'public/dt_tbl_Factura.php',
+            'data': {
+                Ruta: Ruta
+            }
+        },
+        async:'false',
+        "destroy": true,
+        "ordering": true,
+        "info": false,
+        "bPaginate": true,
+        "bfilter": false,
+        "searching": true,
+        "pagingType": "full_numbers",
+        "aaSorting": [
+            [0, "desc"]
+        ],
+        "lengthMenu": [
+            [5, 10, -1],
+            [5, 10, "Todo"]
+        ],
+        "language": {
+            "zeroRecords": "NO HAY RESULTADOS",
+            "paginate": {
+                "first":      "Primera",
+                "last":       "Última ",
+                "next":       "Siguiente",
+                "previous":   "Anterior"
+            },
+            "lengthMenu": "_MENU_",
+            "emptyTable": "NO HAY DATOS DISPONIBLES",
+            "search":     "BUSCAR"
+        },
+
+        columns: [
+            { "data": "Pedido" },
+            { "data": "Cliente" },
+            { "data": "created_at" },
+            { "data": "Valor" }
+        ],
+        "fnInitComplete":  function(oSettings, json){
+
+            var Suma =0;
+
+            $.each(json['data'], function(i, x) {
+
+                Suma +=parseFloat( x['Valor']);
+
+            });
+
+            $( "#spnTotal").html("C$ " + numeral(Suma).format('0,0.00'));
+            $("#dtFacturas_filter").hide();
+            $("#dtFacturas_length").hide();
+
+
+        }
+    });
+}
 
 function Graph_bar()
 {
@@ -33,7 +96,6 @@ function Graph_bar()
         $.post("public/char_vendedor.php",
             function (data)
             {
-                console.log(data);
                 var name = [];
                 var marks = [];
 
@@ -58,6 +120,14 @@ function Graph_bar()
                         }],
                     },
                     options: {
+                        'onClick' : function (evt) {
+
+                            var firstPoint = this.getElementsAtEventForMode(evt, 'point', this.options)[0];
+
+                            var label = this.data.labels[firstPoint._index];
+                            graphClickEvent(label)
+
+                        },
                         maintainAspectRatio: false,
                         layout: {
                             padding: {

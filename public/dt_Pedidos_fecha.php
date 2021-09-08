@@ -3,7 +3,7 @@ session_start();
 include_once ('../includes/config.php');
 
 $F1        = $_POST['f1'].' 00:00:00';
-$F2        = $_POST['f2'].' 23:59:00';;
+$F2        = $_POST['f2'].' 23:59:00';
 
 
 

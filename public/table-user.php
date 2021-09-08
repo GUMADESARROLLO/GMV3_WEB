@@ -267,9 +267,11 @@
 											echo 'Supp SAC';
 										}else if ($data['permisos'] == 3){
 											echo 'SAC';
-										}else{
+                                        }else if ($data['permisos'] == 4){
 											echo 'Digitador';
-										}
+										}else{
+                                            echo 'Mercadeo';
+                                        }
 									?>
 									</td>
 									<td>

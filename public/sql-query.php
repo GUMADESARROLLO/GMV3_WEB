@@ -1,11 +1,19 @@
 <?php
+    session_start();
+    function object_sorter($a,$b) {
+        return (($a['PIN'] < $b['PIN']) ? 1 : -1);
+    }
 
-    function getStat() {
+function getStat() {
 
         try {
             include 'includes/config.php';
+
+            $retVal = ($_SESSION['permisos'] == '3' || $_SESSION['permisos'] == '2') ? str_replace("'","",$_SESSION['grupos']) : "" ;
+
             $pdo = new PDO("mysql:host=$host;dbname=$database", $user, $pass);
-            $sql = 'CALL proc_stat_mes(@Mes, @Semana,@cPedidosProcesados,@PendidosPendientes);';
+            $sql = 'CALL proc_stat_mes(@Mes, @Semana,@cPedidosProcesados,@PendidosPendientes,'."'".$retVal."'".')';
+            echo $sql;
             $stmt = $pdo->prepare($sql);
             $stmt->execute();
             $stmt->closeCursor();

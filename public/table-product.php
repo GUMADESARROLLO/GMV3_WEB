@@ -3,9 +3,9 @@ include 'functions.php';
 include 'sql-query.php';
 if (isset($_GET['id'])) {
 
-    Delete('tbl_order','id='.$_GET['id'].'');
+    Delete('tbl_product','product_id='.$_GET['id'].'');
 
-    header("location: manage-order.php");
+    header("location: manage-product.php");
     exit;
 
 }

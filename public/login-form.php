@@ -81,7 +81,19 @@
                     $_SESSION['grupos'] = $rGrupo;
                     $_SESSION['permisos'] = $rPermisos;
                     $_SESSION['timeout'] = $currentTime + $expired;
-                    header("location: manage-order.php");
+
+
+                    switch ($rPermisos) {
+                        case 5:
+                            header("location: manage-banner.php");
+                            break;
+                        default:
+                            header("location: manage-order.php");
+                            break;
+                    }
+
+
+
 
                 } else {
                     $error['failed'] = "<center><div class='alert alert-warning'>Usuario o contraseña invalido!</div></center>";
@@ -128,7 +140,7 @@
                     <br>
                     <br>
                     <span class="pmd-card-subtitle-text">UNIMARK S,A &copy; <span class="auto-update-year"></span>. Todos los Derechos Reservados.</span>
-            <h3 class="pmd-card-subtitle-text">Version 3.0.1</h3>
+            <h3 class="pmd-card-subtitle-text">Version 3.3.0</h3>
                     
                 </div>
                 

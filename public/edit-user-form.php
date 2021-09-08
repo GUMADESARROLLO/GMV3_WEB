@@ -167,6 +167,7 @@ $sql_rutas="SELECT
 										<option <?php if($row['permisos'] == 2){ echo 'selected';} ?> value="2">Supp SAC</option>
 										<option <?php if($row['permisos'] == 3){ echo 'selected';} ?> value="3">SAC</option>
 										<option <?php if($row['permisos'] == 4){ echo 'selected';} ?> value="4">Digitador</option>
+                                        <option <?php if($row['permisos'] == 5){ echo 'selected';} ?> value="5">Mercadeo</option>
 									<?php }?>
 								</select>
 							</div>

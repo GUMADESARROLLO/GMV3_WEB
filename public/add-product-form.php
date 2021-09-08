@@ -75,7 +75,9 @@ EOF;
                                 <label for="product_name" class="control-label">SKU *</label>
                                 <input type="text" name="product_sku" id="product_sku" class="form-control" placeholder="SKU" required>
                             </div>
+
                         </div>
+
 						<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
 							<div class="form-group pmd-textfield">
 								<label for="product_name" class="control-label">Product Name *</label>
