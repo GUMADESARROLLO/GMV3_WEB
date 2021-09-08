@@ -42,7 +42,7 @@ if (isset($_GET['category_id'])) {
 
     if($PRE_VENTA){
         //INGRESO DE ARTICULOS EN PRE-VENTA
-        $query = $sqlsrv->fetchArray("SELECT * FROM GMV_mstr_articulos_dev WHERE ARTICULO IN ('15016023','19231011','15012011','15012021') ORDER BY CALIFICATIVO,DESCRIPCION ASC", SQLSRV_FETCH_ASSOC);
+        $query = $sqlsrv->fetchArray("SELECT * FROM GMV_mstr_articulos WHERE ARTICULO IN ('15016023','19231011','15012011','15012021') ORDER BY CALIFICATIVO,DESCRIPCION ASC", SQLSRV_FETCH_ASSOC);
         
         foreach ($query as $fila) {
             $set_img ="SinImagen.png";
@@ -89,7 +89,7 @@ if (isset($_GET['category_id'])) {
     
 
 
-    $query = $sqlsrv->fetchArray("SELECT * FROM GMV_mstr_articulos_dev WHERE EXISTENCIA > 1 OR ARTICULO LIKE 'VU%' ORDER BY CALIFICATIVO,DESCRIPCION ASC", SQLSRV_FETCH_ASSOC);
+    $query = $sqlsrv->fetchArray("SELECT * FROM GMV_mstr_articulos WHERE EXISTENCIA > 1 OR ARTICULO LIKE 'VU%' ORDER BY CALIFICATIVO,DESCRIPCION ASC", SQLSRV_FETCH_ASSOC);
 
     
     
