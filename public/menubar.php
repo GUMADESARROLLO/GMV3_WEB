@@ -286,6 +286,7 @@ EOF;
 					<ul class="dropdown-menu">
 						<li><a href="add-product.php">Agregar Nuevo</a></li>
 						<li><a href="manage-product.php">Lista de productos</a></li>
+						<li><a href="manage-product2.php">Formulario de PDF clientes</a></li>
 						<li style="display:none;"><a href="edit-product.php"></a></li>
 						<li style="display:none;"><a href="send-onesignal-product-notification.php"></a></li>
 					</ul>
