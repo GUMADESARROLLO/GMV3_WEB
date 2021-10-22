@@ -38,6 +38,8 @@ if (isset($_GET['category_id'])) {
     $i = 0;
     $json = array();
 
+    $Lotes ="  :0:N/D";
+
     $PRE_VENTA = false;
 
     if($PRE_VENTA){
@@ -77,7 +79,8 @@ if (isset($_GET['category_id'])) {
             $json[$i]['currency_code']            = "NIO";
             $json[$i]['currency_name']            = "Nicaraguan cordoba oro";
             $json[$i]['product_bonificado']       = $fila["REGLAS"];
-            $json[$i]['product_lotes']            = trim($fila["LOTES"]);
+            //$json[$i]['product_lotes']            = trim($fila["LOTES"]);
+            $json[$i]['product_lotes']            = $Lotes;            
             $json[$i]['product_und']              = $fila["UNIDAD_MEDIDA"];
             $json[$i]['CALIFICATIVO']             = $fila["CALIFICATIVO"];
             $json[$i]['ISPROMO']                  = $isPromo ;
@@ -161,7 +164,8 @@ if (isset($_GET['category_id'])) {
         $json[$i]['currency_code']            = "NIO";
         $json[$i]['currency_name']            = "Nicaraguan cordoba oro";
         $json[$i]['product_bonificado']       = $fila["REGLAS"];
-        $json[$i]['product_lotes']            = trim($fila["LOTES"]);
+        //$json[$i]['product_lotes']            = trim($fila["LOTES"]);
+        $json[$i]['product_lotes']            = $Lotes;
         $json[$i]['product_und']              = $fila["UNIDAD_MEDIDA"];
         $json[$i]['CALIFICATIVO']             = $fila["CALIFICATIVO"];
         $json[$i]['ISPROMO']                  = $isPromo ;
@@ -677,6 +681,7 @@ if (isset($_GET['category_id'])) {
     $NamRuta        = $_POST['sndNombre'];
     $Comentario     = $_POST['snd_comentario'];
     $imagektp       = $_POST['snd_image'];
+    $Empresa        = '1';
 
 
     if($imagektp !=""){
@@ -686,7 +691,7 @@ if (isset($_GET['category_id'])) {
     }
 
 
-    $query = "INSERT INTO tbl_comentarios (Titulo,Contenido, Autor, Nombre,Fecha,Imagen) VALUES ('$Nombre','$Comentario', '$CodRuta', '$NamRuta','$Fecha','$nama_imagen')";
+    $query = "INSERT INTO tbl_comentarios (Titulo,Contenido, Autor, Nombre,Fecha,Imagen,empresa) VALUES ('$Nombre','$Comentario', '$CodRuta', '$NamRuta','$Fecha','$nama_imagen','$Empresa')";
 
     if (mysqli_query($connect_comentario, $query)) {
         //include_once ('php-mail.php');
