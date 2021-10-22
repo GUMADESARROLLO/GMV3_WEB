@@ -440,7 +440,7 @@ if (isset($_GET['category_id'])) {
 }else if (isset($_GET['get_detalle_factura'])){
     $sqlsrv = new Sqlsrv();
     $dta = array(); $i=0;
-    $query = $sqlsrv->fetchArray("SELECT * FROM GMV_FACTURA_DETALLE_HISTORICO WHERE FACTURA='".$_GET['get_detalle_factura']."' ", SQLSRV_FETCH_ASSOC);
+    $query = $sqlsrv->fetchArray("SELECT * FROM GMV_FACTURA_DETALLE_HISTORICO WHERE FACTURA='".$_GET['get_detalle_factura']."' ORDER BY ARTICULO", SQLSRV_FETCH_ASSOC);
     if (count($query)>0) {
         foreach ($query as $key) {
 
