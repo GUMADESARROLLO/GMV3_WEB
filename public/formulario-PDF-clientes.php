@@ -59,7 +59,7 @@
                                 <div class="card-body ">
                                     <div class="row size-body">
                                         <div class="col-md-7 col-sm-6">
-                                            <img src="upload/product/1603925409_02.png" class="img-fluid" alt="">
+                                            <img src="upload/product/1601479730_Docetaxel_80mg_2ml-4.png" class="img-fluid" alt="">
                                         </div>
                                         <div class="col-md-5 col-sm-6 p-0 m-0">
                                             <h2>Aceite Kativa</h2>
@@ -76,7 +76,7 @@
                                 <div class="card-body">
                                     <div class="row size-body">
                                         <div class="col-md-7 col-sm-6">
-                                            <img src="upload/product/1601479935_CARBOPLATINO 10 MG.png" class="img-fluid " alt="">
+                                            <img src="upload/product/1601479730_Docetaxel_80mg_2ml-4.png" class="img-fluid " alt="">
                                         </div>
                                         <div class="col-md-4 col-sm-6 p-0 m-0">
                                             <h2>Polvo Naturals</h2>
@@ -93,7 +93,7 @@
                                 <div class="card-body">
                                     <div class="row size-body">
                                         <div class="col-md-7 col-sm-6">
-                                            <img src="assets/images/Recursos/prod3.jpg" class="img-fluid" alt="">
+                                            <img src="upload/product/1601479730_Docetaxel_80mg_2ml-4.png" class="img-fluid" alt="">
                                         </div>
                                         <div class="col-md-4 col-sm-6 p-0">
                                             <h2>Polvo Naturals</h2>
@@ -110,7 +110,7 @@
                                 <div class="card-body">
                                     <div class="row size-body">
                                         <div class="col-md-7 col-sm-6">
-                                            <img src="assets/images/Recursos/prod1.jpg" class="img-fluid" min-height="10rem" max-height="14rem" alt="">
+                                            <img src="upload/product/1601479730_Docetaxel_80mg_2ml-4.png" class="img-fluid" min-height="10rem" max-height="14rem" alt="">
                                         </div>
                                         <div class="col-md-4 col-sm-6  m-0 p-0">
                                             <h2>Aceite Kativa</h2>
@@ -127,7 +127,7 @@
                                 <div class="card-body ">
                                     <div class="row size-body">
                                         <div class="col-md-7 col-sm-6">
-                                            <img src="assets/images/Recursos/prod2.jpg" class="img-fluid" alt="">
+                                            <img src="upload/product/1601479730_Docetaxel_80mg_2ml-4.png" class="img-fluid" alt="">
                                         </div>
                                         <div class="col-md-4 col-sm-6 m-0 p-0">
                                             <h2>Pastillas Naturals</h2>
@@ -144,7 +144,7 @@
                                 <div class="card-body">
                                     <div class="row size-body">
                                         <div class="col-md-7 col-sm-8">
-                                            <img src="assets/images/Recursos/prod3.jpg" class="img-fluid" alt="">
+                                            <img src="upload/product/1601479730_Docetaxel_80mg_2ml-4.png" class="img-fluid" alt="">
                                         </div>
                                         <div class="col-md-4 col-sm-4 m-0 p-0">
                                             <h2>Medicamento Naturals</h2>
@@ -161,7 +161,7 @@
                                 <div class="card-body">
                                     <div class="row size-body">
                                         <div class="col-md-7 col-sm-8">
-                                            <img src="assets/images/Recursos/prod1.jpg" class="img-fluid" alt="">
+                                            <img src="upload/product/1601479730_Docetaxel_80mg_2ml-4.png" class="img-fluid" alt="">
                                         </div>
                                         <div class="col-md-4 col-sm-4 m-0 p-0">
                                             <h2>Aceite Kativa</h2>
@@ -178,7 +178,7 @@
                                 <div class="card-body ">
                                     <div class="row size-body">
                                         <div class="col-md-7 col-sm-8">
-                                            <img src="assets/images/Recursos/prod2.jpg" class="img-fluid" alt="">
+                                            <img src="upload/product/1601479730_Docetaxel_80mg_2ml-4.png" class="img-fluid" alt="">
                                         </div>
                                         <div class="col-md-4 col-sm-4 m-0 p-0">
                                             <div class="container"></div>
@@ -196,7 +196,7 @@
                                 <div class="card-body">
                                     <div class="row size-body">
                                         <div class="col-md-7 col-sm-8">
-                                            <img src="assets/images/Recursos/prod3.jpg" class="img-fluid" alt="">
+                                            <img src="upload/product/1601479730_Docetaxel_80mg_2ml-4.png" class="img-fluid" alt="">
                                         </div>
                                         <div class="col-md-4 col-sm-4 m-0 p-0">
                                             <h2>Polvo Naturals</h2>
@@ -209,6 +209,10 @@
                             </div>
                         </div>
                     </div>
+                </div>
+
+                <div class="container" id="info-products">
+
                 </div>
 
                 <nav aria-label="Page navigation example">

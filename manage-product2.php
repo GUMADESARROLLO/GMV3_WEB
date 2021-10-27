@@ -7,9 +7,10 @@
 
 <script>
     $(document).ready(function() {
-        var categoria, id, pagingOffset, page, texto, txt_buscar
+        var categoria, id, pagingOffset, page, texto, txt_buscar, dta
         txt_buscar = $('#txt_buscar');
         categoria = $('#categorias');
+        containerProducts = ('#info-products')
 
         loadData();
 
@@ -19,7 +20,7 @@
                 url: "Ajax/loadCategorias.php",
                 data: {
                     textoBusqueda: textoBusqueda,
-                    callback: 'Cargar_Categorias'
+                    callback: 'get_recent'
                 },
                 success: function(data) {
                     $('#container-products').html(data);
@@ -35,27 +36,17 @@
 
         function loadData() {
             $("div").remove(".load-products");
-
             $.ajax({
-                type: 'POST',
-                url: 'public/functionsAjax.php',
-                data: {
-                    //categoria: categoria.val(),
-                    //  callback: 'CargarData'
-                },
-                success: function(data) {
-                    data.forEach(element =>{
-                        
-                    }) 
-                    data.modalities.forEach(element => {
-                        addElement(selectModalidades,
-                            $("<option></option>").text(element.Descripcion)
-                            .attr({
-                                value: element.CodigoTurno
-                            }));
-                    });
-                    //$('#container-products').html(data);
-                    console.log(data);
+                type: 'GET',
+                url: 'http://localhost/GMV3_WEB/api/api.php?get_recent',
+                dataType: "json",
+                success: function(response) {
+                    console.log(response);
+                    for (var i = 0; i < response.length; i++) {
+                        $('#info-products').append('<li><img src="' + 
+                        respose[i].product_image + '" product_name="' + data[i].product_name + '"/>' + data[i].product_description + '</li>')
+                    }
+
                 },
                 error: function(xhr, ajaxOptions, thrownError) {
                     alert(thrownError + '\r\n' +
