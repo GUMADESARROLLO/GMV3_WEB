@@ -1,6 +1,6 @@
 <?php
     include 'functions.php';
-    include 'sql-query.php';
+    include_once('sql-query.php');
     if (isset($_GET['id'])) {
 
         Delete('tbl_order','id='.$_GET['id'].'');
@@ -48,7 +48,6 @@
                                         <div class="form-group col-sm-6">
                                             <input type="text" class="form-control bg-light border-0 small" placeholder="Buscar..." aria-label="Search" aria-describedby="basic-addon2" id="Id_Buscar_Orden">
                                         </div>
-                                        
                                         <div class="form-group col-sm-2">
                                             <select id="selct_estados" class="form-control">
                                                 <option selected value="">Todo</option>
