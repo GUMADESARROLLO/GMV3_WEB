@@ -42,7 +42,7 @@ if (isset($_GET['category_id'])) {
 
     if($PRE_VENTA){
         //INGRESO DE ARTICULOS EN PRE-VENTA
-        $query = $sqlsrv->fetchArray("SELECT * FROM GMV_mstr_articulos WHERE ARTICULO IN ('15016023','19231011','15012011','15012021') ORDER BY CALIFICATIVO,DESCRIPCION ASC", SQLSRV_FETCH_ASSOC);
+        $query = $sqlsrv->fetchArray("SELECT* FROM TEST_GMV_mstr_articulos WHERE ARTICULO IN ('15016023','19231011','15012011','15012021') ORDER BY CALIFICATIVO,DESCRIPCION ASC", SQLSRV_FETCH_ASSOC);
         
         foreach ($query as $fila) {
             $set_img ="SinImagen.png";
@@ -81,6 +81,7 @@ if (isset($_GET['category_id'])) {
             $json[$i]['product_und']              = $fila["UNIDAD_MEDIDA"];
             $json[$i]['CALIFICATIVO']             = $fila["CALIFICATIVO"];
             $json[$i]['ISPROMO']                  = $isPromo ;
+            $json[$i]['LABORATORIO']              = $fila["LABORATORIO"];
             $i++;
         }
 
@@ -89,7 +90,7 @@ if (isset($_GET['category_id'])) {
     
 
 
-    $query = $sqlsrv->fetchArray("SELECT * FROM GMV_mstr_articulos WHERE EXISTENCIA > 1 OR ARTICULO LIKE 'VU%' ORDER BY CALIFICATIVO,DESCRIPCION ASC", SQLSRV_FETCH_ASSOC);
+    $query = $sqlsrv->fetchArray("SELECT TOP 10 * FROM TEST_GMV_mstr_articulos WHERE EXISTENCIA > 1 OR ARTICULO LIKE 'VU%' ORDER BY CALIFICATIVO,DESCRIPCION ASC", SQLSRV_FETCH_ASSOC);
 
     
     
@@ -165,6 +166,7 @@ if (isset($_GET['category_id'])) {
         $json[$i]['product_und']              = $fila["UNIDAD_MEDIDA"];
         $json[$i]['CALIFICATIVO']             = $fila["CALIFICATIVO"];
         $json[$i]['ISPROMO']                  = $isPromo ;
+        $json[$i]['laboratorio']              = $fila["LABORATORIO"];
         $i++;
     }
 

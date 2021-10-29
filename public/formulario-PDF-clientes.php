@@ -1,6 +1,6 @@
 <?php
-    include 'functions.php';
-    include 'sql-query.php';
+include 'functions.php';
+include 'sql-query.php';
 
 
 ?>
@@ -34,10 +34,8 @@
                                         </button>
                                     </div>
                                     <div class="input-group col-sm-2">
-                                        <select name="categorias" id="categorias" class="form-control">
-                                            <option value="">TODOS</option>
-                                            <option value="">Lab 1</option>
-                                            <option value="">Lab 2</option>
+                                        <select name="laboratorio" id="laboratorios" class="form-control">
+                                            <option value="">Todos</option>
                                         </select>
                                     </div>
                                     <div class="input-group col-sm-2">
@@ -52,184 +50,30 @@
                         </div>
                     </div>
                 </div>
-                <div class="container-fluid p-0 m-0 load-products-default" id="container-products">
-                    <div class="row " id="info-products">
-                        <div class="col-lg-4 col-md-6 col-sm-12 col-12 load-products">
-                            <div class="card shadow mb-4">
-                                <div class="card-body ">
-                                    <div class="row size-body">
-                                        <div class="col-md-7 col-sm-6">
-                                            <img src="upload/product/1601479730_Docetaxel_80mg_2ml-4.png" class="img-fluid" alt="">
-                                        </div>
-                                        <div class="col-md-5 col-sm-6 p-0 m-0">
-                                            <h2>Aceite Kativa</h2>
-                                            <p class="justify-content-center text-secondary ">
-                                                Aceite kativa para el pelo 100% organico 100 ml.
-                                            </p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-lg-4 col-md-6 col-sm-12 col-12">
-                            <div class="card shadow mb-4">
-                                <div class="card-body">
-                                    <div class="row size-body">
-                                        <div class="col-md-7 col-sm-6">
-                                            <img src="upload/product/1601479730_Docetaxel_80mg_2ml-4.png" class="img-fluid " alt="">
-                                        </div>
-                                        <div class="col-md-4 col-sm-6 p-0 m-0">
-                                            <h2>Polvo Naturals</h2>
-                                            <p class="justify-content-center text-secondary">
-                                                Polvo Naturals para las manchas en la piel 100% natural
-                                            </p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-lg-4 col-md-6 col-sm-12 col-12">
-                            <div class="card shadow mb-4">
-                                <div class="card-body">
-                                    <div class="row size-body">
-                                        <div class="col-md-7 col-sm-6">
-                                            <img src="upload/product/1601479730_Docetaxel_80mg_2ml-4.png" class="img-fluid" alt="">
-                                        </div>
-                                        <div class="col-md-4 col-sm-6 p-0">
-                                            <h2>Polvo Naturals</h2>
-                                            <p class="justify-content-center text-secondary">
-                                                Polvo Naturals para las manchas en la piel 100% natural
-                                            </p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-lg-4 col-md-6 col-sm-12 col-12">
-                            <div class="card shadow mb-4">
-                                <div class="card-body">
-                                    <div class="row size-body">
-                                        <div class="col-md-7 col-sm-6">
-                                            <img src="upload/product/1601479730_Docetaxel_80mg_2ml-4.png" class="img-fluid" min-height="10rem" max-height="14rem" alt="">
-                                        </div>
-                                        <div class="col-md-4 col-sm-6  m-0 p-0">
-                                            <h2>Aceite Kativa</h2>
-                                            <p class="justify-content-center text-secondary">
-                                                Aceite kativa para el pelo 100% organico 100 ml.
-                                            </p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-lg-4 col-md-6 col-sm-12 col-12">
-                            <div class="card shadow mb-4">
-                                <div class="card-body ">
-                                    <div class="row size-body">
-                                        <div class="col-md-7 col-sm-6">
-                                            <img src="upload/product/1601479730_Docetaxel_80mg_2ml-4.png" class="img-fluid" alt="">
-                                        </div>
-                                        <div class="col-md-4 col-sm-6 m-0 p-0">
-                                            <h2>Pastillas Naturals</h2>
-                                            <p class="justify-content-center text-secondary">
-                                                Polvo Naturals para las manchas en la piel 100% natural
-                                            </p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-lg-4 col-md-6 col-sm-12 col-12">
-                            <div class="card shadow mb-4">
-                                <div class="card-body">
-                                    <div class="row size-body">
-                                        <div class="col-md-7 col-sm-8">
-                                            <img src="upload/product/1601479730_Docetaxel_80mg_2ml-4.png" class="img-fluid" alt="">
-                                        </div>
-                                        <div class="col-md-4 col-sm-4 m-0 p-0">
-                                            <h2>Medicamento Naturals</h2>
-                                            <p class="justify-content-center text-secondary">
-                                                Polvo Naturals para las manchas en la piel 100% natural
-                                            </p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-lg-4 col-md-6 col-sm-12 col-12">
-                            <div class="card shadow mb-4">
-                                <div class="card-body">
-                                    <div class="row size-body">
-                                        <div class="col-md-7 col-sm-8">
-                                            <img src="upload/product/1601479730_Docetaxel_80mg_2ml-4.png" class="img-fluid" alt="">
-                                        </div>
-                                        <div class="col-md-4 col-sm-4 m-0 p-0">
-                                            <h2>Aceite Kativa</h2>
-                                            <p class="justify-content-center text-secondary">
-                                                Aceite kativa para el pelo 100% organico 100 ml.
-                                            </p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-lg-4 col-md-6 col-sm-12 col-12">
-                            <div class="card shadow mb-4">
-                                <div class="card-body ">
-                                    <div class="row size-body">
-                                        <div class="col-md-7 col-sm-8">
-                                            <img src="upload/product/1601479730_Docetaxel_80mg_2ml-4.png" class="img-fluid" alt="">
-                                        </div>
-                                        <div class="col-md-4 col-sm-4 m-0 p-0">
-                                            <div class="container"></div>
-                                            <h2>Polvo Naturals</h2>
-                                            <p class="justify-content-center text-secondary">
-                                                Polvo Naturals para las manchas en la piel 100% natural
-                                            </p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-lg-4 col-md-6 col-sm-12 col-12">
-                            <div class="card shadow mb-4">
-                                <div class="card-body">
-                                    <div class="row size-body">
-                                        <div class="col-md-7 col-sm-8">
-                                            <img src="upload/product/1601479730_Docetaxel_80mg_2ml-4.png" class="img-fluid" alt="">
-                                        </div>
-                                        <div class="col-md-4 col-sm-4 m-0 p-0">
-                                            <h2>Polvo Naturals</h2>
-                                            <p class="justify-content-center text-secondary">
-                                                Polvo Naturals para las manchas en la piel 100% natural
-                                            </p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+
+                <div class="container-fluid p-0 m-0 " id="load-products-default">
+                    <div class="row" id="content-products">
                     </div>
                 </div>
 
-                <div class="container" id="info-products">
-
-                </div>
-
-                <nav aria-label="Page navigation example">
-                    <ul class="pagination justify-content-end">
-                        <li class="page-item disabled">
-                            <a class="page-link" href="#" tabindex="-1">Previous</a>
-                        </li>
-                        <li class="page-item"><a class="page-link" href="#">1</a></li>
-                        <li class="page-item"><a class="page-link" href="#">2</a></li>
-                        <li class="page-item"><a class="page-link" href="#">3</a></li>
-                        <li class="page-item">
-                            <a class="page-link" href="#">Next</a>
-                        </li>
-                    </ul>
-                </nav>
             </div>
+
+
+            <nav aria-label="Page navigation example">
+                <ul class="pagination justify-content-end">
+                    <li class="page-item disabled">
+                        <a class="page-link" href="#" tabindex="-1">Previous</a>
+                    </li>
+                    <li class="page-item"><a class="page-link" href="#">1</a></li>
+                    <li class="page-item"><a class="page-link" href="#">2</a></li>
+                    <li class="page-item"><a class="page-link" href="#">3</a></li>
+                    <li class="page-item">
+                        <a class="page-link" href="#">Next</a>
+                    </li>
+                </ul>
+            </nav>
         </div>
+    </div>
     </div>
 </body>
 

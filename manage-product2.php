@@ -13,17 +13,27 @@
         containerProducts = ('#info-products')
 
         loadData();
-
-        function loadCategorias() {
+        loadLaboratorios();
+        
+        /**** MOSTRAR DATOS ******/
+        function addElement(parent, child) {
+            parent.append(child);
+        }
+        
+        function loadLaboratorios() {
             $.ajax({
-                type: "GET",
-                url: "Ajax/loadCategorias.php",
-                data: {
-                    textoBusqueda: textoBusqueda,
-                    callback: 'get_recent'
-                },
+                type: 'GET',
+                url: 'http://localhost/GMV3_GP/api/api.php?get_recent',
+                dataType: "json",
+                //data: {},
                 success: function(data) {
-                    $('#container-products').html(data);
+                    //console.log(data);
+                    data.forEach(element => {
+                        addElement($("#laboratorios"),
+                            $("<option></option>").text(element.laboratorio).attr({
+                                value: element.product_id
+                            }));
+                    });
                 },
                 error: function(xhr, ajaxOptions, thrownError) {
                     alert(thrownError + '\r\n' +
@@ -38,14 +48,17 @@
             $("div").remove(".load-products");
             $.ajax({
                 type: 'GET',
-                url: 'http://localhost/GMV3_WEB/api/api.php?get_recent',
+                url: 'http://localhost/GMV3_GP/api/api.php?get_recent',
                 dataType: "json",
-                success: function(response) {
-                    console.log(response);
-                    for (var i = 0; i < response.length; i++) {
-                        $('#info-products').append('<li><img src="' + 
-                        respose[i].product_image + '" product_name="' + data[i].product_name + '"/>' + data[i].product_description + '</li>')
-                    }
+                //data: {},
+                success: function(data) {
+                    //console.log(data);
+                    data.forEach(element => {
+                        addElement($("#content-products"),
+                            $('<div class="col-lg-4 col-md-6 col-sm-12 col-12">').append($('<div class="card shadow  mb-4">').append($('<div class="card-body bordes">').append($('<div class="container-fluid p-0 m-0 size-body">').append($('<div class="container-fluid p-0 m-0 text-center">').append($('<img class="size-image" alt="">').attr({
+                                src: "upload/product/" + (element.product_image)
+                            })).append($('<h4 class="font-weight-bold"></h4>').text(element.product_name)).append($(element.product_description)).append('</div>').append($('</div>')).append($('</div>')).append($('</div>')).append($('</div>')))))));
+                    });
 
                 },
                 error: function(xhr, ajaxOptions, thrownError) {

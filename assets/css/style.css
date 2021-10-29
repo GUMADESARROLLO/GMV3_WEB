@@ -1,4 +1,24 @@
-.size-body{
-    max-width: 29rem;
-    min-height: 15rem;
+.size-body {
+    max-width     : 25rem !important;
+    height        : 23rem;
+}
+
+
+.size-image {
+    max-width     : 10rem;
+    max-height    : 10rem;
+    vertical-align: middle !important;
+}
+
+p {
+    font-size: 0.70vw;
+    text-align: left !important;
+}
+h4{
+    text-align: left !important;
+}
+
+.bordes{
+    border: 1px solid 	#d3d3d3;
+    
 }
