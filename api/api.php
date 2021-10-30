@@ -90,10 +90,7 @@ if (isset($_GET['category_id'])) {
     
 
 
-    $query = $sqlsrv->fetchArray("SELECT TOP 10 * FROM TEST_GMV_mstr_articulos WHERE EXISTENCIA > 1 OR ARTICULO LIKE 'VU%' ORDER BY CALIFICATIVO,DESCRIPCION ASC", SQLSRV_FETCH_ASSOC);
-
-    
-    
+    $query = $sqlsrv->fetchArray("SELECT TOP 30 * FROM TEST_GMV_mstr_articulos WHERE EXISTENCIA > 1 OR ARTICULO LIKE 'VU%' ORDER BY CALIFICATIVO,DESCRIPCION ASC", SQLSRV_FETCH_ASSOC);
 
     foreach ($query as $fila) {
         $set_img ="SinImagen.png";
@@ -107,7 +104,6 @@ if (isset($_GET['category_id'])) {
             $set_img = $link['product_image'];
             $set_des = $link['product_description'];
         }
-
 
         $qPromo = "SELECT * FROM tbl_news WHERE banner_sku = '".$fila["ARTICULO"]."'";
         $rsPromo = mysqli_query($connect, $qPromo);

@@ -14,12 +14,12 @@
 
         loadData();
         loadLaboratorios();
-        
+
         /**** MOSTRAR DATOS ******/
         function addElement(parent, child) {
             parent.append(child);
         }
-        
+
         function loadLaboratorios() {
             $.ajax({
                 type: 'GET',
@@ -33,6 +33,14 @@
                             $("<option></option>").text(element.laboratorio).attr({
                                 value: element.product_id
                             }));
+                        var sorted = element.sort();
+                        var unique = sorted.filter(function(value,index) {
+                            return value !== sorted[index + 1];
+                        });
+                        var names = personas.map(function(person) {
+                            return person.name;
+                        });
+                        console.log(unique);
                     });
                 },
                 error: function(xhr, ajaxOptions, thrownError) {
@@ -58,8 +66,9 @@
                             $('<div class="col-lg-4 col-md-6 col-sm-12 col-12">').append($('<div class="card shadow  mb-4">').append($('<div class="card-body bordes">').append($('<div class="container-fluid p-0 m-0 size-body">').append($('<div class="container-fluid p-0 m-0 text-center">').append($('<img class="size-image" alt="">').attr({
                                 src: "upload/product/" + (element.product_image)
                             })).append($('<h4 class="font-weight-bold"></h4>').text(element.product_name)).append($(element.product_description)).append('</div>').append($('</div>')).append($('</div>')).append($('</div>')).append($('</div>')))))));
-                    });
 
+
+                    });
                 },
                 error: function(xhr, ajaxOptions, thrownError) {
                     alert(thrownError + '\r\n' +
@@ -78,7 +87,6 @@
                 type: 'POST',
                 url: 'public/functionsAjax.php',
                 data: {
-                    ///textoBusqueda: textoBusqueda,
                     callback: 'Cargar_productos'
                 },
                 success: function(data) {
