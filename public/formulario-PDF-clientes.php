@@ -35,7 +35,7 @@ include 'sql-query.php';
                                     </div>
                                     <div class="input-group col-sm-2">
                                         <select name="laboratorio" id="laboratorios" class="form-control">
-                                            <option value="">Todos</option>
+                                            <option value="">TODOS</option>
                                         </select>
                                     </div>
                                     <div class="input-group col-sm-2">

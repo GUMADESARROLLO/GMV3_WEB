@@ -27,21 +27,20 @@
                 dataType: "json",
                 //data: {},
                 success: function(data) {
-                    //console.log(data);
-                    data.forEach(element => {
-                        addElement($("#laboratorios"),
-                            $("<option></option>").text(element.laboratorio).attr({
-                                value: element.product_id
-                            }));
-                        var sorted = element.sort();
-                        var unique = sorted.filter(function(value,index) {
-                            return value !== sorted[index + 1];
-                        });
-                        var names = personas.map(function(person) {
-                            return person.name;
-                        });
-                        console.log(unique);
+
+                    var result = data.filter(function(el, i, x) {
+                        return x.some(function(obj, j) {
+                            return obj.product_und === el.product_und && (x = j);
+                        }) && i == x;
                     });
+
+                    result.forEach(element => {
+                        addElement($("#laboratorios"),
+                            $("<option></option>").text(element.product_und));
+                    });
+                    // alert(JSON.stringify(result, null, 4));
+
+                    console.log(result);
                 },
                 error: function(xhr, ajaxOptions, thrownError) {
                     alert(thrownError + '\r\n' +
@@ -103,6 +102,8 @@
         txt_buscar.on('keypress', function() {
             search();
         })
+
+
 
 
     });
