@@ -345,6 +345,8 @@ class Sqlsrv
         return $strg;
     }
 
+
+    
 }
 
 

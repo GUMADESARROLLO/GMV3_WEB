@@ -66,7 +66,7 @@ EOF;
 	$result_permission = mysqli_query($connect, $sql_permission);
 	$result_permission = mysqli_fetch_array($result_permission);
 	$result_permission = $result_permission;
-
+	
 
 ?>
 

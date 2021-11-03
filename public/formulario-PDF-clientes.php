@@ -1,8 +1,24 @@
 <?php
 include 'functions.php';
 include 'sql-query.php';
+include 'includes/Sqlsrv.php';
 
+try {
+    $sqlsrv = new Sqlsrv();
+    $numfilas = $sqlsrv->fetchArray("SELECT COUNT(*) AS num FROM GMV_mstr_articulos WHERE EXISTENCIA > 1 OR ARTICULO LIKE 'VU%'");
+    foreach ($numfilas as $fila) { $rowCount = $fila['num'];}
+    echo $rowCount;
+    $total_pages = ceil($rowCount / 15);
+    $page = isset($_GET['page']) ? $_GET['page'] : 1;
+    $record_size = $rowCount;
+    $total_pages = ceil($record_size / 15);
+    $page = isset($_GET['page']) ? $_GET['page'] : 1;
+    $offset = ($page - 1) * 15;
 
+    echo  " " . $offset;
+} catch (Throwable $th) {
+    echo ($th->getMessage());
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -16,6 +32,7 @@ include 'sql-query.php';
 </head>
 
 <body>
+    <input id="offset" type="hidden" name="offset" value="<?php echo $offset; ?>">
     <div id="content" class="pmd-content content-area dashboard">
         <div class="container-fluid full-width-container">
             <h1 class="section-title" id="services">FORMULARIO</h1>
@@ -55,22 +72,40 @@ include 'sql-query.php';
                     <div class="row" id="content-products">
                     </div>
                 </div>
-
             </div>
-
 
             <nav aria-label="Page navigation example">
                 <ul class="pagination justify-content-end">
-                    <li class="page-item disabled">
-                        <a class="page-link" href="#" tabindex="-1">Previous</a>
-                    </li>
-                    <li class="page-item"><a class="page-link" href="#">1</a></li>
-                    <li class="page-item"><a class="page-link" href="#">2</a></li>
-                    <li class="page-item"><a class="page-link" href="#">3</a></li>
                     <li class="page-item">
-                        <a class="page-link" href="#">Next</a>
+                        <a class="page-link <?php echo ($page == 1) ? "disabled-link" : ""; ?>" href="manage-product2.php?page=1" data-toggle="tooltip" data-placement="bottom" title="Primera página">
+                            <span aria-hidden="true">&laquo;</span>
+                            <span class="sr-only">Primero</span>
+                        </a>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link <?php echo ($page == 1) ? "disabled-link" : ""; ?>" href="<?php echo ($page == 1) ? "javascript:void(0)" : "manage-product2.php?page=" . ($page - 1); ?>" aria-label="Previous" data-toggle="tooltip" data-placement="bottom" title="Página anterior">
+                            <span aria-hidden="true">&lsaquo;</span>
+                            <span class="sr-only">Anterior</span>
+                        </a>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link  <?php echo ($page == $total_pages) ? "disabled-link" : "" ?>" href="<?php echo ($page == $total_pages) ? "javascript:void(0)" : "manage-product2.php?page=" . ($page + 1); ?>" aria-label="Next" data-toggle="tooltip" data-placement="bottom" title="Página siguiente">
+                            <span aria-hidden="true">&rsaquo;</span>
+                            <span class="sr-only">Siguiente</span>
+                        </a>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link <?php echo ($page == $total_pages) ? "disabled-link" : "" ?>" href="manage-product2.php?page=<?php echo $total_pages; ?>" data-toggle="tooltip" data-placement="bottom" title="Última página">
+                            <span aria-hidden="true">&raquo;</span>
+                            <span class="sr-only">Último</span>
+                        </a>
                     </li>
                 </ul>
+                <div class="container-fluid text-right">
+                    <span id="info-table" class="mr-2">
+                        <span class="text-primary"><?php echo $page; ?></span>&nbsp;de&nbsp;<span class="text-primary"><?php echo $total_pages; ?></span>&nbsp;páginas,&nbsp;<span class="text-primary"><?php echo $record_size; ?></span>&nbsp;registros
+                    </span>
+                </div>
             </nav>
         </div>
     </div>
