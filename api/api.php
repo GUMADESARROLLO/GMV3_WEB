@@ -682,6 +682,8 @@ if (isset($_GET['category_id'])) {
     $Comentario     = $_POST['snd_comentario'];
     $imagektp       = $_POST['snd_image'];
     $Empresa        = '1';
+    $Read           = '0';
+    $Updated_at     = date('Y-m-d H:i:s');
 
 
     if($imagektp !=""){
@@ -691,7 +693,7 @@ if (isset($_GET['category_id'])) {
     }
 
 
-    $query = "INSERT INTO tbl_comentarios (Titulo,Contenido, Autor, Nombre,Fecha,Imagen,empresa) VALUES ('$Nombre','$Comentario', '$CodRuta', '$NamRuta','$Fecha','$nama_imagen','$Empresa')";
+    $query = "INSERT INTO tbl_comentarios (Titulo,Contenido, Autor, Nombre,Fecha,Imagen,empresa,Read,updated_at) VALUES ('$Nombre','$Comentario', '$CodRuta', '$NamRuta','$Fecha','$nama_imagen','$Empresa','$Read','$Updated_at')";
 
     if (mysqli_query($connect_comentario, $query)) {
         //include_once ('php-mail.php');
