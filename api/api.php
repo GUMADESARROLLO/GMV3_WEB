@@ -315,7 +315,7 @@ if (isset($_GET['category_id'])) {
     $sqlsrv = new Sqlsrv();
     $dta = array(); $i=0;
 
-    $query = $sqlsrv->fetchArray("SELECT * FROM Softland.dbo.ANA_MTClientes_UMK WHERE VENDEDOR='".$_GET['clients_id']."' AND ACTIVO ='S' ORDER BY NOMBRE", SQLSRV_FETCH_ASSOC);
+    $query = $sqlsrv->fetchArray("SELECT T0.*,ISNULL(T1.DISPONIBLE, 0) AS SALDO_VINETA  FROM Softland.dbo.ANA_MTClientes_UMK T0 LEFT JOIN PRODUCCION.dbo.view_master_cliente_vineta T1 ON T0.CLIENTE = T1.CLIENTE WHERE VENDEDOR='".$_GET['clients_id']."' AND ACTIVO ='S' ORDER BY NOMBRE", SQLSRV_FETCH_ASSOC);
     if (count($query)>0) {
         foreach ($query as $key) {
 
@@ -346,6 +346,7 @@ if (isset($_GET['category_id'])) {
             $dta[$i]['CONDPA']      = "Cond. Pago: ".$key['CONDICION_PAGO'].' Dias';
             $dta[$i]['VERIFICADO']  = $Verificaco;
             $dta[$i]['PIN']         = $isPin;
+            $dta[$i]['vineta']       = number_format($key['SALDO_VINETA'],2);
             $i++;
         }
         //echo json_encode($dta);
@@ -987,6 +988,99 @@ if (isset($_GET['category_id'])) {
     }
     header('Content-Type: application/json; charset=utf-8');
     echo $val = str_replace('\\/', '/', json_encode($json));
+}else if (isset($_GET['get_vineta'])) {
+
+    $sqlsrv = new Sqlsrv();
+
+    $query = $sqlsrv->fetchArray("SELECT * FROM view_MasterVinnetaFacturadas_umk T0 WHERE  T0.CLIENTE='".$_GET['get_vineta']."' ORDER BY T0.FACTURA", SQLSRV_FETCH_ASSOC);
+    $i = 0;
+    $json = array();
+
+    foreach ($query as $fila) {
+        $json[$i]['mFactura']       = $fila['FACTURA'];
+        $json[$i]['mFecha']         = $fila['FECHA']->format('d/m/Y'); 
+        $json[$i]['mVineta']        = $fila['ARTICULO'];
+        $json[$i]['mCantidad']      = number_format($fila['CANTIDAD'],0);
+        $json[$i]['mValor']         = number_format($fila['VALOR'],0);
+        $json[$i]['mTotal']         = number_format($fila['TOTAL'],0);
+        $json[$i]['mLinea']         = number_format($fila['LINEA'],0);
+        $i++;
+    }
+    header('Content-Type: application/json; charset=utf-8');
+    echo $val = str_replace('\\/', '/', json_encode($json));
+    
+}else if (isset($_GET['post_order_vineta'])) {
+
+    $ruta           = $_POST['ruta'];
+    $cod_cliente    = $_POST['cod_cliente'];
+    $recibo         = $_POST['recibo'];
+    $name_cliente   = $_POST['name_cliente'];
+    $address        = $_POST['address'];
+    $order_list     = $_POST['order_list'];
+    $order_total    = $_POST['order_total'];
+    $comment        = $_POST['comment'];
+    $comment_anul   = "";
+    $player_id      = $_POST['player_id'];
+    $date           = $_POST['date'];
+
+    $query = "INSERT INTO tbl_order_vineta (ruta, cod_cliente,recibo, name_cliente,created_at, address, order_list, order_total, comment,comment_anul, player_id) 
+    VALUES ('$ruta', '$cod_cliente', '$recibo', '$name_cliente','$date', '$address', '$order_list', '$order_total', '$comment', '$comment_anul', '$player_id')";
+
+
+    if (mysqli_query($connect_comentario, $query)) {
+        //include_once ('php-mail.php');
+        echo 'Data Inserted Successfully';
+    } else {
+        echo 'Try Again';
+    }
+    mysqli_close($connect); 
+
+}else if (isset($_GET['get_liquidacion_vineta'])) {
+    
+    $Usuario = $_GET['get_liquidacion_vineta'];
+    $OrderBy = $_GET['OrderBy'];
+    $i=0;
+    $array = array();
+
+    $query = "SELECT * FROM tbl_order_vineta WHERE ruta = '".$Usuario."' and status != 3 ORDER BY date_time,status $OrderBy";
+    
+    $resouter = mysqli_query($connect_comentario, $query);
+
+    $total_records = mysqli_num_rows($resouter);
+    if($total_records >= 1){
+        foreach ($resouter as $key){
+
+            $array[$i]['mId']               = $key['id'];
+            $array[$i]['mRecibo']           = $key['recibo'];
+            $array[$i]['mCod_Cliente']      = $key['cod_cliente'];
+            $array[$i]['mName_Cliente']     = $key['name_cliente'];
+            $array[$i]['mFecha']            = $key['date_time'];
+            $array[$i]['mBenificiario']     = $key['address'];
+            $array[$i]['mOrderTotal']       = $key['order_total'];
+            $array[$i]['mComentario']       = $key['comment'];
+            $array[$i]['mStatus']           = $key['status'];
+            $array[$i]['mOrderList']        = $key['order_list'];
+            $array[$i]['mComment_anul']     = $key['comment_anul'];            
+
+            $i++;
+        }
+    }
+    header('Content-Type: application/json; charset=utf-8');
+    echo $val = str_replace('\\/', '/', json_encode($array));
+
+}else if (isset($_GET['del_order_vineta'])) {
+
+    $id           = $_POST['ID'];
+    $iDate        = date('Y-m-d H:i:s');
+
+    $query ="UPDATE tbl_order_vineta SET status = '3', updated_at = '".$iDate."' WHERE id = ".$id." ";
+
+    if (mysqli_query($connect_comentario, $query)) {
+        echo 'Recibo Anulado';
+    } else {
+        echo 'Try Again';
+    }
+    mysqli_close($connect); 
 }else{
     header('Content-Type: application/json; charset=utf-8');
     echo "no method found!";
