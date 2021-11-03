@@ -5,3 +5,8 @@ content-type: application/json
 GET  http://192.168.1.139:8448/gmv3/api/api.php?get_vineta=00963
 content-type: application/json
 ###
+
+
+GET  http://192.168.1.139:8448/gmv3/api/api.php?get_liquidacion_vineta=00963
+content-type: application/json
+###
