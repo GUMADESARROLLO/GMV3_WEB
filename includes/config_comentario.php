@@ -1,14 +1,14 @@
 <?php
 
     //database configuration
-    $host       = "192.168.1.11";
-    $user       = "Dios";
-    $pass       = "a7m1425.";
     
-    /*$host       = "localhost";
-    $user       = "root";
+    /*$host       = "192.168.1.11";
+    $user       = "Dios";
     $pass       = "a7m1425.";*/
-
+    
+    $host       = "localhost";
+    $user       = "root";
+    $pass       = "a7m1425.";
     $database   = "gumanet";
 
     @$connect_comentario = new mysqli($host, $user, $pass, $database);

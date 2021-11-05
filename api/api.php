@@ -84,6 +84,7 @@ if (isset($_GET['category_id'])) {
             $json[$i]['product_und']              = $fila["UNIDAD_MEDIDA"];
             $json[$i]['CALIFICATIVO']             = $fila["CALIFICATIVO"];
             $json[$i]['ISPROMO']                  = $isPromo ;
+            $json[$i]['LAB']                      = $fila["LABORATORIO"];
             $i++;
         }
 
@@ -169,6 +170,7 @@ if (isset($_GET['category_id'])) {
         $json[$i]['product_und']              = $fila["UNIDAD_MEDIDA"];
         $json[$i]['CALIFICATIVO']             = $fila["CALIFICATIVO"];
         $json[$i]['ISPROMO']                  = $isPromo ;
+        $json[$i]['LAB']                      = $fila["LABORATORIO"];
         $i++;
     }
 
@@ -992,19 +994,22 @@ if (isset($_GET['category_id'])) {
 
     $sqlsrv = new Sqlsrv();
 
-    $query = $sqlsrv->fetchArray("SELECT * FROM view_MasterVinnetaFacturadas_umk T0 WHERE  T0.CLIENTE='".$_GET['get_vineta']."' ORDER BY T0.FACTURA", SQLSRV_FETCH_ASSOC);
+    $query = $sqlsrv->fetchArray("SELECT T0.FACTURA,T0.FECHA,T0.ARTICULO,(T0.CANTIDAD - T0.CANT_LIQUIDADA) AS CANTIDAD,T0.VALOR,T0.TOTAL,T0.LINEA  FROM view_MasterVinnetaFacturadas_umk T0 WHERE  T0.CLIENTE='".$_GET['get_vineta']."' ORDER BY T0.FACTURA", SQLSRV_FETCH_ASSOC);
     $i = 0;
     $json = array();
 
     foreach ($query as $fila) {
-        $json[$i]['mFactura']       = $fila['FACTURA'];
-        $json[$i]['mFecha']         = $fila['FECHA']->format('d/m/Y'); 
-        $json[$i]['mVineta']        = $fila['ARTICULO'];
-        $json[$i]['mCantidad']      = number_format($fila['CANTIDAD'],0);
-        $json[$i]['mValor']         = number_format($fila['VALOR'],0);
-        $json[$i]['mTotal']         = number_format($fila['TOTAL'],0);
-        $json[$i]['mLinea']         = number_format($fila['LINEA'],0);
-        $i++;
+        if ($fila['CANTIDAD'] > 0) {
+            $json[$i]['mFactura']       = $fila['FACTURA'];
+            $json[$i]['mFecha']         = $fila['FECHA']->format('d/m/Y'); 
+            $json[$i]['mVineta']        = $fila['ARTICULO'];
+            $json[$i]['mCantidad']      = number_format($fila['CANTIDAD'],0);
+            $json[$i]['mValor']         = number_format($fila['VALOR'],0);
+            $json[$i]['mTotal']         = number_format($fila['TOTAL'],0);
+            $json[$i]['mLinea']         = number_format($fila['LINEA'],0);
+            $i++;
+        }
+        
     }
     header('Content-Type: application/json; charset=utf-8');
     echo $val = str_replace('\\/', '/', json_encode($json));
