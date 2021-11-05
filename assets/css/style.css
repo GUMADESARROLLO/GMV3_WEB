@@ -11,7 +11,8 @@
 }
 
 p {
-    font-size: 0.70vw;
+    font-size: 0.80vw;
+    word-break:break-word;
     text-align: left !important;
 }
 h4{
@@ -22,3 +23,16 @@ h4{
     border: 1px solid 	#d3d3d3;
     
 }
+
+/*@media screen and (min-width: 1200px) {
+    body {
+      background-color: lightgreen;
+    }
+
+    p {
+        font-size: 0.80vw;
+        word-break:break-word;
+        text-align: left !important;
+    }
+
+  }*/
