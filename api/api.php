@@ -1000,12 +1000,15 @@ if (isset($_GET['category_id'])) {
 
     foreach ($query as $fila) {
         if ($fila['CANTIDAD'] > 0) {
+
+            $Total = $fila['CANTIDAD'] * $fila['VALOR'];
+
             $json[$i]['mFactura']       = $fila['FACTURA'];
             $json[$i]['mFecha']         = $fila['FECHA']->format('d/m/Y'); 
             $json[$i]['mVineta']        = $fila['ARTICULO'];
             $json[$i]['mCantidad']      = number_format($fila['CANTIDAD'],0);
             $json[$i]['mValor']         = number_format($fila['VALOR'],0);
-            $json[$i]['mTotal']         = number_format($fila['TOTAL'],0);
+            $json[$i]['mTotal']         = number_format($Total,0);
             $json[$i]['mLinea']         = number_format($fila['LINEA'],0);
             $i++;
         }
@@ -1056,6 +1059,7 @@ if (isset($_GET['category_id'])) {
         foreach ($resouter as $key){
 
             $array[$i]['mId']               = $key['id'];
+            $array[$i]['mRuta']             = $key['ruta'];
             $array[$i]['mRecibo']           = $key['recibo'];
             $array[$i]['mCod_Cliente']      = $key['cod_cliente'];
             $array[$i]['mName_Cliente']     = $key['name_cliente'];

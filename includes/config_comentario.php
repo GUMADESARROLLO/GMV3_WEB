@@ -3,8 +3,7 @@
     //database configuration
     
     $host       = "192.168.1.11";
-    $user       = "Dios";
-    
+    $user       = "Dios";    
     //$host       = "localhost";
     //$user       = "root";
     $pass       = "a7m1425.";
