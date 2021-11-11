@@ -1056,6 +1056,7 @@ if (isset($_GET['category_id'])) {
         foreach ($resouter as $key){
 
             $array[$i]['mId']               = $key['id'];
+            $array[$i]['mRuta']             = $key['ruta'];
             $array[$i]['mRecibo']           = $key['recibo'];
             $array[$i]['mCod_Cliente']      = $key['cod_cliente'];
             $array[$i]['mName_Cliente']     = $key['name_cliente'];
