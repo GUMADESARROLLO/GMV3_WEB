@@ -1,76 +1,31 @@
 <?php
-include_once('../includes/config.php');
-include_once('functions.php');
-include_once('sql-query.php');
-include_once('../includes/Sqlsrv.php');
+/*include_once ('../includes/config.php');
+include_once ('../includes/Sqlsrv.php');
+include_once ('../public/sql-query.php');*/
+//include_once('../includes/config.php');
 
-function pagination($filtro)
-{
-    $json = array();
-    $page = 0;
-    $total_pages = 0;
-    $record_size = 0;
-    $val = '';
-    $i = 0;
-    $laboratio = $_POST['laboratorio'];
-    try {
-        $sqlsrv = new Sqlsrv();
-        if ($laboratio == "TODOS") {
-            $numfilas = $sqlsrv->fetchArray("SELECT COUNT(*) AS num FROM GMV_mstr_articulos WHERE EXISTENCIA > 1 OR ARTICULO LIKE 'VU%'");
-            foreach ($numfilas as $fila) {
-                $rowCount = $fila['num'];
-            }
-            //echo $rowCount;
-            if ($rowCount > 0 && $rowCount != null) {
-                $total_pages = ceil($rowCount / 15);
-                $record_size = $rowCount;
-                $total_pages = ceil($record_size / 15);
-                $page = 1;
-                $offset = ($page - 1) * 15;
+if (isset($_POST['callback'])) {
 
-                $json[$i]['page']                 = $page;
-                $json[$i]['offset']               = $offset;
-                $json[$i]['rowCount']             = $rowCount;
-                $json[$i]['totalPage']            = $total_pages;
-
-                header('Content-Type: application/json; charset=utf-8');
-                echo $val =  json_encode($json);
-            }
-        } else {
-            $numfilas = $sqlsrv->fetchArray("SELECT COUNT(*) AS num FROM GMV_mstr_articulos WHERE LABORATORIO='$laboratio' AND EXISTENCIA > 1 ");
-            foreach ($numfilas as $fila) {
-                $rowCount = $fila['num'];
-            }
-            //echo $rowCount;
-            if ($rowCount > 0 && $rowCount != null) {
-                $total_pages = ceil($rowCount / 15);
-                $record_size = $rowCount;
-                $total_pages = ceil($record_size / 15);
-                $page = 1;
-                $offset = ($page - 1) * 15;
-
-                $json[$i]['page']                 = $page;
-                $json[$i]['offset']               = $offset;
-                $json[$i]['rowCount']             = $rowCount;
-                $json[$i]['totalPage']            = $total_pages;
-
-                header('Content-Type: application/json; charset=utf-8');
-                echo $val =  json_encode($json);
-            }
-        }
-    } catch (Throwable $th) {
-        echo ($th->getMessage());
+    $function = $_POST['callback'];
+    if ($function == 'Buscar') {
+        search($_POST['text']);
     }
 }
 
-function search($texto)
+function search($text)
 {
-    if (isset($_POST['txt_buscar'])) {
-        $i=0;
+    try {
+        include_once('functions.php');
+        include_once('sql-query.php');
+        include_once('../includes/Sqlsrv.php');
+        include_once('../includes/config.php');
 
-        $text = $_POST['txt_buscar'];
+        $connect->set_charset('utf8');
+
+        $i = 0;
+        $json = array();
         $sqlsrv = new Sqlsrv();
-        $query = $sqlsrv->fetchArray("SELECT * FROM GMV_mstr_articulos WHERE DESCRIPCION LIKE '% '" . $text . "'%' AND EXISTENCIA > 1");
+        $query = $sqlsrv->fetchArray("SELECT * FROM GMV_mstr_articulos WHERE DESCRIPCION LIKE '%" . $text . "%' AND EXISTENCIA > 1");
         foreach ($query as $fila) {
             $set_img = "SinImagen.png";
             $set_des = "";
@@ -114,20 +69,21 @@ function search($texto)
                     </body>
                 </html>';
             }
+
+
             $json[$i]['product_id']               = $fila["ARTICULO"];
             $json[$i]['product_name']             = strtoupper($fila['DESCRIPCION']);
             $json[$i]['product_image']            = $set_img;
             $json[$i]['product_description']      = $set_des;
             $i++;
+
+            header('Content-Type: application/json; charset=utf-8');
+            echo $val = str_replace('\\/', '/', json_encode($json));
+            $sqlsrv->close();
         }
+        //}
+    } catch (Throwable $th) {
+        echo ($th->getMessage());
     }
 }
-if (isset($_POST['callback'])) {
-    $function = $_POST['callback'];
-    if ($function == 'Pagination') {
-        pagination($_POST['laboratorio']);
-    }
-    if ($function == 'Buscar') {
-        search($_POST['texto']);
-    }
-}
+

@@ -8,9 +8,13 @@
 
         loadLaboratorios();
         loadData();
-        //pagination();
-ñ
+
+        function addElement(parent, child) {
+            parent.append(child);
+        }
+
         function loadLaboratorios() {
+            var lab = $('#lab').val();
             $.ajax({
                 type: 'GET',
                 url: 'http://192.168.1.15:8448/gmv3/api/api.php?get_recent',
@@ -25,10 +29,20 @@
                     });
 
                     result.forEach(element => {
-                        addElement($("#laboratorios"),
-                            $("<option></option>").text(element.LAB).attr({
-                                value: element.LAB
-                            }));
+                        if ($.trim(element.LAB) == $.trim(lab)) {
+                            addElement($("#laboratorios"),
+                                $("<option selected></option>").text(element.LAB).attr({
+                                    value: element.LAB
+                                }));
+                        } else if (element.LAB == null || element.LAB == "") {
+
+                        } else {
+                            addElement($("#laboratorios"),
+                                $("<option></option>").text(element.LAB).attr({
+                                    value: element.LAB
+                                }));
+                        }
+
                     });
                     // alert(JSON.stringify(result, null, 4));
 
@@ -43,58 +57,12 @@
             });
         }
 
-        function pagination() {
-            var offset = parseInt($("#offset").val());
-            var lab = $('#laboratorios option:selected').val();
-            var i = 0;
-            var num = offset + 15;
-            $.ajax({
-                type: 'POST',
-                url: 'public/ajaxPDF.php',
-                dataType: "json",
-                data: {
-                    callback: 'Pagination',
-                    laboratorio: lab
-                },
-                success: function(data) {
-                    console.log(data);
-                    data.forEach(element => {
-                        var page = element.page;
-                        offset.attr('value',0);
-                        $('#first-page');
-                        $('#pag-previous');
-                        $('#pag-next');
-                        $('#pag-last');
-                        var link = "manage-product2.php?rowCount=" + (element.rowCount) + "";
-                        $('#page').attr('href', link);
-
-                        var last = "manage-product2.php?page=" + (element.totalPage) + ""; // ultimo link
-                        $('#pag-last').attr('href', last);
-                        $('#total-paginas').text(element.totalPage);
-                        $('#total-registros').text(element.rowCount);
-                        console.log(link);
-                    })
-                    loadData();   
-                },
-                error: function(xhr, ajaxOptions, thrownError) {
-                    alert(thrownError + '\r\n' +
-                        xhr.statusText + '\r\n' +
-                        xhr.responseText + '\r\n' +
-                        ajaxOptions);
-                }
-            });
-
-        }
-
         function loadData() {
             var Pages = parseInt($("#offset").val());
-            var filtro = $('#laboratorios option:selected').val();
+            var lab = $('#lab').val();
             var i = 0;
             var num = Pages + 15;
             $.ajax({
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded',
-                },
                 type: 'GET',
                 url: 'http://192.168.1.15:8448/gmv3/api/api.php?get_recent',
                 dataType: "json",
@@ -104,7 +72,7 @@
                     count = Object.keys(data).length;
                     console.log(count);
                     data.forEach(element => {
-                        if (element.LAB == filtro) {
+                        if ($.trim(element.LAB) == $.trim(lab)) {
                             i++;
                             if (i <= num && i > Pages) {
                                 const scriptHTML = `<div class="col-md-4">
@@ -118,7 +86,7 @@
                                                                         </div>
                                                                         <div class="col-md-6">
                                                                         <h4 id="tilte-medicament">` + element.product_name + `</h4>
-                                                                        <div class="container-fluid p-0 m-0" id="container-description">
+                                                                        <div class="container-fluid p-0 m-0 description" id="container-description">
                                                                         ` + element.product_description + `
                                                                         </div>
                                                                     </div>
@@ -127,16 +95,16 @@
                                                         </div>
                                                     </div>`;
                                 $("#content-products").append(scriptHTML);
-
                             }
-                        } else if (filtro == "TODOS") {
+                            //document.getElementById("laboratorios").value = lab;
+                        } else if ($.trim(lab) == "TODOS") {
                             i++;
                             if (i <= num && i > Pages) {
-                                const scriptHTML = `<div class="col-md-4">
+                                const scriptHTML = `<div class="col-lg-4 col-md-6 col-sm-12">
                                  <div class="card shadow mb-4 ">
                                                 <div class="card-body size-body">
-                                                    <div class="row">
-                                                <div class="col-md-6 p-0 m-0">
+                                                    <div class="row justify-content-center align-items-center">
+                                                    <div class="col-md-6 d-flex justify-content-center"   >
                                                     <div class="container-fluid p-0 m-0 text-center" id="content-img">
                                                         <img src="upload/product/` + element.product_image + `" class="img-fluid" alt="">
                                                     </div>
@@ -166,32 +134,62 @@
         }
 
         function Search() {
-            var texto = $('#txt_buscar').val();
-            console.log(texto);
+            var text = $('#txt_buscar').val();
+            // console.log(texto);
+            $("#content-products").empty();
             $.ajax({
-                type: 'GET',
-                url: 'public/formulario-PDF-clientes.php',
+                type: 'POST',
+                url: 'public/ajaxPDF.php',
                 dataType: "json",
-                data: {},
+                data: {
+                    callback: 'Buscar',
+                    text: text
+                },
                 success: function(data) {
-                    console.log('data');
                     data.forEach(element => {
-                        console.log(element);
+                        const scriptHTML = `<div class="col-md-4">
+                                                                <div class="card shadow mb-4 ">
+                                                                    <div class="card-body size-body">
+                                                                        <div class="row">
+                                                                    <div class="col-md-6 p-0 m-0">
+                                                                        <div class="container-fluid p-0 m-0 text-center" id="content-img">
+                                                                            <img src="upload/product/` + element.product_image + `" class="img-fluid" alt="">
+                                                                        </div>
+                                                                        </div>
+                                                                        <div class="col-md-6">
+                                                                        <h4 id="tilte-medicament">` + element.product_name + `</h4>
+                                                                        <div class="container-fluid p-0 m-0" id="container-description">
+                                                                        ` + element.product_description + `
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>`;
+                        $("#content-products").append(scriptHTML);
                     });
+                },
+                error: function(xhr, ajaxOptions, thrownError) {
+                    alert(thrownError + '\r\n' +
+                        xhr.statusText + '\r\n' +
+                        xhr.responseText + '\r\n' +
+                        ajaxOptions);
                 }
             });
         }
 
-        $('#txt_buscar').on('keypress', function(e) {
+
+        /* $('#txt_buscar').on('keypress', function(e) {
             var code = (e.keyCode ? e.keyCode : e.which);
             if (code == 13) {
                 Search();
             }
         });
-
+        */
         $('#btn-buscar').on('click', function(e) {
             Search();
         });
+
 
         $('#laboratorios').on('change', function(e) {
             var filtro = $('#laboratorios option:selected').val();
@@ -200,23 +198,11 @@
             while (container.firstChild) {
                 container.removeChild(container.firstChild)
             }
-            pagination();
+            var pagination_by_filtro = "manage-product2.php?page=1" + "&filtro=" + (filtro);
+            $(location).attr('href', pagination_by_filtro);
+
         });
-        $('#btn-buscar').on('click', function(e) {
-            Search();
-        });
-       /*$('#first-page').on('click', function(e) {
-            loadData();
-        });
-        $('#pag-previous').on('click', function(e) {
-            loadData();
-        });
-        $('#pag-next').on('click', function(e) {
-            loadData();
-        });
-        $('#pag-last').on('click', function(e) {
-            loadData();
-        });*/
+
 
     });
 </script>
