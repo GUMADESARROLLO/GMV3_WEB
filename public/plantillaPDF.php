@@ -1,6 +1,34 @@
 <?php
 
-$data = json_decode(file_get_contents('http://192.168.1.15:8448/gmv3/api/api.php?get_recent'), true);
+$array = json_decode(file_get_contents('http://186.1.15.166:8448/gmv3/api/api.php?get_recent'), true);
+
+$json = array();
+$i = 0;
+$img = '';
+//$laboratorio = $_REQUEST['filtro'];
+$filtro = isset($_GET['filtro']) ? $_GET['filtro'] : "TODOS";
+
+foreach ($array as $data) {
+  if (trim($filtro) === trim($data['LAB'])) {
+    $json[$i]['product_name']             = $data['product_name'];
+    $json[$i]['product_status']           = $data['product_status'];
+    $json[$i]['product_image']            = $data['product_image'];
+    $json[$i]['product_description']      = $data['product_description'];
+    $json[$i]['product_quantity']         = $data['product_quantity'];
+    $json[$i]['product_und']              = $data['product_und'];
+    $i++;
+  } else if (trim($filtro) === "TODOS") {
+    if ($i <= 100) {
+      $json[$i]['product_name']             = $data['product_name'];
+      $json[$i]['product_status']           = $data['product_status'];
+      $json[$i]['product_image']            = $data['product_image'];
+      $json[$i]['product_description']      = $data['product_description'];
+      $json[$i]['product_quantity']         = $data['product_quantity'];
+      $json[$i]['product_und']              = $data['product_und'];
+      $i++;
+    }
+  }
+}
 
 $html = '<!DOCTYPE html>
   <html lang="en">
@@ -9,59 +37,50 @@ $html = '<!DOCTYPE html>
       <title>Lista de productos</title>
       <link rel="stylesheet" href="style.css" media="all" />
     </head>
-    <body>
-      <header class="clearfix">
-        <div id="logo">
-          <img src="../assets/images/logo-umk.png">
-        </div>
-        <h1>LISTA DE PRODUCTOS</h1>
-        <div id="company" class="clearfix">
-        </div>
-        <div id="project">
-            <div>UNIMARK S.A </div>
-            <div><span class="font-weight-bold">DIRECCIÓN: </span>Semaforos Club Terraza, 150 mts. Oeste, Pista Jean Paul Genie, Managua</div>
-            <div><span class="font-weight-bold">TELEFONO: </span> (505)  2278 8787</div>
-            <div><span class="font-weight-bold">FECHA: </span>' . date('Y-m-d H:i:s') . '</div>
-        </div>
-      </header>
-      <main>
-        <table>
-          <thead>
-            <tr>
-              <th class="service">PRODUCTO</th>
-              <th class="desc">LABORATORIO</th>
-              <th class="desc">IMAGEN</th>
-              <th>PRECIO</th>
-              <th>CANTIDAD</th>
-              <th>TOTAL</th>
-            </tr>
-          </thead>
-          <tbody>';
-foreach ($data as $product) {
-    $html .= '<tr>
-                            <td class="service">' . $product['product_name'] . '</td>
-                            <td class="desc">' . $product['LAB'] . '</td>
-                            <td class="unit "> <div width="50px" height="50px"> <img src="../upload/product/'. $product['product_image'] . '" alt="" width="50px" height="50px"> </div></td>
-                            <td class="unit">' . number_format($product['product_price'], 2) . '</td>
-                            <td class="qty">' . number_format($product['product_quantity'], 2) . '</td>
-                            <td class="total">' . number_format(($product['product_quantity'] * $product['product_price']), 2) . '</td>
-                         </tr>';
+    <body>';
+$header = '<header class="clearfix">
+             <div class="title-content">
+               <h2 class="title text-right" id="title-prod">CATÁLOGO DE PRODUCTOS</h2>
+             </div>
+          </header>';
+
+$html .= '<main>
+      <div class="row" >';
+foreach ($json as $product) {
+  $html .= '
+          <div class="column">
+            <div class="card">
+                <img class="card-img-top" src="http://186.1.15.166:8448/gmv3/upload/product/' . $product['product_image'] . '" alt="Card image cap" >
+                <div class="card-body ">  
+                  <div class="container-style">
+                      <h6 class="card-title text-light">' . $product['product_name'] . '</h6>
+                      ' . $product['product_description'] . '
+                  </div>
+                </div>
+            </div>
+          </div>
+        ';
 }
-$html .= '
-          </tbody>
-        </table>
-      </main>
-      <footer>
-      Copyright © 2021. TODOS LOS DERECHOS RESERVADOS - UNIMARK S.A;
-      </footer>
-    </body>
+$html .= '</div>
+   </main>
+  </body>
 </html>';
+
+
+$footer = '<footer>
+            <div class="text-right">
+            <img class="text-left" src="../assets/reporte/img/polygonal19.jpg"  width="277px";>
+            <img class="" src="../assets/images/logo-umk-small.png" style="margin-right:15px;">
+            </div>
+</footer>';
 //require_once('vendor/autoload.php');
 require_once('../mpdf/mpdf.php');
 
-$mpdf = new mPDF('c', 'A4');
+$mpdf = new mPDF('c', 'A4-L');
 $css = file_get_contents('../assets/reporte/css/style.css');
-$mpdf->WriteHTML($css, 1);
+$mpdf->SetHTMLHeader($header);
+$mpdf->SetHTMLFooter($footer);
 
+$mpdf->WriteHTML($css, 1);
 $mpdf->WriteHTML($html);
 $mpdf->Output('reporte.pdf', 'I');

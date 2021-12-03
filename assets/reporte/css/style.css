@@ -1,130 +1,121 @@
-.clearfix:after {
+* {
+  box-sizing: border-box;
+}
+
+body {
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+/* Float four columns side by side */
+.column {
+  float: left;
+  width: 22%;
+  padding: 0 14px;
+
+  /*border: 1px solid #000 !important;  */
+
+}
+h2 {
+  border-bottom: 2px solid  #00407e;
+  color: #003366;
+  font-size: 2em;
+  line-height: 1.4em;
+  font-weight: normal;
+  text-align: center;
+  margin: 0 0 20px ;
+  text-align: left;
+  background-image: url("../assets/reporte/img/title-tape.png");
+  background-repeat: no-repeat;
+  background-size: cover;
+  margin-bottom: 200px !important;
+
+}
+
+/* Remove extra left and right margins, due to padding */
+.row {margin: 0 0px;}
+
+/* Clear floats after the columns */
+.row:after {
   content: "";
   display: table;
   clear: both;
 }
 
-a {
-  color: #5D6975;
-  text-decoration: underline;
+/* Responsive columns */
+@media screen and (max-width: 600px) {
+  .column {
+    width: 100%;
+    display: block;
+    margin-bottom: 20px;
+  }
 }
 
-body {
-  position: relative;
-  width: 21cm;  
-  height: 29.7cm; 
-  margin: 0 auto; 
-  color: #001028;
-  background: #FFFFFF; 
-  font-family: Arial, sans-serif; 
-  font-size: 12px; 
-  font-family: Arial;
-}
-
-header {
-  padding: 10px 0;
+/* Style the counter cards */
+.card {
+ /* box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);*/
+ /* padding: 16px;*/
+  text-align: center;
+  /*border: 1px solid black;*/
+  display: flex !important;
   margin-bottom: 30px;
+  
+
 }
 
-#logo {
-  text-align: center;
-  margin-bottom: 10px;
+.text-right{
+  text-align: right !important;
 }
 
-#logo img {
-  width: 90px;
+.text-left{
+  text-align: left !important;
+  align-self: start;
+  margin-right: 33rem;
 }
 
-h1 {
-  border-top: 1px solid  #5D6975;
-  border-bottom: 1px solid  #5D6975;
-  color: #5D6975;
-  font-size: 2.4em;
-  line-height: 1.4em;
-  font-weight: normal;
-  text-align: center;
-  margin: 0 0 20px 0;
-  background: url(../assets/reporte/img/dimension.png);
+
+.text-center{
+  text-align: center !important;
+  
 }
 
-#project {
-  float: left;
+
+.text-light{
+  color: #f1f1f1 !important;
 }
 
-#project span {
-  color: #5D6975;
-  text-align: right;
-  width: 52px;
-  margin-right: 10px;
-  display: inline-block;
-  font-size: 0.8em;
-}
-
-#company {
-  float: right;
-  text-align: right;
-}
-
-#project div,
-#company div {
-  white-space: nowrap;        
-}
-
-table {
+.container-style{
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  background-color:#003366; 
+  box-shadow: 4px 4px 8px 4px rgba(0, 0, 0, 0.521);
+  border: 5px solid #fff !important;
+  border-radius: 15px !important; 
+  max-height: 50px !important; 
   width: 100%;
-  border-collapse: collapse;
-  border-spacing: 0;
-  margin-bottom: 20px;
+  display: block;
+  
 }
 
-table tr:nth-child(2n-1) td {
-  background: #F5F5F5;
+.p-style{
+    align-items: center !important; 
+    vertical-align: middle;
 }
 
-table th,
-table td {
-  text-align: center;
+p{
+  padding: 0;
+  margin: 0;
+}
+.card-img-top{
+   margin-top: 20px;
+   height: 140px;
+   width: 100%;
+   display: block;
 }
 
-table th {
-  padding: 5px 20px;
-  color: #5D6975;
-  border-bottom: 1px solid #C1CED9;
-  white-space: nowrap;        
-  font-weight: normal;
-}
 
-table .service,
-table .desc {
-  text-align: left;
-}
-
-table td {
-  padding: 20px;
-  text-align: right;
-}
-
-table td.service,
-table td.desc {
-  vertical-align: top;
-}
-
-table td.unit,
-table td.qty,
-table td.total {
-  font-size: 1.2em;
-}
-
-table td.grand {
-  border-top: 1px solid #5D6975;;
-}
-
-#notices .notice {
-  color: #5D6975;
-  font-size: 1.2em;
-}
-
-footer {
+/*#footer-s {
+  display: flex !important;
   color: #5D6975;
   width: 100%;
   height: 30px;
@@ -133,4 +124,34 @@ footer {
   border-top: 1px solid #C1CED9;
   padding: 8px 0;
   text-align: center;
+  align-items: right !important;
+
+  margin-top: 5rem;
+}*/
+
+.title{
+  margin-bottom: 4rem !important;
+  /*border-bottom:  5px solid 	#5588ff;*/
+  width: 97.2%;
 }
+.title-content{
+ /* margin-top: -60px;*/
+  margin-bottom: 160px;
+
+
+
+
+}
+/*.clearfix{
+  margin-top: -40px;
+}
+.clearfix:after {
+  content: "";
+  display: table;
+  clear: both;
+}*/
+
+/*header {
+  padding: 10px 0;
+  margin-top: -140px;
+}*/
