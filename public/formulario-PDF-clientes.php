@@ -11,11 +11,9 @@ $filtro = isset($_GET['filtro']) ? $_GET['filtro'] : "TODOS";
 $offset = ($page - 1) * 15;
 try {
     $page = isset($_GET['page']) ? $_GET['page'] : 1;
-    //echo "el filtro es: " . $filtro;
     if (trim($filtro) == "TODOS") {
         $sqlsrv = new Sqlsrv();
         $numfilas = $sqlsrv->fetchArray("SELECT COUNT(*) AS num FROM GMV_mstr_articulos WHERE EXISTENCIA > 1 OR ARTICULO LIKE 'VU%'");
-
         foreach ($numfilas as $fila) {
             $rowCount = $fila['num'];
         }
@@ -107,50 +105,7 @@ try {
                 <div class="d-flex">
                     <a href=""></a>
                 </div>
-                <!-- <div class="container-fluid  p-0 m-0" id="">
-                    <div class="row card-deck" id="">
-                        <div class="col-md-3 ">
-                            <div class="card">
-                                <img class="card-img-top" src="upload/product/1603925034_6072370_3.png" alt="Card image cap" style="height: 200px; width: 100%; display: block;">
-                                <div class="card-body ">
-                                    <div class="d-flex justify-content-center shadow-lg    align-items-center text-center text-light" style="background-color:#003366; border: 5px solid #fff !important; border-radius: 15px !important; height: 120px; width: 100%; display: block;" ;>
-                                        <h5 class="card-title  text-light">ABIRATERONA ACETATO 250 MG TABLETAS 60/FRASCO 1/CAJA (NAPROD)</h5>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-3">
-                            <div class="card">
-                                <img class="card-img-top" src="upload/product/SinImagen.png" alt="Card image cap" style="height: 200px; width: 100%; display: block;">
-                                <div class="card-body">
-                                    <div class="d-flex justify-content-center shadow-lg align-items-center   text-center text-light" style="background-color:#003366; border: 5px solid #fff !important; border-radius: 15px !important  ; height: 120px; width: 100%; display: block;" ;>
-                                        <h5 class="card-title  text-light">ACETAMINOFEN 500 MG TABLETAS 100/CAJA (HUAZHONG)</h5>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-3">
-                            <div class="card">
-                                <img class="card-img-top" src="upload/product/1612806395__6096091.png" alt="Card image cap" style="height: 200px; width: 100%; display: block;">
-                                <div class="card-body">
-                                    <div class="d-flex justify-content-center shadow-lg align-items-center  text-center text-light" style="background-color:#003366; border: 5px solid #fff !important; border-radius: 15px !important ; height: 120px; width: 100%; display: block;" ;>
-                                        <h5 class="card-title  text-light">AMOXICILINA 875 MG + ACIDO CLAVULANICO 125 MG TABLETAS RECUBIERTAS 14/CAJA (REYOUNG)</h5>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-3">
-                            <div class="card">
-                                <img class="card-img-top" src="upload/product/1603924898_7092343.png" alt="Card image cap" style="height: 200px; width: 100%; display: block;">
-                                <div class="card-body">
-                                    <div class="d-flex justify-content-center shadow-lg align-items-center  text-center text-light" style="background-color:#003366; border: 5px solid #fff !important; border-radius: 15px !important ; height: 120px; width: 100%; display: block;" ;>
-                                        <h5 class="card-title  text-light">BACTELID®(LINEZOLID) 600 MG TABLETAS RECUBIERTAS 10/CAJA (GUMA PHARMAL)</h5>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>-->
+
                 <!-- <button type="button" class="btn btn-primary" data-toggle="modal" data-target=".bd-example-modal-lg">ver mas...</button>-->
                 <!-- start popup product-->
                 <div class="modal fade bd-example-modal-lg" id="#Modal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
@@ -176,9 +131,8 @@ try {
                                                             </div>
                                                         </div>
                                                         <div class="col-md-8  p-0 m-0">
-                                                            <h6 class="" id="tilte-medicament"></h6>
+                                                            <h6 class="" id="tilte-medicament-modal"></h6>
                                                             <div class="container-fluid p-0 m-0" id="container-description-modal">
-                                                              
                                                             </div>
                                                         </div>
                                                     </div>
@@ -194,13 +148,7 @@ try {
                         </div>
                     </div>
                 </div>
-
-
             </div>
-
-
-
-
             <nav aria-label="Page navigation example" id="pagination-products">
                 <ul class="pagination justify-content-end">
                     <li class="page-item">

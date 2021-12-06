@@ -1,0 +1,157 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+/* Float four columns side by side */
+.column {
+  float: left;
+  width: 22%;
+  padding: 0 14px;
+
+  /*border: 1px solid #000 !important;  */
+
+}
+h2 {
+  border-bottom: 2px solid  #00407e;
+  color: #003366;
+  font-size: 2em;
+  line-height: 1.4em;
+  font-weight: normal;
+  text-align: center;
+  margin: 0 0 20px ;
+  text-align: left;
+  background-image: url("../assets/reporte/img/title-tape.png");
+  background-repeat: no-repeat;
+  background-size: cover;
+  margin-bottom: 200px !important;
+
+}
+
+/* Remove extra left and right margins, due to padding */
+.row {margin: 0 0px;}
+
+/* Clear floats after the columns */
+.row:after {
+  content: "";
+  display: table;
+  clear: both;
+}
+
+/* Responsive columns */
+@media screen and (max-width: 600px) {
+  .column {
+    width: 100%;
+    display: block;
+    margin-bottom: 20px;
+  }
+}
+
+/* Style the counter cards */
+.card {
+ /* box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);*/
+ /* padding: 16px;*/
+  text-align: center;
+  /*border: 1px solid black;*/
+  display: flex !important;
+  margin-bottom: 30px;
+  
+
+}
+
+.text-right{
+  text-align: right !important;
+}
+
+.text-left{
+  text-align: left !important;
+  align-self: start;
+  margin-right: 33rem;
+}
+
+
+.text-center{
+  text-align: center !important;
+  
+}
+
+
+.text-light{
+  color: #f1f1f1 !important;
+}
+
+.container-style{
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  background-color:#003366; 
+  box-shadow: 4px 4px 8px 4px rgba(0, 0, 0, 0.521);
+  border: 5px solid #fff !important;
+  border-radius: 15px !important; 
+  max-height: 50px !important; 
+  width: 100%;
+  display: block;
+  
+}
+
+.p-style{
+    align-items: center !important; 
+    vertical-align: middle;
+}
+
+p{
+  padding: 0;
+  margin: 0;
+}
+.card-img-top{
+   margin-top: 20px;
+   height: 140px;
+   width: 100%;
+   display: block;
+}
+
+
+/*#footer-s {
+  display: flex !important;
+  color: #5D6975;
+  width: 100%;
+  height: 30px;
+  position: absolute;
+  bottom: 0;
+  border-top: 1px solid #C1CED9;
+  padding: 8px 0;
+  text-align: center;
+  align-items: right !important;
+
+  margin-top: 5rem;
+}*/
+
+.title{
+  margin-bottom: 4rem !important;
+  /*border-bottom:  5px solid 	#5588ff;*/
+  width: 97.2%;
+}
+.title-content{
+ /* margin-top: -60px;*/
+  margin-bottom: 160px;
+
+
+
+
+}
+/*.clearfix{
+  margin-top: -40px;
+}
+.clearfix:after {
+  content: "";
+  display: table;
+  clear: both;
+}*/
+
+/*header {
+  padding: 10px 0;
+  margin-top: -140px;
+}*/

@@ -38,30 +38,26 @@ $html = '<!DOCTYPE html>
       <link rel="stylesheet" href="style.css" media="all" />
     </head>
     <body>';
-$header = '<header class="clearfix">
+$header = '<header>
              <div class="title-content">
                <h2 class="title text-right" id="title-prod">CATÁLOGO DE PRODUCTOS</h2>
              </div>
           </header>';
 
 $html .= '<main>
-      <div class="row" >';
+          <table>';
 foreach ($json as $product) {
   $html .= '
-          <div class="column">
-            <div class="card">
-                <img class="card-img-top" src="http://186.1.15.166:8448/gmv3/upload/product/' . $product['product_image'] . '" alt="Card image cap" >
-                <div class="card-body ">  
-                  <div class="container-style">
-                      <h6 class="card-title text-light">' . $product['product_name'] . '</h6>
-                      ' . $product['product_description'] . '
-                  </div>
-                </div>
-            </div>
-          </div>
-        ';
+                    <tr class="Style" >
+                        <td><img class="" src="http://186.1.15.166:8448/gmv3/upload/product/' . $product['product_image'] . '" height="160px"   width="160px" alt="Card image cap" ></td>
+                        <td class ="table-style"  width="600px">
+                        <h6 class="">' . $product['product_name'] . '</h6>
+                                          ' . $product['product_description'] . '
+                        </td>
+                    </tr>
+        ';  
 }
-$html .= '</div>
+$html .= '</table>
    </main>
   </body>
 </html>';

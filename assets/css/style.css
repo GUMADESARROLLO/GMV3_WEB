@@ -3,14 +3,15 @@
     height        : 15rem;
 }
 
-
 .size-image {
     max-width     : 10rem;
     max-height    : 10rem;
     vertical-align: middle !important;
-
 }
 
+#container-description {
+    max-height: 135px !important;
+}
 
 h6{
     text-align: left !important;
@@ -36,21 +37,11 @@ h6{
     max-width: 100% !important;
     min-height: 150px !important;
     max-height: 200px !important;
-
 }
 p{
-    display: block;
-    display: -webkit-box;
-    max-width: 100%;
-    height: 110px;
-    margin: 0 auto;
-    line-height: 1.5;
-    -webkit-line-clamp: 6;
-    -webkit-box-orient: vertical !important;
-    overflow: hidden;
-    text-overflow: ellipsis;
     color: 	#777777;
     justify-content: left;
+    
 }
 @media only screen and (max-width: 601px) {
     p {
@@ -77,44 +68,10 @@ p{
     max-height    : 12rem;
 }
 
-
 .content-descrip{
     border: 1px solid black !important ;
+    max-height: 135px !important;
 }
-
-/*#container-description {
-    height: 400px;
-    
-    white-space: nowrap !important;
-    text-overflow: ellipsis !important;
-    overflow: hidden !important;
-}*/
-
-/*#container-description {
-    display: block;
-    display: -webkit-box;
-    max-width: 100%;
-    height: 215.5px;
-    margin: 0 auto;
-   
-    line-height: 1 !important;
-    -webkit-line-clamp: 18 !important;
-    -webkit-box-orient: vertical !important;
-    overflow: hidden !important;
-    text-overflow: ellipsis !important;
-  }/*
-/*@media screen and (min-width: 1200px) {
-    body {
-      background-color: lightgreen;
-    }
-
-    p {
-        font-size: 0.80vw;
-        word-break:break-word;
-        text-align: left !important;
-    }
-
-  }*/
 
   .block-ellipsis {
     display: block;
@@ -145,7 +102,6 @@ p{
    /* cursor: pointer;*/
     outline: inherit;
     font-size: 12px;
-
 }
 
 .btn-modal-pre{
