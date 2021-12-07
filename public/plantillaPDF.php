@@ -46,9 +46,10 @@ $header = '<header>
 
 $html .= '<main>
           <table>';
+          
 foreach ($json as $product) {
   $html .= '
-                    <tr class="Style" >
+                    <tr class="table-header" >
                         <td><img class="" src="http://186.1.15.166:8448/gmv3/upload/product/' . $product['product_image'] . '" height="160px"   width="160px" alt="Card image cap" ></td>
                         <td class ="table-style"  width="600px">
                         <h6 class="">' . $product['product_name'] . '</h6>

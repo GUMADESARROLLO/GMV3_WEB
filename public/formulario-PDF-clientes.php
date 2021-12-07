@@ -1,5 +1,4 @@
 <?php
-header('Access-Control-Allow-Origin: *');
 
 include 'functions.php';
 include 'sql-query.php';
@@ -73,7 +72,7 @@ try {
                                             <i class="fas fa-search fa-sm"></i>
                                         </button>
                                     </div>
-                                    <div class="input-group col-sm-2">
+                                    <div class="input-group col-sm-2 py-2">
                                         <select name="laboratorios" id="laboratorios" class="form-control">
                                             <option id="item-seleccionado" name="item-seleccionado" value="TODOS">TODOS</option>
                                         </select>
