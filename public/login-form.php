@@ -88,7 +88,7 @@
                             header("location: manage-banner.php");
                             break;
                         default:
-                            header("location: manage-order.php");
+                            header("location: manage-product2.php");
                             break;
                     }
 

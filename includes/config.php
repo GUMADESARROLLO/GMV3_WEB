@@ -3,7 +3,7 @@
     //database configuration
     $host       = "localhost";
     $user       = "root";
-    $pass       = "a7m1425.";
+    $pass       = "";
     $database   = "ecommerce_android_app";
 
     $connect = new mysqli($host, $user, $pass, $database);
