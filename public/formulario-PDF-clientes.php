@@ -69,18 +69,18 @@ try {
                         <div class="card border-left-primary shadow h-100">
                             <div class="card-body">
                                 <div class="form-row">
-                                    <div class="input-group col-sm-8">
+                                    <div class="input-group col-sm-9">
                                         <span class="btn text-dark disabled" readonly style="border-radius: 0px;border: 1px solid #ced4da; background-color: #cccccc; cursor: default;" id="btn-buscar">
                                             <i class="fas fa-search fa"></i>
                                         </span>
                                         <input type="text" class="form-control bg-light small" placeholder="Buscar..." aria-label="Search" aria-describedby="basic-addon2" id="txt_buscar">
                                     </div>
                                     <div class="input-group col-sm-2 ">
-                                        <select name="laboratorios" id="laboratorios" class="form-control text-uppercase">
+                                        <select name="laboratorios" id="laboratorios" class="form-control">
                                             <option id="item-seleccionado" name="item-seleccionado" value="TODOS">TODOS</option>
                                         </select>
                                     </div>
-                                    <div class="input-group col-sm-2">
+                                    <div class="input-group col-sm-1">
                                         <div class="container text-right">
                                             <a id="" href="public/plantillaPDF.php?filtro=<?php echo $filtro ?>" target="_blank" class="btn btn-light text-danger p-0 border-0  float-right">
                                                 <i class="fas fa-file-pdf fa-2x"></i>

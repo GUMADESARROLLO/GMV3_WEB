@@ -55,13 +55,12 @@ $html .= '<main>
           <div class="container-full ">
            ';
 foreach ($json as $product) {
-
   $html .= '
   <div class="container">
-                <table>
+              <table>
                     <tr>
-                        <td ><img class="" src="http://186.1.15.166:8448/gmv3/upload/product/' . $product['product_image'] . '" height="160px"   width="160px" alt="Card image cap" style="margin-top:15px;" ></td>
-                        <td class ="table-style"  width="600px">
+                        <td ><img class="" src="http://186.1.15.166:8448/gmv3/upload/product/' . $product['product_image'] . '" height="150px"   width="150px" alt="Card image cap" style="margin-top:15px;" ></td>
+                        <td class ="table-style"  width="300px">
                         <h6 class="title-product">' . $product['product_name'] . '</h6>
                                           ' . $product['product_description'] . '
                         </td>
@@ -88,7 +87,7 @@ $mpdf = new mPDF('',    // mode - default ''
 15,    // margin_left
 15,    // margin right
 22,    // margin top
-16,    // margin bottom
+22,    // margin bottom
 9,     // margin header
 9,     // margin footer
 'L'    );

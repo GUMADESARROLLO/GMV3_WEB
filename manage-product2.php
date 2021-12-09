@@ -35,14 +35,14 @@
                     result.forEach(element => {
                         if ($.trim(element.LAB) == $.trim(lab)) {
                             addElement($("#laboratorios"),
-                                $("<option selected></option>").text(element.LAB).attr({
+                                $("<option selected></option>").text(element.LAB.toUpperCase()).attr({
                                     value: element.LAB
                                 }));
                         } else if (element.LAB == null || element.LAB == "") {
 
                         } else {
                             addElement($("#laboratorios"),
-                                $("<option></option>").text(element.LAB).attr({
+                                $("<option></option>").text(element.LAB.toUpperCase()).attr({
                                     value: element.LAB
                                 }));
                         }
