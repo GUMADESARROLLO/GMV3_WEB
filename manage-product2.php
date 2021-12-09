@@ -2,6 +2,7 @@
 <?php include 'public/menubar.php'; ?>
 <?php include 'public/footer.php'; ?>
 <?php include 'public/formulario-PDF-clientes.php'; ?>
+<?php header('Access-Control-Allow-Origin: *'); ?>
 
 <script>
     $(document).ready(function() {
@@ -171,7 +172,7 @@
                 $("#pagination-products").show();
                 return;
             }
-            
+
             // $("#pagination-products").empty();
             $.ajax({
                 type: 'POST',
@@ -253,10 +254,6 @@
             if (code == 13) {
                 Search();
             }
-        });
-
-        $('#btn-buscar').on('click', function(e) {
-            Search();
         });
 
         $(document).on('click', '.btnModal', function() {
