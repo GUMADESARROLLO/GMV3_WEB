@@ -4,6 +4,7 @@ $array = json_decode(file_get_contents('http://186.1.15.166:8448/gmv3/api/api.ph
 
 $json = array();
 $i = 0;
+$j = 0;
 $img = '';
 //$laboratorio = $_REQUEST['filtro'];
 $filtro = isset($_GET['filtro']) ? $_GET['filtro'] : "TODOS";
@@ -39,41 +40,57 @@ $html = '<!DOCTYPE html>
     </head>
     <body>';
 $header = '<header>
-             <div class="title-content">
+             <div class="title-content" >
                <h2 class="title text-right" id="title-prod">CATÁLOGO DE PRODUCTOS</h2>
              </div>
           </header>';
 
+$footer = '<footer>
+              <div class="text-right">
+                <img class="" src="../assets/images/logo-umk-small.png" style="margin-right:15px;">
+              </div>
+      </footer>';
 $html .= '<main>
-          <table>';
-          
+          <div class="container-full ">';
 foreach ($json as $product) {
   $html .= '
-                    <tr class="table-header" >
-                        <td><img class="" src="http://186.1.15.166:8448/gmv3/upload/product/' . $product['product_image'] . '" height="160px"   width="160px" alt="Card image cap" ></td>
-                        <td class ="table-style"  width="600px">
-                        <h6 class="">' . $product['product_name'] . '</h6>
-                                          ' . $product['product_description'] . '
-                        </td>
-                    </tr>
-        ';  
+    <div class="container">
+                <table>
+                      <tr>
+                          <td ><img class="" src="http://186.1.15.166:8448/gmv3/upload/product/' . $product['product_image'] . '" height="150px"   width="150px" alt="Card image cap" style="margin-top:15px;" ></td>
+                          <td class ="table-style"  width="300px">
+                          <h6 class="title-product">' . $product['product_name'] . '</h6>
+                                            ' . $product['product_description'] . '
+                          </td>
+                      </tr>
+                </table>
+        </div>   
+          ';
 }
-$html .= '</table>
+$html .= '
+ 
+    </div>
    </main>
   </body>
 </html>';
 
 
-$footer = '<footer>
-            <div class="text-right">
-            <img class="text-left" src="../assets/reporte/img/polygonal19.jpg"  width="277px";>
-            <img class="" src="../assets/images/logo-umk-small.png" style="margin-right:15px;">
-            </div>
-</footer>';
 //require_once('vendor/autoload.php');
 require_once('../mpdf/mpdf.php');
 
-$mpdf = new mPDF('c', 'A4-L');
+$mpdf = new mPDF(
+  '',    // mode - default ''
+  'A4-L',    // format - A4, for example, default ''
+  0,     // font size - default 0
+  '',    // default font family
+  15,    // margin_left
+  15,    // margin right
+  22,    // margin top
+  22,    // margin bottom
+  9,     // margin header
+  9,     // margin footer
+  'L'
+);
 $css = file_get_contents('../assets/reporte/css/style.css');
 $mpdf->SetHTMLHeader($header);
 $mpdf->SetHTMLFooter($footer);
