@@ -18,6 +18,7 @@ h2 {
   background-repeat: no-repeat;
   background-size: cover;
   margin-bottom: 200px !important;
+  width: 98.5%;
 }
 /*** Distintas alineaciones de texto  ***/
 .text-right {
@@ -63,15 +64,20 @@ table {
   float: left;
   margin-bottom: 10px !important;
   margin-right: 15px !important;
+  border: 1px solid  rgba(226, 226, 226, 0.521) !important;
  /* border: 2px solid gray !important;*/
+  /*box-shadow: 2px 2px 2px 1px rgba(0, 0, 0, 0.726);*/
+  /*border: 1px solid gray !important;*/
+  /*box-shadow: 10px 5px 5px rgb(63, 63, 63) !important;*/
 }
 
 
 table,
 td {
   vertical-align: text-top;
-  background-color: #fff;
-  border: 2px solid gray !important;
+  /*background-color: #fff;*/
+  background-color: #eee;
+
 
 }
 
@@ -84,7 +90,7 @@ p {
 
 h6 {
   text-align: left !important;
-  color: rgba(0, 91, 150);
+  color: rgba(0, 91, 150); /*005B96 */ 
   border-radius: 5px;
   padding: 0px !important;
 }
@@ -100,6 +106,8 @@ h6 {
 .container {
   width: 33%;
   float: left;
-  border: 1px solid #f5f5f5 !important;
+ /* box-shadow: 1px 1px 1px rgb(63, 63, 63) !important;*/
+ border: 1px solid #f5f5f5 !important;
+
 }
 

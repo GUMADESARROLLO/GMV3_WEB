@@ -4,6 +4,7 @@ $array = json_decode(file_get_contents('http://186.1.15.166:8448/gmv3/api/api.ph
 
 $json = array();
 $i = 0;
+$j = 0;
 $img = '';
 //$laboratorio = $_REQUEST['filtro'];
 $filtro = isset($_GET['filtro']) ? $_GET['filtro'] : "TODOS";
@@ -56,21 +57,21 @@ $html .= '<main>
            ';
 foreach ($json as $product) {
   $html .= '
-  <div class="container">
-              <table>
-                    <tr>
-                        <td ><img class="" src="http://186.1.15.166:8448/gmv3/upload/product/' . $product['product_image'] . '" height="150px"   width="150px" alt="Card image cap" style="margin-top:15px;" ></td>
-                        <td class ="table-style"  width="300px">
-                        <h6 class="title-product">' . $product['product_name'] . '</h6>
-                                          ' . $product['product_description'] . '
-                        </td>
-                    </tr>
-              </table>
-      </div>   
-        ';
-  $i++;
+    <div class="container">
+                <table>
+                      <tr>
+                          <td ><img class="" src="http://186.1.15.166:8448/gmv3/upload/product/' . $product['product_image'] . '" height="150px"   width="150px" alt="Card image cap" style="margin-top:15px;" ></td>
+                          <td class ="table-style"  width="300px">
+                          <h6 class="title-product">' . $product['product_name'] . '</h6>
+                                            ' . $product['product_description'] . '
+                          </td>
+                      </tr>
+                </table>
+        </div>   
+          ';
 }
 $html .= '
+ 
     </div>
    </main>
   </body>
@@ -80,17 +81,19 @@ $html .= '
 //require_once('vendor/autoload.php');
 require_once('../mpdf/mpdf.php');
 
-$mpdf = new mPDF('',    // mode - default ''
-'A4-L',    // format - A4, for example, default ''
-0,     // font size - default 0
-'',    // default font family
-15,    // margin_left
-15,    // margin right
-22,    // margin top
-22,    // margin bottom
-9,     // margin header
-9,     // margin footer
-'L'    );
+$mpdf = new mPDF(
+  '',    // mode - default ''
+  'A4-L',    // format - A4, for example, default ''
+  0,     // font size - default 0
+  '',    // default font family
+  15,    // margin_left
+  15,    // margin right
+  22,    // margin top
+  22,    // margin bottom
+  9,     // margin header
+  9,     // margin footer
+  'L'
+);
 $css = file_get_contents('../assets/reporte/css/style.css');
 $mpdf->SetHTMLHeader($header);
 $mpdf->SetHTMLFooter($footer);
