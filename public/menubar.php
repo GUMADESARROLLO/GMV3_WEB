@@ -115,10 +115,6 @@ EOF;
     <link rel="stylesheet" type="text/css" href="assets/css/sb-admin-2.css"/>
     <link rel="stylesheet" type="text/css" href="assets/css/dataTables.bootstrap4.css"/>
     <link rel="stylesheet" type="text/css" href="assets/css/fontawesome-free/css/all.css"/>
-
-
-
-
 </head>
 
 <body>
@@ -202,7 +198,7 @@ EOF;
 		<div class="navbar-header">
 			<a href="javascript:void(0);" data-target="basicSidebar" data-placement="left" data-position="slidepush" is-open="true" is-open-width="1200" class="btn btn-sm pmd-btn-fab pmd-btn-flat pmd-ripple-effect pull-left margin-r8 pmd-sidebar-toggle"><i class="material-icons md-light">menu</i></a>	
 		  <a href="#" class="navbar-brand">
-              CATÁLOGO DE PRODUCTOS
+              CATALOGO DE PRODUCTOS
 		  </a>
 		</div>
 	</div>
