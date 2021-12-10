@@ -145,7 +145,7 @@ EOF;
 <aside id="basicSidebar" class="pmd-sidebar sidebar-default pmd-sidebar-slide-push pmd-sidebar-left pmd-sidebar-open bg-fill-darkblue sidebar-with-icons" role="navigation">
 	<ul class="nav pmd-sidebar-nav">
 		
-		
+
 
 		<?php
 
@@ -194,6 +194,7 @@ EOF;
 						<div class="media-right media-bottom"><i class="dic-more-vert dic"></i></div>
 					</a> 
 				</li>
+				XD
 
 			<!--	<li class="dropdown pmd-dropdown" >
 					<a aria-expanded="false" data-toggle="dropdown" class="btn-user dropdown-toggle media" data-sidebar="true" href="javascript:void(0);">	
