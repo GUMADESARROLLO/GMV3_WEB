@@ -129,23 +129,23 @@ EOF;
 	<div class="container-fluid">
 		<div class="pmd-navbar-right-icon pull-right navigation">
 			<!-- Notifications -->
-            <div class="dropdown notification icons pmd-dropdown">
+            <!-- <div class="dropdown notification icons pmd-dropdown">
 			
 				<a href="javascript:void(0)" title="Notification" class="dropdown-toggle pmd-ripple-effect"  data-toggle="dropdown" role="button" aria-expanded="true">
 					<div data-badge="<?php echo $total_pending; ?>" class="material-icons md-light pmd-sm pmd-badge  pmd-badge-overlap">assignment</div>
 				</a>
 			
-				<div class="dropdown-menu dropdown-menu-right pmd-card pmd-card-default pmd-z-depth" role="menu">
+				<div class="dropdown-menu dropdown-menu-right pmd-card pmd-card-default pmd-z-depth" role="menu"> -->
 					<!-- Card header -->
-					<div class="pmd-card-title">
+					<!-- <div class="pmd-card-title">
 						<div class="media-body media-middle">
 							<a href="#" class="pull-right"><?php echo $total_pending; ?> Pendientes</a>
 							<h3 class="pmd-card-title-text">Ordenes</h3>
 						</div>
-					</div>
+					</div>-->
 					
 					<!-- Notifications list -->
-					<ul class="list-group pmd-list-avatar pmd-card-list">
+					<!-- <ul class="list-group pmd-list-avatar pmd-card-list"> 
 
 					<?php if ($total_pending == '0') { ?>
 						<li class="list-group-item">
@@ -172,7 +172,7 @@ EOF;
 									<span class="list-group-item-text"><?php echo $row['date_time'];?></span>
 								</div>
 							</a>
-						</li>
+						</li>-->
 
 
 
@@ -180,7 +180,7 @@ EOF;
 
 
 
-					<?php } ?>
+					<!-- <?php } ?>
 						<li class="list-group-item unread">
 							<a href="manage-order.php">
 								<div class="media-body">
@@ -191,18 +191,18 @@ EOF;
 
 					<?php } ?>
 						
-					</ul><!-- End notifications list -->
+					</ul>--><!-- End notifications list -->
 
-				</div>
+				<!--</div>-->
 				
 				
-            </div> <!-- End notifications -->
+           <!-- </div> --> <!-- End notifications -->
 		</div>
 		<!-- Brand and toggle get grouped for better mobile display -->
 		<div class="navbar-header">
 			<a href="javascript:void(0);" data-target="basicSidebar" data-placement="left" data-position="slidepush" is-open="true" is-open-width="1200" class="btn btn-sm pmd-btn-fab pmd-btn-flat pmd-ripple-effect pull-left margin-r8 pmd-sidebar-toggle"><i class="material-icons md-light">menu</i></a>	
-		  <a href="dashboard.php" class="navbar-brand">
-              PLATAFORMA DE PEDIDOS
+		  <a href="#" class="navbar-brand">
+              CATÁLOGO DE PRODUCTOS
 		  </a>
 		</div>
 	</div>
@@ -273,18 +273,11 @@ EOF;
 				</li>
 
 				<li class="dropdown pmd-dropdown" >
-					<a aria-expanded="false" data-toggle="dropdown" class="btn-user dropdown-toggle media" data-sidebar="true" href="javascript:void(0);">	
+					<a href="manage-product2.php" aria-expanded="false" data-toggle="dropdown" class="btn-user dropdown-toggle media" data-sidebar="true" href="javascript:void(0);">	
 						<i class="material-icons media-left pmd-sm">local_mall</i> 
 						<span class="media-body">Productos</span>
 						<div class="media-right media-bottom"><i class="dic-more-vert dic"></i></div>
 					</a> 
-					<ul class="dropdown-menu">
-						<!-- <li><a href="add-product.php">Agregar Nuevo</a></li>
-						<li><a href="manage-product.php">Lista de productos</a></li>-->
-						<li><a href="manage-product2.php">Formulario de PDF clientes</a></li>
-						<li style="display:none;"><a href="edit-product.php"></a></li>
-						<li style="display:none;"><a href="send-onesignal-product-notification.php"></a></li>
-					</ul>
 				</li>
 
 			<!--	<li class="dropdown pmd-dropdown" >

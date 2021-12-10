@@ -47,14 +47,11 @@ $header = '<header>
 
 $footer = '<footer>
               <div class="text-right">
-                <img class="text-left" src="../assets/reporte/img/polygonal19.jpg"  width="277px";>
                 <img class="" src="../assets/images/logo-umk-small.png" style="margin-right:15px;">
               </div>
       </footer>';
 $html .= '<main>
-
-          <div class="container-full ">
-           ';
+          <div class="container-full ">';
 foreach ($json as $product) {
   $html .= '
     <div class="container">
