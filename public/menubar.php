@@ -124,75 +124,7 @@ EOF;
 
 	<div class="container-fluid">
 		<div class="pmd-navbar-right-icon pull-right navigation">
-			<!-- Notifications -->
-            <!-- <div class="dropdown notification icons pmd-dropdown">
 			
-				<a href="javascript:void(0)" title="Notification" class="dropdown-toggle pmd-ripple-effect"  data-toggle="dropdown" role="button" aria-expanded="true">
-					<div data-badge="<?php echo $total_pending; ?>" class="material-icons md-light pmd-sm pmd-badge  pmd-badge-overlap">assignment</div>
-				</a>
-			
-				<div class="dropdown-menu dropdown-menu-right pmd-card pmd-card-default pmd-z-depth" role="menu"> -->
-					<!-- Card header -->
-					<!-- <div class="pmd-card-title">
-						<div class="media-body media-middle">
-							<a href="#" class="pull-right"><?php echo $total_pending; ?> Pendientes</a>
-							<h3 class="pmd-card-title-text">Ordenes</h3>
-						</div>
-					</div>-->
-					
-					<!-- Notifications list -->
-					<!-- <ul class="list-group pmd-list-avatar pmd-card-list"> 
-
-					<?php if ($total_pending == '0') { ?>
-						<li class="list-group-item">
-							<p class="notification-blank">
-								<span class="dic dic-notifications-none"></span> 
-								<span>No tienes ordenes pendientes</span>
-							</p>
-						</li>
-
-					<?php } else { ?>
-
-					<?php while($row = mysqli_fetch_array($result)) { ?>
-
-
-
-						<li class="list-group-item unread">
-							<a href="order-detail.php?id=<?php echo $row['id'];?>">
-								<div class="media-body">
-
-									<span class="list-group-item-heading">
-										<span><?php echo $row['name'];?></span>
-									</span>
-									<span class="list-group-item-text"><?php echo $row['order_total'];?></span>
-									<span class="list-group-item-text"><?php echo $row['date_time'];?></span>
-								</div>
-							</a>
-						</li>-->
-
-
-
-
-
-
-
-					<!-- <?php } ?>
-						<li class="list-group-item unread">
-							<a href="manage-order.php">
-								<div class="media-body">
-									<div align="center">Ver Todo</div>
-								</div>
-							</a>
-						</li>
-
-					<?php } ?>
-						
-					</ul>--><!-- End notifications list -->
-
-				<!--</div>-->
-				
-				
-           <!-- </div> --> <!-- End notifications -->
 		</div>
 		<!-- Brand and toggle get grouped for better mobile display -->
 		<div class="navbar-header">
