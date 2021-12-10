@@ -194,8 +194,6 @@ EOF;
 						<div class="media-right media-bottom"><i class="dic-more-vert dic"></i></div>
 					</a> 
 				</li>
-				XD
-
 			<!--	<li class="dropdown pmd-dropdown" >
 					<a aria-expanded="false" data-toggle="dropdown" class="btn-user dropdown-toggle media" data-sidebar="true" href="javascript:void(0);">	
 						<i class="material-icons media-left pmd-sm">notifications</i>
