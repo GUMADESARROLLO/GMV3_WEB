@@ -145,20 +145,7 @@ EOF;
 <aside id="basicSidebar" class="pmd-sidebar sidebar-default pmd-sidebar-slide-push pmd-sidebar-left pmd-sidebar-open bg-fill-darkblue sidebar-with-icons" role="navigation">
 	<ul class="nav pmd-sidebar-nav">
 		
-		<!-- User info -->
-		<!-- <li class="dropdown pmd-dropdown pmd-user-info visible-xs visible-md visible-sm visible-lg">
-			<a aria-expanded="false" data-toggle="dropdown" class="btn-user dropdown-toggle media" data-sidebar="true" aria-expandedhref="javascript:void(0);">
-				<div class="media-left">
-					<img src="assets/themes/images/user-icon.png" alt="New User">
-				</div>
-				<div class="media-body media-middle">Hola,<?php echo $data['username'] ?></div>
-				<div class="media-right media-middle"><i class="dic-more-vert dic"></i></div>
-			</a>
-			<ul class="dropdown-menu">
-					<li><a href="edit-profile.php?id=<?php echo $data['id']; ?>">Perfil</a></li> -->
-				<!--		<li><a href="logout.php">Salir</a></li>-->
-				<!-- </ul>
-		</li><!-- End user info -->
+		
 
 		<?php
 
