@@ -84,6 +84,7 @@ if (isset($_GET['category_id'])) {
             $json[$i]['product_und']              = $fila["UNIDAD_MEDIDA"];
             $json[$i]['CALIFICATIVO']             = $fila["CALIFICATIVO"];
             $json[$i]['ISPROMO']                  = $isPromo ;
+            $json[$i]['LAB']                      = $fila["LABORATORIO"];
             $i++;
         }
 
@@ -169,6 +170,7 @@ if (isset($_GET['category_id'])) {
         $json[$i]['product_und']              = $fila["UNIDAD_MEDIDA"];
         $json[$i]['CALIFICATIVO']             = $fila["CALIFICATIVO"];
         $json[$i]['ISPROMO']                  = $isPromo ;
+        $json[$i]['LAB']                      = $fila["LABORATORIO"];
         $i++;
     }
 
@@ -471,7 +473,7 @@ if (isset($_GET['category_id'])) {
         $dta[$i]['ARTICULO']        = "N/D";
         $dta[$i]['DESCRIPCION']     = "N/D";
         $dta[$i]['OBSERVACIONES']        = "";
-         $dta[$i]['IMAGEN']          = "SinImagen.png";
+        $dta[$i]['IMAGEN']          = "SinImagen.png";
         $dta[$i]['CANTIDAD']        = number_format(0.00,2);
         $dta[$i]['VENTA']           = number_format(0.00,2);
     }
@@ -992,19 +994,25 @@ if (isset($_GET['category_id'])) {
 
     $sqlsrv = new Sqlsrv();
 
-    $query = $sqlsrv->fetchArray("SELECT * FROM view_MasterVinnetaFacturadas_umk T0 WHERE  T0.CLIENTE='".$_GET['get_vineta']."' ORDER BY T0.FACTURA", SQLSRV_FETCH_ASSOC);
+    $query = $sqlsrv->fetchArray("SELECT T0.FACTURA,T0.FECHA,T0.ARTICULO,(T0.CANTIDAD - T0.CANT_LIQUIDADA) AS CANTIDAD,T0.VALOR,T0.TOTAL,T0.LINEA  FROM view_MasterVinnetaFacturadas_umk T0 WHERE  T0.CLIENTE='".$_GET['get_vineta']."' ORDER BY T0.FACTURA", SQLSRV_FETCH_ASSOC);
     $i = 0;
     $json = array();
 
     foreach ($query as $fila) {
-        $json[$i]['mFactura']       = $fila['FACTURA'];
-        $json[$i]['mFecha']         = $fila['FECHA']->format('d/m/Y'); 
-        $json[$i]['mVineta']        = $fila['ARTICULO'];
-        $json[$i]['mCantidad']      = number_format($fila['CANTIDAD'],0);
-        $json[$i]['mValor']         = number_format($fila['VALOR'],0);
-        $json[$i]['mTotal']         = number_format($fila['TOTAL'],0);
-        $json[$i]['mLinea']         = number_format($fila['LINEA'],0);
-        $i++;
+        if ($fila['CANTIDAD'] > 0) {
+
+            $Total = $fila['CANTIDAD'] * $fila['VALOR'];
+
+            $json[$i]['mFactura']       = $fila['FACTURA'];
+            $json[$i]['mFecha']         = $fila['FECHA']->format('d/m/Y'); 
+            $json[$i]['mVineta']        = $fila['ARTICULO'];
+            $json[$i]['mCantidad']      = number_format($fila['CANTIDAD'],0);
+            $json[$i]['mValor']         = number_format($fila['VALOR'],0);
+            $json[$i]['mTotal']         = number_format($Total,0);
+            $json[$i]['mLinea']         = number_format($fila['LINEA'],0);
+            $i++;
+        }
+        
     }
     header('Content-Type: application/json; charset=utf-8');
     echo $val = str_replace('\\/', '/', json_encode($json));
@@ -1051,6 +1059,7 @@ if (isset($_GET['category_id'])) {
         foreach ($resouter as $key){
 
             $array[$i]['mId']               = $key['id'];
+            $array[$i]['mRuta']             = $key['ruta'];
             $array[$i]['mRecibo']           = $key['recibo'];
             $array[$i]['mCod_Cliente']      = $key['cod_cliente'];
             $array[$i]['mName_Cliente']     = $key['name_cliente'];
@@ -1081,8 +1090,130 @@ if (isset($_GET['category_id'])) {
         echo 'Try Again';
     }
     mysqli_close($connect); 
+}else if (isset($_GET['post_order_recibo'])) {
+    $ruta           = $_POST['ruta'];
+    $cod_cliente    = $_POST['cod_cliente'];
+
+    $recibo         = $_POST['recibo'];
+    $fecha_recibo   = $_POST['fecha_recibo'];
+    
+    $name_cliente   = $_POST['name_cliente'];    
+    $order_list     = $_POST['order_list'];
+    $order_total    = $_POST['order_total'];
+    $comment        = $_POST['comment'];
+    $comment_anul   = "";
+    $player_id      = $_POST['player_id'];
+    $date           = $_POST['date'];
+
+    $query = "INSERT INTO tbl_order_recibo (ruta, cod_cliente,recibo,fecha_recibo, name_cliente,created_at, order_list, order_total, comment,comment_anul, player_id) 
+    VALUES ('$ruta', '$cod_cliente', '$recibo', '$fecha_recibo', '$name_cliente','$date', '$order_list', '$order_total', '$comment', '$comment_anul', '$player_id')";
+
+
+    if (mysqli_query($connect_comentario, $query)) {
+        //include_once ('php-mail.php');
+        echo 'Data Inserted Successfully';
+    } else {
+        echo 'Try Again';
+    }
+    mysqli_close($connect); 
+}else if (isset($_GET['get_recibos_colector'])) {
+
+    $Usuario = $_GET['get_recibos_colector'];
+    $OrderBy = $_GET['OrderBy'];
+    $i=0;
+    $array = array();
+
+    $query = "SELECT * FROM tbl_order_recibo WHERE ruta = '".$Usuario."' and status != 3 ORDER BY date_time,status $OrderBy";
+    
+    $resouter = mysqli_query($connect_comentario, $query);
+
+    $total_records = mysqli_num_rows($resouter);
+    if($total_records >= 1){
+        foreach ($resouter as $key){
+
+            $array[$i]['mId']               = $key['id'];
+            $array[$i]['mRuta']             = $key['ruta'];
+            $array[$i]['mRecibo']           = $key['recibo'];
+            $array[$i]['mCod_Cliente']      = $key['cod_cliente'];
+            $array[$i]['mName_Cliente']     = $key['name_cliente'];
+            $array[$i]['mFecha']            = $key['date_time'];
+            $array[$i]['mBenificiario']     = "----";
+            $array[$i]['mOrderTotal']       = $key['order_total'];
+            $array[$i]['mComentario']       = $key['comment'];
+            $array[$i]['mStatus']           = $key['status'];
+            $array[$i]['mOrderList']        = $key['order_list'];
+            $array[$i]['mComment_anul']     = $key['comment_anul'];            
+
+            $i++;
+        }
+    }
+    header('Content-Type: application/json; charset=utf-8');
+    echo $val = str_replace('\\/', '/', json_encode($array));
+    
+}else if (isset($_GET['del_recibo_colector'])) {
+
+    $id           = $_POST['ID'];
+    $iDate        = date('Y-m-d H:i:s');
+
+    $query ="UPDATE tbl_order_recibo SET status = '3', updated_at = '".$iDate."' WHERE id = ".$id." ";
+
+    if (mysqli_query($connect_comentario, $query)) {
+        echo 'Recibo Anulado';
+    } else {
+        echo 'Try Again';
+    }
+    mysqli_close($connect); 
+}else if (isset($_GET['post_adjunto'])) {
+
+    $nomImagen  = $_POST['nom'];
+    $imagen     = $_POST['imagenes'];    
+    $Id_Recibo  = $_POST['Id_Recibo'];    
+
+    $id_img = time() . '-' . rand(0, 99999);
+
+    $nameImagen = $Id_Recibo. " - ". $id_img .  ".png";
+    
+    $actualpath = "../upload/recibos/". $nameImagen;    
+    file_put_contents($actualpath, base64_decode($imagen));
+
+
+    $query = "INSERT INTO tbl_order_recibo_adjuntos (id_recibo,Nombre_imagen) VALUES ('$Id_Recibo','$nameImagen')";
+
+    if (mysqli_query($connect_comentario, $query)) {
+        //include_once ('php-mail.php');
+        echo 'Data Inserted Successfully';
+    } else {
+        echo 'Try Again';
+    }
+    mysqli_close($connect);
+
+}else if (isset($_GET['get_recibos_adjuntos'])) {
+    
+    $IdRecibo = $_GET['get_recibos_adjuntos'];
+    $i=0;
+    $array = array();
+
+    $query = "SELECT * FROM tbl_order_recibo_adjuntos WHERE id_recibo = '".$IdRecibo."' ";
+
+    
+    $resouter = mysqli_query($connect_comentario, $query);
+
+    $total_records = mysqli_num_rows($resouter);
+
+    if($total_records >= 1){
+        foreach ($resouter as $key){
+
+            $array[$i]['mId']               = $key['id'];
+            $array[$i]['mRecibo']           = $key['id_recibo'];
+            $array[$i]['mNombreImagen']     = $key['Nombre_imagen'];
+            $i++;
+        }
+    }
+    header('Content-Type: application/json; charset=utf-8');
+    echo $val = str_replace('\\/', '/', json_encode($array));
 }else{
     header('Content-Type: application/json; charset=utf-8');
-    echo "no method found!";
+    echo "no method found!";    
+    
 }
-?>
+?>  
