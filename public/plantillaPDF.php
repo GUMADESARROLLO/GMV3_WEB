@@ -1,5 +1,6 @@
 <?php
 
+ini_set('max_execution_time', '300');
 $array = json_decode(file_get_contents('http://186.1.15.166:8448/gmv3/api/api.php?get_recent'), true);
 
 $json = array();
@@ -19,15 +20,15 @@ foreach ($array as $data) {
     $json[$i]['product_und']              = $data['product_und'];
     $i++;
   } else if (trim($filtro) === "TODOS") {
-    if ($i <= 100) {
-      $json[$i]['product_name']             = $data['product_name'];
-      $json[$i]['product_status']           = $data['product_status'];
-      $json[$i]['product_image']            = $data['product_image'];
-      $json[$i]['product_description']      = $data['product_description'];
-      $json[$i]['product_quantity']         = $data['product_quantity'];
-      $json[$i]['product_und']              = $data['product_und'];
-      $i++;
-    }
+      if($data['LAB']!=null){
+        $json[$j]['product_name']             = $data['product_name'];
+        $json[$j]['product_status']           = $data['product_status'];
+        $json[$j]['product_image']            = $data['product_image'];
+        $json[$j]['product_description']      = $data['product_description'];
+        $json[$j]['product_quantity']         = $data['product_quantity'];
+        $json[$j]['product_und']              = $data['product_und'];
+        $j++;
+      }  
   }
 }
 
@@ -45,11 +46,12 @@ $header = '<header>
              </div>
           </header>';
 
-$footer = '<footer>
+$footer = '<footer >
               <div class="text-right">
                 <img class="" src="../assets/images/logo-umk-small.png" style="margin-right:15px;">
               </div>
       </footer>';
+      
 $html .= '<main>
           <div class="container-full ">';
 foreach ($json as $product) {
@@ -57,7 +59,7 @@ foreach ($json as $product) {
     <div class="container">
                 <table>
                       <tr>
-                          <td ><img class="" src="http://186.1.15.166:8448/gmv3/upload/product/' . $product['product_image'] . '" height="150px"   width="150px" alt="Card image cap" style="margin-top:15px;" ></td>
+                          <td ><img class="" src="../upload/product/' . $product['product_image'] . '" height="150px"   width="150px" alt="Card image cap" style="margin-top:15px;" ></td>
                           <td class ="table-style"  width="300px">
                           <h6 class="title-product">' . $product['product_name'] . '</h6>
                                             ' . $product['product_description'] . '
