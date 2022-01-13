@@ -12,16 +12,10 @@ $i = 0;
 $offset = ($page - 1) * 15;
 try {
     $page = isset($_GET['page']) ? $_GET['page'] : 1;
+
     if (trim($filtro) == "TODOS") {
-        $rowCount = count($array);
-        $total_pages = ceil($rowCount / 15);
-        $page = isset($_GET['page']) ? $_GET['page'] : 1;
-        $lab =  $filtro;
-        $record_size = $rowCount;
-        $offset = ($page - 1) * 15;
-    } else {
         foreach ($array as $data) {
-            if (trim($filtro) === trim($data['LAB'])) {
+            if ($data['LAB'] != null) {
                 $json[$i]['product_name']             = $data['product_name'];
                 $json[$i]['product_status']           = $data['product_status'];
                 $json[$i]['product_image']            = $data['product_image'];
@@ -29,6 +23,26 @@ try {
                 $json[$i]['product_quantity']         = $data['product_quantity'];
                 $json[$i]['product_und']              = $data['product_und'];
                 $i++;
+            }
+        }
+        $rowCount = $i;
+        $total_pages = ceil($rowCount / 15);
+        $page = isset($_GET['page']) ? $_GET['page'] : 1;
+        $lab =  $filtro;
+        $record_size = $rowCount;
+        $offset = ($page - 1) * 15;
+    } else {
+        foreach ($array as $data) {
+            if ($data['LAB'] != null) {
+                if (trim($filtro) === trim($data['LAB'])) {
+                    $json[$i]['product_name']             = $data['product_name'];
+                    $json[$i]['product_status']           = $data['product_status'];
+                    $json[$i]['product_image']            = $data['product_image'];
+                    $json[$i]['product_description']      = $data['product_description'];
+                    $json[$i]['product_quantity']         = $data['product_quantity'];
+                    $json[$i]['product_und']              = $data['product_und'];
+                    $i++;
+                }
             }
         }
         $rowCount = $i;

@@ -21,14 +21,16 @@ if (isset($_POST['callback'])) {
                     $str = $productName;   
                     $match = preg_match_all($pattern, $str);
                     if ($match > 0) {
-                        $json[$i]['product_name']             = $data['product_name'];
-                        $json[$i]['product_status']           = $data['product_status'];
-                        $json[$i]['product_image']            = $data['product_image'];
-                        $json[$i]['product_description']      = $data['product_description'];
-                        $json[$i]['product_quantity']         = $data['product_quantity'];
-                        $json[$i]['product_und']              = $data['product_und'];
-                        $json[$i]['product_id']               = $data['product_id'];
-                        $i++;
+                        if($data['LAB']!=null){
+                            $json[$i]['product_name']             = $data['product_name'];
+                            $json[$i]['product_status']           = $data['product_status'];
+                            $json[$i]['product_image']            = $data['product_image'];
+                            $json[$i]['product_description']      = $data['product_description'];
+                            $json[$i]['product_quantity']         = $data['product_quantity'];
+                            $json[$i]['product_und']              = $data['product_und'];
+                            $json[$i]['product_id']               = $data['product_id'];
+                            $i++;
+                        }
                     }
                 }
             }

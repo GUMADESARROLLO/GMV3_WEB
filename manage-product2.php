@@ -76,10 +76,11 @@
                     count = Object.keys(data).length;
                     // console.log(count);
                     data.forEach(element => {
-                        if ($.trim(element.LAB) == $.trim(lab)) {
-                            i++;
-                            if (i <= num && i > Pages) {
-                                const scriptHTML = `
+                        if (element.LAB !== null ) {
+                            if ($.trim(element.LAB) == $.trim(lab)) {
+                                i++;
+                                if (i <= num && i > Pages) {
+                                    const scriptHTML = `
                                 <div class="col-lg-4 col-md-6 col-sm-10 col-12">
                                     <div class="card shadow mb-4 ">
                                         <div class="card-body size-body">
@@ -100,17 +101,17 @@
                                         </div>
                                     </div>
                              </div>`;
-                                $("#content-products").append(scriptHTML);
+                                    $("#content-products").append(scriptHTML);
 
-                                if ($(element.product_description).width() > $("#container-description").width()) {
-                                    console.log('el texto es mas grande que el div')
+                                    if ($(element.product_description).width() > $("#container-description").width()) {
+                                        console.log('el texto es mas grande que el div')
+                                    }
                                 }
-                            }
-                            //document.getElementById("laboratorios").value = lab;
-                        } else if ($.trim(lab) == "TODOS") {
-                            i++;
-                            if (i <= num && i > Pages) {
-                                const scriptHTML = `<div class="col-lg-4 col-md-6 col-sm-10 col-12">
+                                //document.getElementById("laboratorios").value = lab;
+                            } else if ($.trim(lab) == "TODOS") {
+                                i++;
+                                if (i <= num && i > Pages) {
+                                    const scriptHTML = `<div class="col-lg-4 col-md-6 col-sm-10 col-12">
                                     <div class="card shadow mb-4 ">
                                         <div class="card-body size-body">
                                             <div class="row d-flex">
@@ -130,9 +131,10 @@
                                         </div>
                                     </div>
                              </div>`;
-                                $("#content-products").append(scriptHTML);
+                                    $("#content-products").append(scriptHTML);
 
 
+                                }
                             }
                         }
                     });
