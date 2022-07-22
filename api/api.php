@@ -56,6 +56,7 @@ if (isset($_GET['category_id'])) {
     $lstArticulo = $ListaArticulos['Articulos']; 
 
     //$query = $sqlsrv->fetchArray("SELECT * FROM GMV_mstr_articulos WHERE EXISTENCIA > 1 OR ARTICULO LIKE 'VU%' ORDER BY CALIFICATIVO,DESCRIPCION ASC", SQLSRV_FETCH_ASSOC);
+    
     $query = $sqlsrv->fetchArray("SELECT * FROM GMV_mstr_articulos WHERE ARTICULO IN ($lstArticulo) OR ARTICULO LIKE 'VU%' ORDER BY CALIFICATIVO,DESCRIPCION ASC", SQLSRV_FETCH_ASSOC);
 
     foreach ($query as $fila) {
@@ -111,7 +112,7 @@ if (isset($_GET['category_id'])) {
         }
 
         $val_viñeta = "C$ 40.00";
-        $isPromo ="S";
+        $isPromo ="N";
 
 
 
