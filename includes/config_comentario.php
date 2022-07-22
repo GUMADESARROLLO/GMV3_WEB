@@ -11,10 +11,10 @@
 
     @$connect_comentario = new mysqli($host, $user, $pass, $database);
 
-    if (!$connect) {
+    if (!$connect_comentario) {
         die ("connection failed: " . mysqli_connect_error());
     } else {
-        $connect->set_charset('utf8');
+        $connect_comentario->set_charset('utf8');
     }
 
 

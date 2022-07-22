@@ -35,15 +35,123 @@ if (isset($_GET['category_id'])) {
 } else if (isset($_GET['get_recent'])) {
 
     $sqlsrv = new Sqlsrv();
-
-    $i = 0;
+    $CODIGO_RUTA = $_GET['get_recent'];
+    
+    $PROYECTO_B = array("F19", "F21", "F22", "F23");
+    $Lista = (in_array($CODIGO_RUTA , $PROYECTO_B)) ? '20' : '80' ;
+    
     $json = array();
-
     $Lotes ="  :0:N/D";
+    $i = 0;
+
+    $query_lista_asignada = "SELECT * FROM gumadesk.tlb_rutas_asignadas WHERE Ruta = '".$CODIGO_RUTA."'";
+    $resultado_lista_asignadas = mysqli_query($connect, $query_lista_asignada);    
+    $ListaAsignada = mysqli_fetch_array($resultado_lista_asignadas, MYSQLI_ASSOC);
+    $RutaAsignada = $ListaAsignada['Ruta_asignada'];
+
+
+    $query_lista_articulos = "SELECT * FROM gumadesk.view_lista_articulos WHERE Ruta = '".$RutaAsignada."' AND Lista ='".$Lista."' " ;
+    $resultado_lista_articulos = mysqli_query($connect, $query_lista_articulos);   
+    $ListaArticulos = mysqli_fetch_array($resultado_lista_articulos, MYSQLI_ASSOC);
+    $lstArticulo = $ListaArticulos['Articulos']; 
+
+    //$query = $sqlsrv->fetchArray("SELECT * FROM GMV_mstr_articulos WHERE EXISTENCIA > 1 OR ARTICULO LIKE 'VU%' ORDER BY CALIFICATIVO,DESCRIPCION ASC", SQLSRV_FETCH_ASSOC);
+    $query = $sqlsrv->fetchArray("SELECT * FROM GMV_mstr_articulos WHERE ARTICULO IN ($lstArticulo) OR ARTICULO LIKE 'VU%' ORDER BY CALIFICATIVO,DESCRIPCION ASC", SQLSRV_FETCH_ASSOC);
+
+    foreach ($query as $fila) {
+        $set_img ="SinImagen.png";
+        $set_des = "";
+
+        $query = "SELECT p.product_image,p.product_description FROM tbl_product p WHERE p.product_sku= '".$fila["ARTICULO"]."'";
+        $resouter = mysqli_query($connect, $query);
+        $total_records = mysqli_num_rows($resouter);
+        if($total_records >= 1) {
+            $link = mysqli_fetch_array($resouter, MYSQLI_ASSOC);
+            $set_img = $link['product_image'];
+            $set_des = $link['product_description'];
+        }
+
+
+        $qPromo = "SELECT * FROM tbl_news WHERE banner_sku = '".$fila["ARTICULO"]."'";
+        $rsPromo = mysqli_query($connect, $qPromo);
+        $total_records_promo = mysqli_num_rows($rsPromo);
+
+        $isPromo = ($total_records_promo >= 1) ? "S" : "N" ;
+
+        $Precio_Articulo = (strpos($fila["ARTICULO"], "VU") !== false) ? 1 : $fila['PRECIO_IVA'] ;
+        $Existe_Articulo = (strpos($fila["ARTICULO"], "VU") !== false) ? 999 : $fila['EXISTENCIA'] ;
+
+
+        if (strpos($fila["ARTICULO"], "VU") !== false) {
+            $set_des ='
+            <!DOCTYPE html>
+                <html>
+                <head>
+                    <style type="text/css">
+                    .alert-box {
+                        color:#555;
+                        border-radius:10px;
+                        font-family:Tahoma,Geneva,Arial,sans-serif;font-size:11px;
+                        padding:10px 36px;
+                        margin:10px;
+                    }
+                    .alert-box span {
+                        font-weight:bold;
+                        text-transform:uppercase;
+                    }
+                    .error {
+                        border:3px solid #f5aca6;
+                    }
+                    </style>
+                </head>
+                <body>
+                    <div class="alert-box error"><span>Importante: </span>Los Valores de precio y Existencia son informativos.</div>
+                </body>
+            </html>';
+        }
+
+        $val_viñeta = "C$ 40.00";
+        $isPromo ="S";
+
+
+
+        $json[$i]['product_id']               = $fila["ARTICULO"];
+        $json[$i]['product_name']             = strtoupper($fila['DESCRIPCION']);
+        $json[$i]['category_id']              = "20";
+        $json[$i]['category_name']            = "Medicina";
+        $json[$i]['product_price']            = number_format($Precio_Articulo,2,'.','');
+        $json[$i]['product_status']           = "Available";
+        $json[$i]['product_image']            = $set_img;
+        $json[$i]['product_description']      = $set_des;
+        $json[$i]['product_quantity']         = str_replace(',', '', number_format($Existe_Articulo,2));
+        $json[$i]['currency_id']              = "105";
+        $json[$i]['tax']                      = "0";
+        $json[$i]['currency_code']            = "NIO";
+        $json[$i]['currency_name']            = "Nicaraguan cordoba oro";
+        $json[$i]['product_bonificado']       = $fila["REGLAS"];
+        //$json[$i]['product_lotes']            = trim($fila["LOTES"]);
+        $json[$i]['product_lotes']            = $Lotes;
+        $json[$i]['product_und']              = $fila["UNIDAD_MEDIDA"];
+        $json[$i]['CALIFICATIVO']             = $fila["CALIFICATIVO"];
+        $json[$i]['ISPROMO']                  = $isPromo. ":" . $val_viñeta . ":" . $RutaAsignada;
+        $json[$i]['LAB']                      = $fila["LABORATORIO"];
+
+        $i++;
+    }
+
+    /*
+
+    
+
+    
+   
+
+   
 
     $PRE_VENTA = false;
 
     if($PRE_VENTA){
+        
         //INGRESO DE ARTICULOS EN PRE-VENTA
         $query = $sqlsrv->fetchArray("SELECT * FROM GMV_mstr_articulos WHERE ARTICULO IN ('15016023','19231011','15012011','15012021') ORDER BY CALIFICATIVO,DESCRIPCION ASC", SQLSRV_FETCH_ASSOC);
         
@@ -94,35 +202,10 @@ if (isset($_GET['category_id'])) {
     
 
 
-    $query = $sqlsrv->fetchArray("SELECT * FROM GMV_mstr_articulos WHERE EXISTENCIA > 1 OR ARTICULO LIKE 'VU%' ORDER BY CALIFICATIVO,DESCRIPCION ASC", SQLSRV_FETCH_ASSOC);
-
     
-    
+        // LA IDEA ES CREAR LA TABLE
 
-    foreach ($query as $fila) {
-        $set_img ="SinImagen.png";
-        $set_des = "";
-
-        $query = "SELECT p.product_image,p.product_description FROM tbl_product p WHERE p.product_sku= '".$fila["ARTICULO"]."'";
-        $resouter = mysqli_query($connect, $query);
-        $total_records = mysqli_num_rows($resouter);
-        if($total_records >= 1) {
-            $link = mysqli_fetch_array($resouter, MYSQLI_ASSOC);
-            $set_img = $link['product_image'];
-            $set_des = $link['product_description'];
-        }
-
-
-        $qPromo = "SELECT * FROM tbl_news WHERE banner_sku = '".$fila["ARTICULO"]."'";
-        $rsPromo = mysqli_query($connect, $qPromo);
-        $total_records_promo = mysqli_num_rows($rsPromo);
-
-        $isPromo = ($total_records_promo >= 1) ? "S" : "N" ;
-
-        $Precio_Articulo = (strpos($fila["ARTICULO"], "VU") !== false) ? 1 : $fila['PRECIO_IVA'] ;
-        $Existe_Articulo = (strpos($fila["ARTICULO"], "VU") !== false) ? 999 : $fila['EXISTENCIA'] ;
-        if (strpos($fila["ARTICULO"], "VU") !== false) {
-            $set_des ='
+       /* $set_des ='
             <!DOCTYPE html>
                 <html>
                 <head>
@@ -144,36 +227,14 @@ if (isset($_GET['category_id'])) {
                     </style>
                 </head>
                 <body>
-                    <div class="alert-box error"><span>Importante: </span>Los Valores de precio y Existencia son informativos.</div>
+                    <div class="alert-box error"><span>VIÑETA: </span>Valor de Viñeta de C$ 40.00</div>
                 </body>
             </html>';
-        }
+        
+*/
 
 
-
-
-        $json[$i]['product_id']               = $fila["ARTICULO"];
-        $json[$i]['product_name']             = strtoupper($fila['DESCRIPCION']);
-        $json[$i]['category_id']              = "20";
-        $json[$i]['category_name']            = "Medicina";
-        $json[$i]['product_price']            = number_format($Precio_Articulo,2,'.','');
-        $json[$i]['product_status']           = "Available";
-        $json[$i]['product_image']            = $set_img;
-        $json[$i]['product_description']      = $set_des;
-        $json[$i]['product_quantity']         = str_replace(',', '', number_format($Existe_Articulo,2));
-        $json[$i]['currency_id']              = "105";
-        $json[$i]['tax']                      = "0";
-        $json[$i]['currency_code']            = "NIO";
-        $json[$i]['currency_name']            = "Nicaraguan cordoba oro";
-        $json[$i]['product_bonificado']       = $fila["REGLAS"];
-        //$json[$i]['product_lotes']            = trim($fila["LOTES"]);
-        $json[$i]['product_lotes']            = $Lotes;
-        $json[$i]['product_und']              = $fila["UNIDAD_MEDIDA"];
-        $json[$i]['CALIFICATIVO']             = $fila["CALIFICATIVO"];
-        $json[$i]['ISPROMO']                  = $isPromo ;
-        $json[$i]['LAB']                      = $fila["LABORATORIO"];
-        $i++;
-    }
+        
 
     header('Content-Type: application/json; charset=utf-8');
     echo $val = str_replace('\\/', '/', json_encode($json));
@@ -317,10 +378,11 @@ if (isset($_GET['category_id'])) {
 
     $sqlsrv = new Sqlsrv();
     $dta = array(); $i=0;
+
     $sql_query ="SELECT T0.*,ISNULL( 0, 0 ) AS SALDO_VINETA  FROM dbo.GMV3_MASTER_CLIENTES T0 WHERE T0.VENDEDOR LIKE '%".$_GET['clients_id']."%' ORDER BY NOMBRE";
-    
-    /*$sql_query_02 = "SELECT T0.*,ISNULL(T1.DISPONIBLE, 0) AS SALDO_VINETA  FROM Softland.dbo.ANA_MTClientes_UMK T0 LEFT JOIN PRODUCCION.dbo.view_master_cliente_vineta T1 ON T0.CLIENTE = T1.CLIENTE WHERE VENDEDOR='".$_GET['clients_id']."' AND ACTIVO ='S' AND Saldo > 0 ORDER BY NOMBRE";
-*/
+
+    //$sql_query_02 = "SELECT T0.*,ISNULL(T1.DISPONIBLE, 0) AS SALDO_VINETA  FROM Softland.dbo.ANA_MTClientes_UMK T0 LEFT JOIN PRODUCCION.dbo.view_master_cliente_vineta T1 ON T0.CLIENTE = T1.CLIENTE WHERE VENDEDOR='".$_GET['clients_id']."' AND ACTIVO ='S' AND Saldo > 0 ORDER BY NOMBRE";
+
     $query = $sqlsrv->fetchArray($sql_query, SQLSRV_FETCH_ASSOC);
     if (count($query)>0) {
         foreach ($query as $key) {
@@ -356,7 +418,7 @@ if (isset($_GET['category_id'])) {
             $i++;
         }
         //echo json_encode($dta);
-        usort($dta, 'object_sorter');
+        //usort($dta, 'object_sorter');
         echo json_encode($dta);
 
     }
