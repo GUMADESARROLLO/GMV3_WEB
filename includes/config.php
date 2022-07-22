@@ -1,10 +1,10 @@
 <?php
 
     //database configuration
-    $host       = "localhost";
-    $user       = "root";
-    $pass       = "a7m1425.";
-    $database   = "ecommerce_android_app";
+    $host       = "mysql";
+    $user       = "usr_container";
+    $pass       = "pss_container";
+    $database   = "data_gmv3";
 
     $connect = new mysqli($host, $user, $pass, $database);
 

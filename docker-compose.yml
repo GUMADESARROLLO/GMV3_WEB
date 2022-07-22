@@ -1,0 +1,55 @@
+version: "3.7"
+
+services:
+  
+  nginx:
+    image: nginx:stable-alpine
+    container_name: nginx
+    ports:
+      - 8000:80
+    volumes:
+      - .:/var/www/html
+      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
+    depends_on:
+      - app_gmv3
+      - mysql
+    networks:
+      - networkapp
+
+  mysql:
+    image: mysql:5.7
+    container_name: mysql
+    restart: always
+    environment:
+      MYSQL_DATABASE: data_gmv3
+      MYSQL_USER: usr_container
+      MYSQL_PASSWORD: pss_container
+      MYSQL_ROOT_PASSWORD: db_root_password
+    ports:
+      - 33069:3306
+    volumes:
+      - mi_volumes:/var/lib/mysql
+    networks:
+      - networkapp
+
+  app_gmv3:
+    build:
+      args:
+        user: laraveluser
+        uid: 1000
+      context: .
+      dockerfile: ./Dockerfile
+    container_name: app_gmv3
+    working_dir: /var/www/html
+    volumes:
+      - .:/var/www/html
+    networks:
+      - networkapp
+    ports:
+      - 8448:80
+
+networks: 
+  networkapp:
+
+volumes:
+  mi_volumes:

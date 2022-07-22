@@ -317,11 +317,8 @@ if (isset($_GET['category_id'])) {
 
     $sqlsrv = new Sqlsrv();
     $dta = array(); $i=0;
-    $sql_query ="SELECT T0.*,ISNULL( 0, 0 ) AS SALDO_VINETA  FROM dbo.GMV3_MASTER_CLIENTES T0 WHERE T0.VENDEDOR LIKE '%".$_GET['clients_id']."%' ORDER BY NOMBRE";
-    
-    /*$sql_query_02 = "SELECT T0.*,ISNULL(T1.DISPONIBLE, 0) AS SALDO_VINETA  FROM Softland.dbo.ANA_MTClientes_UMK T0 LEFT JOIN PRODUCCION.dbo.view_master_cliente_vineta T1 ON T0.CLIENTE = T1.CLIENTE WHERE VENDEDOR='".$_GET['clients_id']."' AND ACTIVO ='S' AND Saldo > 0 ORDER BY NOMBRE";
-*/
-    $query = $sqlsrv->fetchArray($sql_query, SQLSRV_FETCH_ASSOC);
+
+    $query = $sqlsrv->fetchArray("SELECT T0.*,ISNULL(T1.DISPONIBLE, 0) AS SALDO_VINETA  FROM Softland.dbo.ANA_MTClientes_UMK T0 LEFT JOIN PRODUCCION.dbo.view_master_cliente_vineta T1 ON T0.CLIENTE = T1.CLIENTE WHERE VENDEDOR='".$_GET['clients_id']."' AND ACTIVO ='S' ORDER BY NOMBRE", SQLSRV_FETCH_ASSOC);
     if (count($query)>0) {
         foreach ($query as $key) {
 
@@ -952,7 +949,7 @@ if (isset($_GET['category_id'])) {
     $rRecuperacion = mysqli_query($connect_comentario, $qRecuperacion);
     $ttRecuperado = mysqli_num_rows($rRecuperacion);
     if($ttRecuperado >= 1) {
-        $link_recuperacion = mysqli_fetch_array($rRecuperacion, MYSQLI_ASSOC);
+       $link_recuperacion = mysqli_fetch_array($rRecuperacion, MYSQLI_ASSOC);
         $Recup_Credito = number_format($link_recuperacion["recuperado_credito"],2,".","");
         $Recup_Contado = number_format($link_recuperacion["recuperado_contado"],2,".","");
     }
@@ -1095,7 +1092,6 @@ if (isset($_GET['category_id'])) {
     }
     mysqli_close($connect); 
 }else if (isset($_GET['post_order_recibo'])) {
-
     $ruta           = $_POST['ruta'];
     $cod_cliente    = $_POST['cod_cliente'];
 
@@ -1110,36 +1106,25 @@ if (isset($_GET['category_id'])) {
     $player_id      = $_POST['player_id'];
     $date           = $_POST['date'];
 
-    $qIsExist = "SELECT * FROM tbl_order_recibo T0 WHERE T0.recibo = '".$recibo."' AND  T0.ruta  = '".$ruta."' AND T0.status in (0,1,4) ";    
-    $rsCount = mysqli_query($connect_comentario, $qIsExist);
-    $total_records = mysqli_num_rows($rsCount);
+    $query = "INSERT INTO tbl_order_recibo (ruta, cod_cliente,recibo,fecha_recibo, name_cliente,created_at, order_list, order_total, comment,comment_anul, player_id) 
+    VALUES ('$ruta', '$cod_cliente', '$recibo', '$fecha_recibo', '$name_cliente','$date', '$order_list', '$order_total', '$comment', '$comment_anul', '$player_id')";
 
-    if($total_records != 1){
-        $query = "INSERT INTO tbl_order_recibo (ruta, cod_cliente,recibo,fecha_recibo, name_cliente,created_at, order_list, order_total, comment,comment_anul, player_id) 
-        VALUES ('$ruta', '$cod_cliente', '$recibo', '$fecha_recibo', '$name_cliente','$date', '$order_list', '$order_total', '$comment', '$comment_anul', '$player_id')";
-        if (mysqli_query($connect_comentario, $query)) {
-            //include_once ('php-mail.php');
-            echo 'Nuevo';
-        } else {
-            echo 'Error';
-        }
-        mysqli_close($connect); 
-    }else{
-        echo 'Existe';
+
+    if (mysqli_query($connect_comentario, $query)) {
+        //include_once ('php-mail.php');
+        echo 'Data Inserted Successfully';
+    } else {
+        echo 'Try Again';
     }
-    
+    mysqli_close($connect); 
 }else if (isset($_GET['get_recibos_colector'])) {
 
-    $Usuario    = $_GET['get_recibos_colector'];
-    $OrderBy    = $_GET['OrderBy'];
-    $Desde      = $_GET['Desde'];;
-    $Hasta      = $_GET['Hasta'];;
-    
+    $Usuario = $_GET['get_recibos_colector'];
+    $OrderBy = $_GET['OrderBy'];
     $i=0;
-    
     $array = array();
 
-    $query = "SELECT * FROM tbl_order_recibo T0 WHERE T0.fecha_recibo BETWEEN '".$Desde."' AND '".$Hasta."' AND  ruta = '".$Usuario."' and status != 3 ORDER BY id $OrderBy";
+    $query = "SELECT * FROM tbl_order_recibo WHERE ruta = '".$Usuario."' and status != 3 ORDER BY date_time,status $OrderBy";
     
     $resouter = mysqli_query($connect_comentario, $query);
 
@@ -1180,7 +1165,6 @@ if (isset($_GET['category_id'])) {
     }
     mysqli_close($connect); 
 }else if (isset($_GET['post_adjunto'])) {
-    
 
     $nomImagen  = $_POST['nom'];
     $imagen     = $_POST['imagenes'];    
@@ -1238,7 +1222,6 @@ if (isset($_GET['category_id'])) {
 	T0.[Nombre del cliente] AS Cliente,
 	SUM ( T0.Venta ) AS Venta,
 	( SELECT COUNT ( * ) FROM Softland.dbo.APK_CxC_DocVenxCL AS T1 WHERE T1.DOCUMENTO= T0.FACTURA ) AS ACTIVA,
-    ( SELECT ISNULL(SUM(T4.SALDO_LOCAL) , 0) FROM Softland.dbo.APK_CxC_DocVenxCL AS T4 WHERE T4.DOCUMENTO = T0.FACTURA ) AS SALDO,
 	ISNULL(convert(nvarchar(11),( SELECT T2.FECHA_VENCE FROM Softland.dbo.APK_CxC_DocVenxCL AS T2 WHERE T2.DOCUMENTO= T0.FACTURA ),103), '-/-/-') AS FECHA_VENCE,
     (SELECT T3.DVencidos FROM Softland.dbo.APK_CxC_DocVenxCL AS T3 WHERE T3.DOCUMENTO= T0.FACTURA ) AS DVencidos,
 	T0.Plazo
@@ -1268,7 +1251,6 @@ ORDER BY
         $dta[$i]['PLAZO']      = $key['Plazo'];
         $dta[$i]['VENCE']      = $key['FECHA_VENCE'];
         $dta[$i]['DVENCIDOS']  = $key['DVencidos'];
-        $dta[$i]['SALDO']      = str_replace(",", "",number_format($key['SALDO'],2));
         $i++;
     }
 
@@ -1276,46 +1258,6 @@ ORDER BY
 
     header('Content-Type: application/json; charset=utf-8');
     echo $val = str_replace('\\/', '/', json_encode($dta));
-}else if (isset($_GET['recibo_anular'])){
-
-    $recibo         = $_GET['recibo_anular'];
-    $fecha_recibo   = $_GET['Fecha_Recibo'];
-    $Ruta           = $_GET['Ruta'];
-    
-    $qIsExist = "SELECT * FROM tbl_order_recibo T0 WHERE T0.recibo = '".$recibo."' AND  T0.ruta  = '".$Ruta."' AND T0.status in (0,1,4) ";    
-    $rsCount = mysqli_query($connect_comentario, $qIsExist);
-    $total_records = mysqli_num_rows($rsCount);
-    if($total_records != 1){
-
-        $ruta           = $Ruta;
-        $cod_cliente    = "00000";
-
-        $recibo         = $recibo;
-        $fecha_recibo   = $fecha_recibo;
-        
-        $name_cliente   = "N/D";    
-        $order_list     = "[00000000;0.00;0.00;0;0.00;0.00;0.00;00000;ANULADO],";
-        $order_total    = "C$ 0.00";
-        $comment        = "ESTE RECIBO FUE ANULADO POR EL VENDEDOR";
-        $comment_anul   = "";
-        $player_id      = $_GET['Player_Id'];
-        $date           = date('Y-m-d H:i:s');
-
-        $query = "INSERT INTO tbl_order_recibo (ruta, cod_cliente,recibo,fecha_recibo, name_cliente,created_at, order_list, order_total, comment,comment_anul, player_id,status) 
-            VALUES ('$ruta', '$cod_cliente', '$recibo', '$fecha_recibo', '$name_cliente','$date', '$order_list', '$order_total', '$comment', '$comment_anul', '$player_id',4)";
-        if (mysqli_query($connect_comentario, $query)) {
-            echo 'Nuevo';
-        } else {
-            echo 'Error';
-        }
-        mysqli_close($connect); 
-        
-    }else{
-        echo 'Existe';
-    }
-
-    
-    
 }else{
     header('Content-Type: application/json; charset=utf-8');
     echo "no method found!";

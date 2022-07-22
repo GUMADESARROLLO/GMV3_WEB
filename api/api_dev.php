@@ -120,7 +120,7 @@ if (isset($_GET['category_id'])) {
         $isPromo = ($total_records_promo >= 1) ? "S" : "N" ;
 
         $Precio_Articulo = (strpos($fila["ARTICULO"], "VU") !== false) ? 1 : $fila['PRECIO_IVA'] ;
-        $Existe_Articulo = (strpos($fila["ARTICULO"], "VU") !== false) ? 999 : $fila['EXISTENCIA'] ;
+        $Existe_Articulo = (strpos($fila["ARTICULO"], "VU") !== false) ? 1 : $fila['EXISTENCIA'] ;
         if (strpos($fila["ARTICULO"], "VU") !== false) {
             $set_des ='
             <!DOCTYPE html>
@@ -317,11 +317,8 @@ if (isset($_GET['category_id'])) {
 
     $sqlsrv = new Sqlsrv();
     $dta = array(); $i=0;
-    $sql_query ="SELECT T0.*,ISNULL( 0, 0 ) AS SALDO_VINETA  FROM dbo.GMV3_MASTER_CLIENTES T0 WHERE T0.VENDEDOR LIKE '%".$_GET['clients_id']."%' ORDER BY NOMBRE";
-    
-    /*$sql_query_02 = "SELECT T0.*,ISNULL(T1.DISPONIBLE, 0) AS SALDO_VINETA  FROM Softland.dbo.ANA_MTClientes_UMK T0 LEFT JOIN PRODUCCION.dbo.view_master_cliente_vineta T1 ON T0.CLIENTE = T1.CLIENTE WHERE VENDEDOR='".$_GET['clients_id']."' AND ACTIVO ='S' AND Saldo > 0 ORDER BY NOMBRE";
-*/
-    $query = $sqlsrv->fetchArray($sql_query, SQLSRV_FETCH_ASSOC);
+
+    $query = $sqlsrv->fetchArray("SELECT T0.*,ISNULL(T1.DISPONIBLE, 0) AS SALDO_VINETA  FROM Softland.dbo.ANA_MTClientes_UMK T0 LEFT JOIN PRODUCCION.dbo.view_master_cliente_vineta T1 ON T0.CLIENTE = T1.CLIENTE WHERE VENDEDOR='".$_GET['clients_id']."' AND ACTIVO ='S' ORDER BY NOMBRE", SQLSRV_FETCH_ASSOC);
     if (count($query)>0) {
         foreach ($query as $key) {
 
@@ -477,7 +474,7 @@ if (isset($_GET['category_id'])) {
         $dta[$i]['ARTICULO']        = "N/D";
         $dta[$i]['DESCRIPCION']     = "N/D";
         $dta[$i]['OBSERVACIONES']        = "";
-        $dta[$i]['IMAGEN']          = "SinImagen.png";
+         $dta[$i]['IMAGEN']          = "SinImagen.png";
         $dta[$i]['CANTIDAD']        = number_format(0.00,2);
         $dta[$i]['VENTA']           = number_format(0.00,2);
     }
@@ -700,7 +697,7 @@ if (isset($_GET['category_id'])) {
     }
 
 
-    $query = "INSERT INTO tbl_comentarios (Titulo,Contenido, Autor, Nombre,Fecha,Imagen,empresa,`Read`,updated_at) VALUES ('$Nombre','$Comentario', '$CodRuta', '$NamRuta','$Fecha','$nama_imagen','$Empresa','$Read','$Updated_at')";
+    $query = "INSERT INTO tbl_comentarios (Titulo,Contenido, Autor, Nombre,Fecha,Imagen,empresa,Read,updated_at) VALUES ('$Nombre','$Comentario', '$CodRuta', '$NamRuta','$Fecha','$nama_imagen','$Empresa','$Read','$Updated_at')";
 
     if (mysqli_query($connect_comentario, $query)) {
         //include_once ('php-mail.php');
@@ -952,7 +949,7 @@ if (isset($_GET['category_id'])) {
     $rRecuperacion = mysqli_query($connect_comentario, $qRecuperacion);
     $ttRecuperado = mysqli_num_rows($rRecuperacion);
     if($ttRecuperado >= 1) {
-        $link_recuperacion = mysqli_fetch_array($rRecuperacion, MYSQLI_ASSOC);
+       $link_recuperacion = mysqli_fetch_array($rRecuperacion, MYSQLI_ASSOC);
         $Recup_Credito = number_format($link_recuperacion["recuperado_credito"],2,".","");
         $Recup_Contado = number_format($link_recuperacion["recuperado_contado"],2,".","");
     }
@@ -1094,228 +1091,6 @@ if (isset($_GET['category_id'])) {
         echo 'Try Again';
     }
     mysqli_close($connect); 
-}else if (isset($_GET['post_order_recibo'])) {
-
-    $ruta           = $_POST['ruta'];
-    $cod_cliente    = $_POST['cod_cliente'];
-
-    $recibo         = $_POST['recibo'];
-    $fecha_recibo   = $_POST['fecha_recibo'];
-    
-    $name_cliente   = $_POST['name_cliente'];    
-    $order_list     = $_POST['order_list'];
-    $order_total    = $_POST['order_total'];
-    $comment        = $_POST['comment'];
-    $comment_anul   = "";
-    $player_id      = $_POST['player_id'];
-    $date           = $_POST['date'];
-
-    $qIsExist = "SELECT * FROM tbl_order_recibo T0 WHERE T0.recibo = '".$recibo."' AND  T0.ruta  = '".$ruta."' AND T0.status in (0,1,4) ";    
-    $rsCount = mysqli_query($connect_comentario, $qIsExist);
-    $total_records = mysqli_num_rows($rsCount);
-
-    if($total_records != 1){
-        $query = "INSERT INTO tbl_order_recibo (ruta, cod_cliente,recibo,fecha_recibo, name_cliente,created_at, order_list, order_total, comment,comment_anul, player_id) 
-        VALUES ('$ruta', '$cod_cliente', '$recibo', '$fecha_recibo', '$name_cliente','$date', '$order_list', '$order_total', '$comment', '$comment_anul', '$player_id')";
-        if (mysqli_query($connect_comentario, $query)) {
-            //include_once ('php-mail.php');
-            echo 'Nuevo';
-        } else {
-            echo 'Error';
-        }
-        mysqli_close($connect); 
-    }else{
-        echo 'Existe';
-    }
-    
-}else if (isset($_GET['get_recibos_colector'])) {
-
-    $Usuario    = $_GET['get_recibos_colector'];
-    $OrderBy    = $_GET['OrderBy'];
-    $Desde      = $_GET['Desde'];;
-    $Hasta      = $_GET['Hasta'];;
-    
-    $i=0;
-    
-    $array = array();
-
-    $query = "SELECT * FROM tbl_order_recibo T0 WHERE T0.fecha_recibo BETWEEN '".$Desde."' AND '".$Hasta."' AND  ruta = '".$Usuario."' and status != 3 ORDER BY id $OrderBy";
-    
-    $resouter = mysqli_query($connect_comentario, $query);
-
-    $total_records = mysqli_num_rows($resouter);
-    if($total_records >= 1){
-        foreach ($resouter as $key){
-
-            $array[$i]['mId']               = $key['id'];
-            $array[$i]['mRuta']             = $key['ruta'];
-            $array[$i]['mRecibo']           = $key['recibo'];
-            $array[$i]['mCod_Cliente']      = $key['cod_cliente'];
-            $array[$i]['mName_Cliente']     = $key['name_cliente'];
-            $array[$i]['mFecha']            = $key['date_time'];
-            $array[$i]['mBenificiario']     = "----";
-            $array[$i]['mOrderTotal']       = $key['order_total'];
-            $array[$i]['mComentario']       = $key['comment'];
-            $array[$i]['mStatus']           = $key['status'];
-            $array[$i]['mOrderList']        = $key['order_list'];
-            $array[$i]['mComment_anul']     = $key['comment_anul'];            
-
-            $i++;
-        }
-    }
-    header('Content-Type: application/json; charset=utf-8');
-    echo $val = str_replace('\\/', '/', json_encode($array));
-    
-}else if (isset($_GET['del_recibo_colector'])) {
-
-    $id           = $_POST['ID'];
-    $iDate        = date('Y-m-d H:i:s');
-
-    $query ="UPDATE tbl_order_recibo SET status = '3', updated_at = '".$iDate."' WHERE id = ".$id." ";
-
-    if (mysqli_query($connect_comentario, $query)) {
-        echo 'Recibo Anulado';
-    } else {
-        echo 'Try Again';
-    }
-    mysqli_close($connect); 
-}else if (isset($_GET['post_adjunto'])) {
-    
-
-    $nomImagen  = $_POST['nom'];
-    $imagen     = $_POST['imagenes'];    
-    $Id_Recibo  = $_POST['Id_Recibo'];    
-
-    $id_img = time() . '-' . rand(0, 99999);
-
-    $nameImagen = $Id_Recibo. " - ". $id_img .  ".png";
-    
-    $actualpath = "../upload/recibos/". $nameImagen;    
-    file_put_contents($actualpath, base64_decode($imagen));
-
-
-    $query = "INSERT INTO tbl_order_recibo_adjuntos (id_recibo,Nombre_imagen) VALUES ('$Id_Recibo','$nameImagen')";
-
-    if (mysqli_query($connect_comentario, $query)) {
-        //include_once ('php-mail.php');
-        echo 'Data Inserted Successfully';
-    } else {
-        echo 'Try Again';
-    }
-    mysqli_close($connect);
-
-}else if (isset($_GET['get_recibos_adjuntos'])) {
-    
-    $IdRecibo = $_GET['get_recibos_adjuntos'];
-    $i=0;
-    $array = array();
-
-    $query = "SELECT * FROM tbl_order_recibo_adjuntos WHERE id_recibo = '".$IdRecibo."' ";
-
-    
-    $resouter = mysqli_query($connect_comentario, $query);
-
-    $total_records = mysqli_num_rows($resouter);
-
-    if($total_records >= 1){
-        foreach ($resouter as $key){
-
-            $array[$i]['mId']               = $key['id'];
-            $array[$i]['mRecibo']           = $key['id_recibo'];
-            $array[$i]['mNombreImagen']     = $key['Nombre_imagen'];
-            $i++;
-        }
-    }
-    header('Content-Type: application/json; charset=utf-8');
-    echo $val = str_replace('\\/', '/', json_encode($array));
-} else if (isset($_GET['post_historico_factura'])){
-    $ruta        = $_GET['post_historico_factura'];
-
-
-      $Q="SELECT
-	T0.FACTURA,
-	T0.Dia,
-	T0.[Nombre del cliente] AS Cliente,
-	SUM ( T0.Venta ) AS Venta,
-	( SELECT COUNT ( * ) FROM Softland.dbo.APK_CxC_DocVenxCL AS T1 WHERE T1.DOCUMENTO= T0.FACTURA ) AS ACTIVA,
-    ( SELECT ISNULL(SUM(T4.SALDO_LOCAL) , 0) FROM Softland.dbo.APK_CxC_DocVenxCL AS T4 WHERE T4.DOCUMENTO = T0.FACTURA ) AS SALDO,
-	ISNULL(convert(nvarchar(11),( SELECT T2.FECHA_VENCE FROM Softland.dbo.APK_CxC_DocVenxCL AS T2 WHERE T2.DOCUMENTO= T0.FACTURA ),103), '-/-/-') AS FECHA_VENCE,
-    (SELECT T3.DVencidos FROM Softland.dbo.APK_CxC_DocVenxCL AS T3 WHERE T3.DOCUMENTO= T0.FACTURA ) AS DVencidos,
-	T0.Plazo
-FROM
-	Softland.dbo.VtasTotal_UMK T0 
-WHERE
-	T0.[Cod. Cliente] ='".$ruta."' 
-GROUP BY
-	T0.FACTURA,
-	T0.Dia,
-	T0.[Nombre del cliente],
-	T0.Plazo
-ORDER BY
-	T0.Dia DESC";
-
-
-
-    $sqlsrv = new Sqlsrv();
-    $dta = array(); $i=0;
-    $query = $sqlsrv->fetchArray($Q, SQLSRV_FETCH_ASSOC);
-    foreach ($query as $key) {
-        $dta[$i]['FACTURA']    = $key['FACTURA'];
-        $dta[$i]['FECHA']      = $key['Dia']->format('d/m/Y');
-        $dta[$i]['CLIENTE']    = $key['Cliente'];
-        $dta[$i]['MONTO']      = str_replace(",", "",number_format($key['Venta'],2));
-        $dta[$i]['ACTIVA']     = $key['ACTIVA'];
-        $dta[$i]['PLAZO']      = $key['Plazo'];
-        $dta[$i]['VENCE']      = $key['FECHA_VENCE'];
-        $dta[$i]['DVENCIDOS']  = $key['DVencidos'];
-        $dta[$i]['SALDO']      = str_replace(",", "",number_format($key['SALDO'],2));
-        $i++;
-    }
-
-    $sqlsrv->close();
-
-    header('Content-Type: application/json; charset=utf-8');
-    echo $val = str_replace('\\/', '/', json_encode($dta));
-}else if (isset($_GET['recibo_anular'])){
-
-    $recibo         = $_GET['recibo_anular'];
-    $fecha_recibo   = $_GET['Fecha_Recibo'];
-    $Ruta           = $_GET['Ruta'];
-    
-    $qIsExist = "SELECT * FROM tbl_order_recibo T0 WHERE T0.recibo = '".$recibo."' AND  T0.ruta  = '".$Ruta."' AND T0.status in (0,1,4) ";    
-    $rsCount = mysqli_query($connect_comentario, $qIsExist);
-    $total_records = mysqli_num_rows($rsCount);
-    if($total_records != 1){
-
-        $ruta           = $Ruta;
-        $cod_cliente    = "00000";
-
-        $recibo         = $recibo;
-        $fecha_recibo   = $fecha_recibo;
-        
-        $name_cliente   = "N/D";    
-        $order_list     = "[00000000;0.00;0.00;0;0.00;0.00;0.00;00000;ANULADO],";
-        $order_total    = "C$ 0.00";
-        $comment        = "ESTE RECIBO FUE ANULADO POR EL VENDEDOR";
-        $comment_anul   = "";
-        $player_id      = $_GET['Player_Id'];
-        $date           = date('Y-m-d H:i:s');
-
-        $query = "INSERT INTO tbl_order_recibo (ruta, cod_cliente,recibo,fecha_recibo, name_cliente,created_at, order_list, order_total, comment,comment_anul, player_id,status) 
-            VALUES ('$ruta', '$cod_cliente', '$recibo', '$fecha_recibo', '$name_cliente','$date', '$order_list', '$order_total', '$comment', '$comment_anul', '$player_id',4)";
-        if (mysqli_query($connect_comentario, $query)) {
-            echo 'Nuevo';
-        } else {
-            echo 'Error';
-        }
-        mysqli_close($connect); 
-        
-    }else{
-        echo 'Existe';
-    }
-
-    
-    
 }else{
     header('Content-Type: application/json; charset=utf-8');
     echo "no method found!";

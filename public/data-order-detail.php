@@ -142,7 +142,7 @@ if (isset($_POST['submit_coment'])) {
 
     print_r($data_noti_comentario);
 
-    $ch = curl_init();
+   /* $ch = curl_init();
     curl_setopt($ch, CURLOPT_URL, "https://onesignal.com/api/v1/notifications");
     curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json; charset=utf-8',
         'Authorization: Basic '.ONESIGNAL_REST_KEY));
@@ -153,7 +153,7 @@ if (isset($_POST['submit_coment'])) {
     curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
 
     $response = curl_exec($ch);
-    curl_close($ch);
+    curl_close($ch);*/
 
 
 
@@ -207,7 +207,7 @@ EOF;
         print("\nJSON sent:\n");
 
 
-        $ch = curl_init();
+       /* $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, "https://onesignal.com/api/v1/notifications");
         curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json; charset=utf-8',
                                                    'Authorization: Basic '.ONESIGNAL_REST_KEY));
@@ -218,7 +218,7 @@ EOF;
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
 
         $response = curl_exec($ch);
-        curl_close($ch);
+        curl_close($ch);*/
 
         $fecha = new DateTime();
 
@@ -263,7 +263,7 @@ EOF;
         print("\nJSON sent:\n");
         print($fields);
 
-        $ch = curl_init();
+        /*$ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, "https://onesignal.com/api/v1/notifications");
         curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json; charset=utf-8',
                                                    'Authorization: Basic '.ONESIGNAL_REST_KEY));
@@ -274,7 +274,7 @@ EOF;
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
 
         $response = curl_exec($ch);
-        curl_close($ch);		
+        curl_close($ch);*/		
 
         $fecha = new DateTime();
 
@@ -366,7 +366,7 @@ EOF;
                     <div class="col invoice-details">
                         <h1 class="invoice-id"><?php echo $data['code']; ?></h1>
                         <div class="date">Realizado por <?php echo $data['name'] . " " . $var_name_vendedor; ?></div>
-                        <div class="date">Fecha: <?php echo $data['date_time']; ?></div>
+                        <div class="date">Fecha: <?php echo $data['created_at']; ?></div>
                     </div>
                 </div>
                 <table border="0" cellspacing="0" cellpadding="0">
