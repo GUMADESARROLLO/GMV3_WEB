@@ -36,28 +36,44 @@ if (isset($_GET['category_id'])) {
 
     $sqlsrv = new Sqlsrv();
     $CODIGO_RUTA = $_GET['get_recent'];
-    
+    mysqli_query($connect_comentario, "SET SESSION group_concat_max_len = 10000");   
     $PROYECTO_B = array("F19", "F21", "F22", "F23");
     $Lista = (in_array($CODIGO_RUTA , $PROYECTO_B)) ? '20' : '80' ;
+
+
+    $EXCENTOS   = array("F02", "F04", "F11", "F20");
+    $isExcentos = (in_array($CODIGO_RUTA , $EXCENTOS)) ? true : false;
     
     $json = array();
     $Lotes ="  :0:N/D";
     $i = 0;
 
     $query_lista_asignada = "SELECT * FROM gumadesk.tlb_rutas_asignadas WHERE Ruta = '".$CODIGO_RUTA."'";
-    $resultado_lista_asignadas = mysqli_query($connect, $query_lista_asignada);    
+    $resultado_lista_asignadas = mysqli_query($connect_comentario, $query_lista_asignada);    
     $ListaAsignada = mysqli_fetch_array($resultado_lista_asignadas, MYSQLI_ASSOC);
     $RutaAsignada = $ListaAsignada['Ruta_asignada'];
 
 
     $query_lista_articulos = "SELECT * FROM gumadesk.view_lista_articulos WHERE Ruta = '".$RutaAsignada."' AND Lista ='".$Lista."' " ;
-    $resultado_lista_articulos = mysqli_query($connect, $query_lista_articulos);   
+    
+    $resultado_lista_articulos = mysqli_query($connect_comentario, $query_lista_articulos);   
     $ListaArticulos = mysqli_fetch_array($resultado_lista_articulos, MYSQLI_ASSOC);
     $lstArticulo = $ListaArticulos['Articulos']; 
 
-    //$query = $sqlsrv->fetchArray("SELECT * FROM GMV_mstr_articulos WHERE EXISTENCIA > 1 OR ARTICULO LIKE 'VU%' ORDER BY CALIFICATIVO,DESCRIPCION ASC", SQLSRV_FETCH_ASSOC);
-    
-    $query = $sqlsrv->fetchArray("SELECT * FROM GMV_mstr_articulos WHERE ARTICULO IN ($lstArticulo) OR ARTICULO LIKE 'VU%' ORDER BY CALIFICATIVO,DESCRIPCION ASC", SQLSRV_FETCH_ASSOC);
+
+
+
+   if($isExcentos){
+        $query = $sqlsrv->fetchArray("SELECT * FROM GMV_mstr_articulos WHERE EXISTENCIA > 1 OR ARTICULO LIKE 'VU%' ORDER BY CALIFICATIVO,DESCRIPCION ASC", SQLSRV_FETCH_ASSOC);
+        $RutaAsignada = $CODIGO_RUTA;
+    }else{
+        $query = $sqlsrv->fetchArray("SELECT * FROM GMV_mstr_articulos WHERE ARTICULO IN ($lstArticulo) OR ARTICULO LIKE 'VU%' ORDER BY CALIFICATIVO,DESCRIPCION ASC", SQLSRV_FETCH_ASSOC);  
+    }
+
+   
+
+
+
 
     foreach ($query as $fila) {
         $set_img ="SinImagen.png";
@@ -821,17 +837,17 @@ if (isset($_GET['category_id'])) {
     echo $val = str_replace('\\/', '/', json_encode($json));
 }else if (isset($_GET['post_update_datos'])) {
 
-	include('../public/sql-query.php');
+    include('../public/sql-query.php');
 
-    $KeysSecret 	= "A7M";
-    $table_name 	= 'tbl_admin';
-    $where_clause	= "WHERE username = '".$_POST['Ruta']."'";
-	$whereSQL 		= '';
+    $KeysSecret     = "A7M";
+    $table_name     = 'tbl_admin';
+    $where_clause   = "WHERE username = '".$_POST['Ruta']."'";
+    $whereSQL       = '';
 
     $form_data = array(
-        'email'  		  	=> $_POST['Email'],
-        'Telefono'  		=> $_POST['Telefono'],
-        'password'  		=> hash('sha256',$KeysSecret.$_POST['Contrasenna'])
+        'email'             => $_POST['Email'],
+        'Telefono'          => $_POST['Telefono'],
+        'password'          => hash('sha256',$KeysSecret.$_POST['Contrasenna'])
     );
 
 
@@ -880,14 +896,14 @@ if (isset($_GET['category_id'])) {
 
 
 
-        $table_name 	= 'tlb_verificacion';
-        $where_clause	= "WHERE Cliente = '".$cliente."'";
-        $whereSQL 		= '';
+        $table_name     = 'tlb_verificacion';
+        $where_clause   = "WHERE Cliente = '".$cliente."'";
+        $whereSQL       = '';
 
         $form_data = array(
-            'Lati'  		=> $Lati,
-            'Longi'  		=> $Logi,
-            'updated_at'  		=> $date
+            'Lati'          => $Lati,
+            'Longi'         => $Logi,
+            'updated_at'        => $date
         );
         if(!empty($where_clause)) {
             if(substr(strtoupper(trim($where_clause)), 0, 5) != 'WHERE') {
@@ -1296,26 +1312,26 @@ if (isset($_GET['category_id'])) {
 
 
       $Q="SELECT
-	T0.FACTURA,
-	T0.Dia,
-	T0.[Nombre del cliente] AS Cliente,
-	SUM ( T0.Venta ) AS Venta,
-	( SELECT COUNT ( * ) FROM Softland.dbo.APK_CxC_DocVenxCL AS T1 WHERE T1.DOCUMENTO= T0.FACTURA ) AS ACTIVA,
+    T0.FACTURA,
+    T0.Dia,
+    T0.[Nombre del cliente] AS Cliente,
+    SUM ( T0.Venta ) AS Venta,
+    ( SELECT COUNT ( * ) FROM Softland.dbo.APK_CxC_DocVenxCL AS T1 WHERE T1.DOCUMENTO= T0.FACTURA ) AS ACTIVA,
     ( SELECT ISNULL(SUM(T4.SALDO_LOCAL) , 0) FROM Softland.dbo.APK_CxC_DocVenxCL AS T4 WHERE T4.DOCUMENTO = T0.FACTURA ) AS SALDO,
-	ISNULL(convert(nvarchar(11),( SELECT T2.FECHA_VENCE FROM Softland.dbo.APK_CxC_DocVenxCL AS T2 WHERE T2.DOCUMENTO= T0.FACTURA ),103), '-/-/-') AS FECHA_VENCE,
+    ISNULL(convert(nvarchar(11),( SELECT T2.FECHA_VENCE FROM Softland.dbo.APK_CxC_DocVenxCL AS T2 WHERE T2.DOCUMENTO= T0.FACTURA ),103), '-/-/-') AS FECHA_VENCE,
     (SELECT T3.DVencidos FROM Softland.dbo.APK_CxC_DocVenxCL AS T3 WHERE T3.DOCUMENTO= T0.FACTURA ) AS DVencidos,
-	T0.Plazo
+    T0.Plazo
 FROM
-	Softland.dbo.VtasTotal_UMK T0 
+    Softland.dbo.VtasTotal_UMK T0 
 WHERE
-	T0.[Cod. Cliente] ='".$ruta."' 
+    T0.[Cod. Cliente] ='".$ruta."' 
 GROUP BY
-	T0.FACTURA,
-	T0.Dia,
-	T0.[Nombre del cliente],
-	T0.Plazo
+    T0.FACTURA,
+    T0.Dia,
+    T0.[Nombre del cliente],
+    T0.Plazo
 ORDER BY
-	T0.Dia DESC";
+    T0.Dia DESC";
 
 
 

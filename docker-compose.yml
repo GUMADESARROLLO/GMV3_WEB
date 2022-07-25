@@ -2,9 +2,9 @@ version: "3.7"
 
 services:
   
-  nginx:
+  nginx_gmv3:
     image: nginx:stable-alpine
-    container_name: nginx
+    container_name: nginx_gmv3
     ports:
       - 8000:80
     volumes:
@@ -16,9 +16,9 @@ services:
     networks:
       - networkapp
 
-  mysql:
+  mysql_gmv3:
     image: mysql:5.7
-    container_name: mysql
+    container_name: mysql_gmv3
     restart: always
     environment:
       MYSQL_DATABASE: data_gmv3
@@ -28,7 +28,7 @@ services:
     ports:
       - 33069:3306
     volumes:
-      - mi_volumes:/var/lib/mysql
+      - _vol:/var/lib/mysql
     networks:
       - networkapp
 
@@ -52,4 +52,4 @@ networks:
   networkapp:
 
 volumes:
-  mi_volumes:
+  _vol:
