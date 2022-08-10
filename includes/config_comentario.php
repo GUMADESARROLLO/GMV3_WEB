@@ -2,7 +2,7 @@
 
     //database configuration
     
-    $host       = "192.168.1.11";
+    $host       = "192.168.1.55";
     $user       = "Dios";    
     //$host       = "localhost";
     //$user       = "root";

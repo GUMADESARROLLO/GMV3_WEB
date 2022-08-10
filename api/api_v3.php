@@ -35,140 +35,15 @@ if (isset($_GET['category_id'])) {
 } else if (isset($_GET['get_recent'])) {
 
     $sqlsrv = new Sqlsrv();
-    $CODIGO_RUTA = $_GET['get_recent'];
-    mysqli_query($connect_comentario, "SET SESSION group_concat_max_len = 10000");   
-    $PROYECTO_B = array("F19", "F21", "F22", "F23");
-    $Lista = (in_array($CODIGO_RUTA , $PROYECTO_B)) ? '20' : '80' ;
 
-
-    $EXCENTOS   = array("F02", "F04", "F11", "F20");
-    $isExcentos = (in_array($CODIGO_RUTA , $EXCENTOS)) ? true : false;
-    
-    $json = array();
-    $Lotes ="  :0:N/D";
     $i = 0;
+    $json = array();
 
-    $query_lista_asignada = "SELECT * FROM gumadesk.tlb_rutas_asignadas WHERE Ruta = '".$CODIGO_RUTA."'";
-    $resultado_lista_asignadas = mysqli_query($connect_comentario, $query_lista_asignada);    
-    $ListaAsignada = mysqli_fetch_array($resultado_lista_asignadas, MYSQLI_ASSOC);
-    $RutaAsignada = $ListaAsignada['Ruta_asignada'];
-
-
-    $query_lista_articulos = "SELECT * FROM gumadesk.view_lista_articulos WHERE Ruta = '".$RutaAsignada."' AND Lista ='".$Lista."' " ;
-    
-    $resultado_lista_articulos = mysqli_query($connect_comentario, $query_lista_articulos);   
-    $ListaArticulos = mysqli_fetch_array($resultado_lista_articulos, MYSQLI_ASSOC);
-    $lstArticulo = $ListaArticulos['Articulos']; 
-
-
-
-
-   if($isExcentos){
-        $query = $sqlsrv->fetchArray("SELECT * FROM GMV_mstr_articulos WHERE EXISTENCIA > 1 OR ARTICULO LIKE 'VU%' ORDER BY CALIFICATIVO,DESCRIPCION ASC", SQLSRV_FETCH_ASSOC);
-        $RutaAsignada = $CODIGO_RUTA;
-    }else{
-        $query = $sqlsrv->fetchArray("SELECT * FROM GMV_mstr_articulos WHERE ARTICULO IN ($lstArticulo) OR ARTICULO LIKE 'VU%' ORDER BY CALIFICATIVO,DESCRIPCION ASC", SQLSRV_FETCH_ASSOC);  
-    }
-
-   
-
-
-
-
-    foreach ($query as $fila) {
-        $set_img ="SinImagen.png";
-        $set_des = "";
-
-        $query = "SELECT p.product_image,p.product_description FROM tbl_product p WHERE p.product_sku= '".$fila["ARTICULO"]."'";
-        $resouter = mysqli_query($connect, $query);
-        $total_records = mysqli_num_rows($resouter);
-        if($total_records >= 1) {
-            $link = mysqli_fetch_array($resouter, MYSQLI_ASSOC);
-            $set_img = $link['product_image'];
-            $set_des = $link['product_description'];
-        }
-
-
-        $qPromo = "SELECT * FROM tbl_news WHERE banner_sku = '".$fila["ARTICULO"]."'";
-        $rsPromo = mysqli_query($connect, $qPromo);
-        $total_records_promo = mysqli_num_rows($rsPromo);
-
-        $isPromo = ($total_records_promo >= 1) ? "S" : "N" ;
-
-        $Precio_Articulo = (strpos($fila["ARTICULO"], "VU") !== false) ? 1 : $fila['PRECIO_IVA'] ;
-        $Existe_Articulo = (strpos($fila["ARTICULO"], "VU") !== false) ? 999 : $fila['EXISTENCIA'] ;
-
-
-        if (strpos($fila["ARTICULO"], "VU") !== false) {
-            $set_des ='
-            <!DOCTYPE html>
-                <html>
-                <head>
-                    <style type="text/css">
-                    .alert-box {
-                        color:#555;
-                        border-radius:10px;
-                        font-family:Tahoma,Geneva,Arial,sans-serif;font-size:11px;
-                        padding:10px 36px;
-                        margin:10px;
-                    }
-                    .alert-box span {
-                        font-weight:bold;
-                        text-transform:uppercase;
-                    }
-                    .error {
-                        border:3px solid #f5aca6;
-                    }
-                    </style>
-                </head>
-                <body>
-                    <div class="alert-box error"><span>Importante: </span>Los Valores de precio y Existencia son informativos.</div>
-                </body>
-            </html>';
-        }
-
-        $val_viñeta = "C$ 40.00";
-        $isPromo ="N";
-
-
-
-        $json[$i]['product_id']               = $fila["ARTICULO"];
-        $json[$i]['product_name']             = strtoupper($fila['DESCRIPCION']);
-        $json[$i]['category_id']              = "20";
-        $json[$i]['category_name']            = "Medicina";
-        $json[$i]['product_price']            = number_format($Precio_Articulo,2,'.','');
-        $json[$i]['product_status']           = "Available";
-        $json[$i]['product_image']            = $set_img;
-        $json[$i]['product_description']      = $set_des;
-        $json[$i]['product_quantity']         = str_replace(',', '', number_format($Existe_Articulo,2));
-        $json[$i]['currency_id']              = "105";
-        $json[$i]['tax']                      = "0";
-        $json[$i]['currency_code']            = "NIO";
-        $json[$i]['currency_name']            = "Nicaraguan cordoba oro";
-        $json[$i]['product_bonificado']       = $fila["REGLAS"];
-        //$json[$i]['product_lotes']            = trim($fila["LOTES"]);
-        $json[$i]['product_lotes']            = $Lotes;
-        $json[$i]['product_und']              = $fila["UNIDAD_MEDIDA"];
-        $json[$i]['CALIFICATIVO']             = $fila["CALIFICATIVO"];
-        $json[$i]['ISPROMO']                  = $isPromo. ":" . $val_viñeta . ":" . $RutaAsignada;
-        $json[$i]['LAB']                      = $fila["LABORATORIO"];
-
-        $i++;
-    }
-
-    /*
-
-    
-
-    
-   
-
-   
+    $Lotes ="  :0:N/D";
 
     $PRE_VENTA = false;
 
     if($PRE_VENTA){
-        
         //INGRESO DE ARTICULOS EN PRE-VENTA
         $query = $sqlsrv->fetchArray("SELECT * FROM GMV_mstr_articulos WHERE ARTICULO IN ('15016023','19231011','15012011','15012021') ORDER BY CALIFICATIVO,DESCRIPCION ASC", SQLSRV_FETCH_ASSOC);
         
@@ -219,10 +94,35 @@ if (isset($_GET['category_id'])) {
     
 
 
-    
-        // LA IDEA ES CREAR LA TABLE
+    $query = $sqlsrv->fetchArray("SELECT * FROM GMV_mstr_articulos WHERE EXISTENCIA > 1 OR ARTICULO LIKE 'VU%' ORDER BY CALIFICATIVO,DESCRIPCION ASC", SQLSRV_FETCH_ASSOC);
 
-       /* $set_des ='
+    
+    
+
+    foreach ($query as $fila) {
+        $set_img ="SinImagen.png";
+        $set_des = "";
+
+        $query = "SELECT p.product_image,p.product_description FROM tbl_product p WHERE p.product_sku= '".$fila["ARTICULO"]."'";
+        $resouter = mysqli_query($connect, $query);
+        $total_records = mysqli_num_rows($resouter);
+        if($total_records >= 1) {
+            $link = mysqli_fetch_array($resouter, MYSQLI_ASSOC);
+            $set_img = $link['product_image'];
+            $set_des = $link['product_description'];
+        }
+
+
+        $qPromo = "SELECT * FROM tbl_news WHERE banner_sku = '".$fila["ARTICULO"]."'";
+        $rsPromo = mysqli_query($connect, $qPromo);
+        $total_records_promo = mysqli_num_rows($rsPromo);
+
+        $isPromo = ($total_records_promo >= 1) ? "S" : "N" ;
+
+        $Precio_Articulo = (strpos($fila["ARTICULO"], "VU") !== false) ? 1 : $fila['PRECIO_IVA'] ;
+        $Existe_Articulo = (strpos($fila["ARTICULO"], "VU") !== false) ? 999 : $fila['EXISTENCIA'] ;
+        if (strpos($fila["ARTICULO"], "VU") !== false) {
+            $set_des ='
             <!DOCTYPE html>
                 <html>
                 <head>
@@ -244,14 +144,36 @@ if (isset($_GET['category_id'])) {
                     </style>
                 </head>
                 <body>
-                    <div class="alert-box error"><span>VIÑETA: </span>Valor de Viñeta de C$ 40.00</div>
+                    <div class="alert-box error"><span>Importante: </span>Los Valores de precio y Existencia son informativos.</div>
                 </body>
             </html>';
-        
-*/
+        }
 
 
-        
+
+
+        $json[$i]['product_id']               = $fila["ARTICULO"];
+        $json[$i]['product_name']             = strtoupper($fila['DESCRIPCION']);
+        $json[$i]['category_id']              = "20";
+        $json[$i]['category_name']            = "Medicina";
+        $json[$i]['product_price']            = number_format($Precio_Articulo,2,'.','');
+        $json[$i]['product_status']           = "Available";
+        $json[$i]['product_image']            = $set_img;
+        $json[$i]['product_description']      = $set_des;
+        $json[$i]['product_quantity']         = str_replace(',', '', number_format($Existe_Articulo,2));
+        $json[$i]['currency_id']              = "105";
+        $json[$i]['tax']                      = "0";
+        $json[$i]['currency_code']            = "NIO";
+        $json[$i]['currency_name']            = "Nicaraguan cordoba oro";
+        $json[$i]['product_bonificado']       = $fila["REGLAS"];
+        //$json[$i]['product_lotes']            = trim($fila["LOTES"]);
+        $json[$i]['product_lotes']            = $Lotes;
+        $json[$i]['product_und']              = $fila["UNIDAD_MEDIDA"];
+        $json[$i]['CALIFICATIVO']             = $fila["CALIFICATIVO"];
+        $json[$i]['ISPROMO']                  = $isPromo ;
+        $json[$i]['LAB']                      = $fila["LABORATORIO"];
+        $i++;
+    }
 
     header('Content-Type: application/json; charset=utf-8');
     echo $val = str_replace('\\/', '/', json_encode($json));
@@ -396,11 +318,7 @@ if (isset($_GET['category_id'])) {
     $sqlsrv = new Sqlsrv();
     $dta = array(); $i=0;
 
-    $sql_query ="SELECT T0.*,ISNULL( 0, 0 ) AS SALDO_VINETA  FROM dbo.GMV3_MASTER_CLIENTES T0 WHERE T0.VENDEDOR LIKE '%".$_GET['clients_id']."%' ORDER BY NOMBRE";
-
-    //$sql_query_02 = "SELECT T0.*,ISNULL(T1.DISPONIBLE, 0) AS SALDO_VINETA  FROM Softland.dbo.ANA_MTClientes_UMK T0 LEFT JOIN PRODUCCION.dbo.view_master_cliente_vineta T1 ON T0.CLIENTE = T1.CLIENTE WHERE VENDEDOR='".$_GET['clients_id']."' AND ACTIVO ='S' AND Saldo > 0 ORDER BY NOMBRE";
-
-    $query = $sqlsrv->fetchArray($sql_query, SQLSRV_FETCH_ASSOC);
+    $query = $sqlsrv->fetchArray("SELECT T0.*,ISNULL(T1.DISPONIBLE, 0) AS SALDO_VINETA  FROM Softland.dbo.ANA_MTClientes_UMK T0 LEFT JOIN PRODUCCION.dbo.view_master_cliente_vineta T1 ON T0.CLIENTE = T1.CLIENTE WHERE VENDEDOR='".$_GET['clients_id']."' AND ACTIVO ='S' ORDER BY NOMBRE", SQLSRV_FETCH_ASSOC);
     if (count($query)>0) {
         foreach ($query as $key) {
 
@@ -435,7 +353,7 @@ if (isset($_GET['category_id'])) {
             $i++;
         }
         //echo json_encode($dta);
-        //usort($dta, 'object_sorter');
+        usort($dta, 'object_sorter');
         echo json_encode($dta);
 
     }
@@ -1031,7 +949,7 @@ if (isset($_GET['category_id'])) {
     $rRecuperacion = mysqli_query($connect_comentario, $qRecuperacion);
     $ttRecuperado = mysqli_num_rows($rRecuperacion);
     if($ttRecuperado >= 1) {
-        $link_recuperacion = mysqli_fetch_array($rRecuperacion, MYSQLI_ASSOC);
+       $link_recuperacion = mysqli_fetch_array($rRecuperacion, MYSQLI_ASSOC);
         $Recup_Credito = number_format($link_recuperacion["recuperado_credito"],2,".","");
         $Recup_Contado = number_format($link_recuperacion["recuperado_contado"],2,".","");
     }
@@ -1174,7 +1092,6 @@ if (isset($_GET['category_id'])) {
     }
     mysqli_close($connect); 
 }else if (isset($_GET['post_order_recibo'])) {
-
     $ruta           = $_POST['ruta'];
     $cod_cliente    = $_POST['cod_cliente'];
 
@@ -1189,36 +1106,25 @@ if (isset($_GET['category_id'])) {
     $player_id      = $_POST['player_id'];
     $date           = $_POST['date'];
 
-    $qIsExist = "SELECT * FROM tbl_order_recibo T0 WHERE T0.recibo = '".$recibo."' AND  T0.ruta  = '".$ruta."' AND T0.status in (0,1,4) ";    
-    $rsCount = mysqli_query($connect_comentario, $qIsExist);
-    $total_records = mysqli_num_rows($rsCount);
+    $query = "INSERT INTO tbl_order_recibo (ruta, cod_cliente,recibo,fecha_recibo, name_cliente,created_at, order_list, order_total, comment,comment_anul, player_id) 
+    VALUES ('$ruta', '$cod_cliente', '$recibo', '$fecha_recibo', '$name_cliente','$date', '$order_list', '$order_total', '$comment', '$comment_anul', '$player_id')";
 
-    if($total_records != 1){
-        $query = "INSERT INTO tbl_order_recibo (ruta, cod_cliente,recibo,fecha_recibo, name_cliente,created_at, order_list, order_total, comment,comment_anul, player_id) 
-        VALUES ('$ruta', '$cod_cliente', '$recibo', '$fecha_recibo', '$name_cliente','$date', '$order_list', '$order_total', '$comment', '$comment_anul', '$player_id')";
-        if (mysqli_query($connect_comentario, $query)) {
-            //include_once ('php-mail.php');
-            echo 'Nuevo';
-        } else {
-            echo 'Error';
-        }
-        mysqli_close($connect); 
-    }else{
-        echo 'Existe';
+
+    if (mysqli_query($connect_comentario, $query)) {
+        //include_once ('php-mail.php');
+        echo 'Data Inserted Successfully';
+    } else {
+        echo 'Try Again';
     }
-    
+    mysqli_close($connect); 
 }else if (isset($_GET['get_recibos_colector'])) {
 
-    $Usuario    = $_GET['get_recibos_colector'];
-    $OrderBy    = $_GET['OrderBy'];
-    $Desde      = $_GET['Desde'];;
-    $Hasta      = $_GET['Hasta'];;
-    
+    $Usuario = $_GET['get_recibos_colector'];
+    $OrderBy = $_GET['OrderBy'];
     $i=0;
-    
     $array = array();
 
-    $query = "SELECT * FROM tbl_order_recibo T0 WHERE T0.fecha_recibo BETWEEN '".$Desde."' AND '".$Hasta."' AND  ruta = '".$Usuario."' and status != 3 ORDER BY id $OrderBy";
+    $query = "SELECT * FROM tbl_order_recibo WHERE ruta = '".$Usuario."' and status != 3 ORDER BY date_time,status $OrderBy";
     
     $resouter = mysqli_query($connect_comentario, $query);
 
@@ -1259,7 +1165,6 @@ if (isset($_GET['category_id'])) {
     }
     mysqli_close($connect); 
 }else if (isset($_GET['post_adjunto'])) {
-    
 
     $nomImagen  = $_POST['nom'];
     $imagen     = $_POST['imagenes'];    
@@ -1317,7 +1222,6 @@ if (isset($_GET['category_id'])) {
 	T0.[Nombre del cliente] AS Cliente,
 	SUM ( T0.Venta ) AS Venta,
 	( SELECT COUNT ( * ) FROM Softland.dbo.APK_CxC_DocVenxCL AS T1 WHERE T1.DOCUMENTO= T0.FACTURA ) AS ACTIVA,
-    ( SELECT ISNULL(SUM(T4.SALDO_LOCAL) , 0) FROM Softland.dbo.APK_CxC_DocVenxCL AS T4 WHERE T4.DOCUMENTO = T0.FACTURA ) AS SALDO,
 	ISNULL(convert(nvarchar(11),( SELECT T2.FECHA_VENCE FROM Softland.dbo.APK_CxC_DocVenxCL AS T2 WHERE T2.DOCUMENTO= T0.FACTURA ),103), '-/-/-') AS FECHA_VENCE,
     (SELECT T3.DVencidos FROM Softland.dbo.APK_CxC_DocVenxCL AS T3 WHERE T3.DOCUMENTO= T0.FACTURA ) AS DVencidos,
 	T0.Plazo
@@ -1347,7 +1251,6 @@ ORDER BY
         $dta[$i]['PLAZO']      = $key['Plazo'];
         $dta[$i]['VENCE']      = $key['FECHA_VENCE'];
         $dta[$i]['DVENCIDOS']  = $key['DVencidos'];
-        $dta[$i]['SALDO']      = str_replace(",", "",number_format($key['SALDO'],2));
         $i++;
     }
 
@@ -1355,46 +1258,6 @@ ORDER BY
 
     header('Content-Type: application/json; charset=utf-8');
     echo $val = str_replace('\\/', '/', json_encode($dta));
-}else if (isset($_GET['recibo_anular'])){
-
-    $recibo         = $_GET['recibo_anular'];
-    $fecha_recibo   = $_GET['Fecha_Recibo'];
-    $Ruta           = $_GET['Ruta'];
-    
-    $qIsExist = "SELECT * FROM tbl_order_recibo T0 WHERE T0.recibo = '".$recibo."' AND  T0.ruta  = '".$Ruta."' AND T0.status in (0,1,4) ";    
-    $rsCount = mysqli_query($connect_comentario, $qIsExist);
-    $total_records = mysqli_num_rows($rsCount);
-    if($total_records != 1){
-
-        $ruta           = $Ruta;
-        $cod_cliente    = "00000";
-
-        $recibo         = $recibo;
-        $fecha_recibo   = $fecha_recibo;
-        
-        $name_cliente   = "N/D";    
-        $order_list     = "[00000000;0.00;0.00;0;0.00;0.00;0.00;00000;ANULADO],";
-        $order_total    = "C$ 0.00";
-        $comment        = "ESTE RECIBO FUE ANULADO POR EL VENDEDOR";
-        $comment_anul   = "";
-        $player_id      = $_GET['Player_Id'];
-        $date           = date('Y-m-d H:i:s');
-
-        $query = "INSERT INTO tbl_order_recibo (ruta, cod_cliente,recibo,fecha_recibo, name_cliente,created_at, order_list, order_total, comment,comment_anul, player_id,status) 
-            VALUES ('$ruta', '$cod_cliente', '$recibo', '$fecha_recibo', '$name_cliente','$date', '$order_list', '$order_total', '$comment', '$comment_anul', '$player_id',4)";
-        if (mysqli_query($connect_comentario, $query)) {
-            echo 'Nuevo';
-        } else {
-            echo 'Error';
-        }
-        mysqli_close($connect); 
-        
-    }else{
-        echo 'Existe';
-    }
-
-    
-    
 }else{
     header('Content-Type: application/json; charset=utf-8');
     echo "no method found!";
