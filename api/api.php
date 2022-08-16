@@ -41,7 +41,7 @@ if (isset($_GET['category_id'])) {
     $Lista = (in_array($CODIGO_RUTA , $PROYECTO_B)) ? '20' : '80' ;
 
 
-    $EXCENTOS   = array("F02", "F04", "F11", "F20");
+    $EXCENTOS   = array("F02", "F04", "F11", "F20","F18");
     $isExcentos = (in_array($CODIGO_RUTA , $EXCENTOS)) ? true : false;
     
     $json = array();
