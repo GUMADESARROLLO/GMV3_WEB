@@ -1,5 +1,8 @@
 <?php
-    session_start();
+    if(!isset($_SESSION)) 
+    { 
+        session_start(); 
+    } 
     function object_sorter($a,$b) {
         return (($a['PIN'] < $b['PIN']) ? 1 : -1);
     }
