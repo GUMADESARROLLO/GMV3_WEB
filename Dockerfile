@@ -17,9 +17,11 @@ COPY default.tmpl /kool/default.tmpl
 
 RUN ln -s /usr/share/zoneinfo/America/Managua /etc/localtime
 
+WORKDIR /app
+
 RUN mkdir ${ARG_APP_NAME}
 
-WORKDIR /${ARG_APP_NAME}
+WORKDIR /app/${ARG_APP_NAME}
 
 COPY . .
 
