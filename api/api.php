@@ -37,11 +37,11 @@ if (isset($_GET['category_id'])) {
     $sqlsrv = new Sqlsrv();
     $CODIGO_RUTA = $_GET['get_recent'];
     mysqli_query($connect_comentario, "SET SESSION group_concat_max_len = 10000");   
-    $PROYECTO_B = array("F19", "F21", "F22", "F23");
+    $PROYECTO_B = array( "F22", "F23");
     $Lista = (in_array($CODIGO_RUTA , $PROYECTO_B)) ? '20' : '80' ;
 
 
-    $EXCENTOS   = array("F02", "F04", "F11", "F20","F18");
+    $EXCENTOS   = array("F02","F03", "F04","F05", "F11", "F20","F18","F09","F10","F24","F07","F08","F13","F06","F14","F19","F21");
     $isExcentos = (in_array($CODIGO_RUTA , $EXCENTOS)) ? true : false;
     
     $json = array();
@@ -304,7 +304,6 @@ if (isset($_GET['category_id'])) {
 
     $query = "INSERT INTO tbl_order (code,name, email, phone,created_at, address, shipping, order_list, order_total, comment, player_id) VALUES ('$code','$name', '$email', '$phone','$date', '$address', '$shipping', '$order_list', '$order_total', '$comment', '$player_id')";
 
-
     if (mysqli_query($connect, $query)) {
         //include_once ('php-mail.php');
         echo 'Data Inserted Successfully';
@@ -417,6 +416,7 @@ if (isset($_GET['category_id'])) {
             $Pin_num_rows = mysqli_num_rows($rPin);
 
             $isPin = ($Pin_num_rows == 0) ? "N" : "S";
+            $isPlan =($key['PLAN_CRECI'] == 0) ? "N" : "S";
 
             $retVal = ($key['MOROSO'] == 'S') ? $key['NOMBRE']." [MOROSO]" : $key['NOMBRE'] ;
 
@@ -431,6 +431,7 @@ if (isset($_GET['category_id'])) {
             $dta[$i]['CONDPA']      = "Cond. Pago: ".$key['CONDICION_PAGO'].' Dias';
             $dta[$i]['VERIFICADO']  = $Verificaco;
             $dta[$i]['PIN']         = $isPin;
+            $dta[$i]['PLAN']         = $isPlan;
             $dta[$i]['vineta']       = number_format($key['SALDO_VINETA'],2);
             $i++;
         }
@@ -837,17 +838,16 @@ if (isset($_GET['category_id'])) {
     echo $val = str_replace('\\/', '/', json_encode($json));
 }else if (isset($_GET['post_update_datos'])) {
 
-	include('../public/sql-query.php');
 
-    $KeysSecret 	= "A7M";
-    $table_name 	= 'tbl_admin';
-    $where_clause	= "WHERE username = '".$_POST['Ruta']."'";
-	$whereSQL 		= '';
+    $KeysSecret     = "A7M";
+    $table_name     = 'tbl_admin';
+    $where_clause   = "WHERE username = '".$_POST['Ruta']."'";
+    $whereSQL       = '';
 
     $form_data = array(
-        'email'  		  	=> $_POST['Email'],
-        'Telefono'  		=> $_POST['Telefono'],
-        'password'  		=> hash('sha256',$KeysSecret.$_POST['Contrasenna'])
+        'email'             => $_POST['Email'],
+        'Telefono'          => $_POST['Telefono'],
+        'password'          => hash('sha256',$KeysSecret.$_POST['Contrasenna'])
     );
 
 
@@ -896,14 +896,14 @@ if (isset($_GET['category_id'])) {
 
 
 
-        $table_name 	= 'tlb_verificacion';
-        $where_clause	= "WHERE Cliente = '".$cliente."'";
-        $whereSQL 		= '';
+        $table_name     = 'tlb_verificacion';
+        $where_clause   = "WHERE Cliente = '".$cliente."'";
+        $whereSQL       = '';
 
         $form_data = array(
-            'Lati'  		=> $Lati,
-            'Longi'  		=> $Logi,
-            'updated_at'  		=> $date
+            'Lati'          => $Lati,
+            'Longi'         => $Logi,
+            'updated_at'        => $date
         );
         if(!empty($where_clause)) {
             if(substr(strtoupper(trim($where_clause)), 0, 5) != 'WHERE') {
@@ -1312,26 +1312,26 @@ if (isset($_GET['category_id'])) {
 
 
       $Q="SELECT
-	T0.FACTURA,
-	T0.Dia,
-	T0.[Nombre del cliente] AS Cliente,
-	SUM ( T0.Venta ) AS Venta,
-	( SELECT COUNT ( * ) FROM Softland.dbo.APK_CxC_DocVenxCL AS T1 WHERE T1.DOCUMENTO= T0.FACTURA ) AS ACTIVA,
+    T0.FACTURA,
+    T0.Dia,
+    T0.[Nombre del cliente] AS Cliente,
+    SUM ( T0.Venta ) AS Venta,
+    ( SELECT COUNT ( * ) FROM Softland.dbo.APK_CxC_DocVenxCL AS T1 WHERE T1.DOCUMENTO= T0.FACTURA ) AS ACTIVA,
     ( SELECT ISNULL(SUM(T4.SALDO_LOCAL) , 0) FROM Softland.dbo.APK_CxC_DocVenxCL AS T4 WHERE T4.DOCUMENTO = T0.FACTURA ) AS SALDO,
-	ISNULL(convert(nvarchar(11),( SELECT T2.FECHA_VENCE FROM Softland.dbo.APK_CxC_DocVenxCL AS T2 WHERE T2.DOCUMENTO= T0.FACTURA ),103), '-/-/-') AS FECHA_VENCE,
+    ISNULL(convert(nvarchar(11),( SELECT T2.FECHA_VENCE FROM Softland.dbo.APK_CxC_DocVenxCL AS T2 WHERE T2.DOCUMENTO= T0.FACTURA ),103), '-/-/-') AS FECHA_VENCE,
     (SELECT T3.DVencidos FROM Softland.dbo.APK_CxC_DocVenxCL AS T3 WHERE T3.DOCUMENTO= T0.FACTURA ) AS DVencidos,
-	T0.Plazo
+    T0.Plazo
 FROM
-	Softland.dbo.VtasTotal_UMK T0 
+    Softland.dbo.VtasTotal_UMK T0 
 WHERE
-	T0.[Cod. Cliente] ='".$ruta."' 
+    T0.[Cod. Cliente] ='".$ruta."' 
 GROUP BY
-	T0.FACTURA,
-	T0.Dia,
-	T0.[Nombre del cliente],
-	T0.Plazo
+    T0.FACTURA,
+    T0.Dia,
+    T0.[Nombre del cliente],
+    T0.Plazo
 ORDER BY
-	T0.Dia DESC";
+    T0.Dia DESC";
 
 
 
@@ -1395,6 +1395,58 @@ ORDER BY
 
     
     
+}else if (isset($_GET['PLAN'])){
+
+    $ruta        = $_GET['RUTA'];
+    $Cliente       = $_GET['PLAN'];
+
+    $Q01="SELECT * FROM view_plan_crecimiento WHERE CLIENTE_CODIGO='".$Cliente ."'";
+    
+    $Q02="SELECT month(T0.Fecha_de_Factura) number_month,SUBSTRING(t0.MES,0,4) name_month,t0.[AÑO] annio,sum(T0.VentaNetaLocal) ttMonth 
+        FROM Softland.dbo.ANA_VentasTotales_MOD_Contabilidad_UMK T0 WHERE T0.Fecha_de_Factura BETWEEN '2022-07-01 00:00:00.000' and '2023-08-01 00:00:00.000' 
+        AND T0.CLIENTE_CODIGO= '".$Cliente ."' and T0.VentaNetaLocal  > 0
+        GROUP BY MONTH ( T0.Fecha_de_Factura ),YEAR  ( T0.Fecha_de_factura),t0.MES,t0.[AÑO] ORDER BY YEAR( T0.Fecha_de_factura) ASC,MONTH ( T0.Fecha_de_Factura )";
+
+    $sqlsrv = new Sqlsrv();
+
+    $dta        = array(); 
+    $dta_month  = array(); 
+
+    $i=0;
+
+    $query_result01 = $sqlsrv->fetchArray($Q01, SQLSRV_FETCH_ASSOC);
+    foreach ($query_result01 as $key) {
+        $dta['EVALUADO']      = ceil($key['EVALUADO']);
+        $dta['CRECIMIENTO']      = ceil($key['CRECIMIENTO']);
+        $dta['COMPRA_MIN']      = ceil($key['COMPRA_MIN']);
+        $dta['PROM_CUMP']      = ceil(number_format($key['PROM_CUMP'],0));
+    }
+
+    $query_result02 = $sqlsrv->fetchArray($Q02, SQLSRV_FETCH_ASSOC);
+    foreach ($query_result02 as $key) {        
+        $dta_month[$i]['number_month']    = $key['number_month'];      
+        $dta_month[$i]['name_month']    = $key['name_month'];      
+        $dta_month[$i]['annio']    = $key['annio'];      
+        $dta_month[$i]['ttMonth']      = ceil($key['ttMonth']);
+        $i++;
+    }
+
+    $dtaBodega[] = array(
+        'InfoCliente' => $dta,
+        'SalesMonths' => $dta_month
+    );
+
+    $sqlsrv->close();
+
+    $InserteDate = date('Y-m-d');
+    $rowInsert   = "INSERT INTO tbl_logs (RUTA,FECHA, MODULO) VALUES ('$ruta','$InserteDate', 'PlanCrecimiento')";
+    mysqli_query($connect, $rowInsert);
+
+
+
+    header('Content-Type: application/json; charset=utf-8');
+    echo $val = str_replace('\\/', '/', json_encode($dtaBodega));
+
 }else{
     header('Content-Type: application/json; charset=utf-8');
     echo "no method found!";

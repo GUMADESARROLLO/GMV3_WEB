@@ -1,12 +1,15 @@
-GET  http://192.168.1.139:8448/gmv3/api/api.php?get_recent
-content-type: application/json
-###
-
-GET  http://192.168.1.139:8448/gmv3/api/api.php?get_vineta=00963
+GET  http://localhost:8448/gmv3/api/api.php?get_recent HTTP/1.1
 content-type: application/json
 ###
 
 
-GET  http://192.168.1.139:8448/gmv3/api/api.php?get_liquidacion_vineta=00963
+http://localhost:8448/gmv3/api/api.php?clients_id=F10 HTTP/1.1
 content-type: application/json
 ###
+
+http://localhost:8448/gmv3/api/api.php?get_recent=F21 HTTP/1.1
+content-type: application/json
+###
+
+GET http://186.1.15.166:8448/gmv3/api/api.php?PLAN=01865 HTTP/1.1
+content-type: application/json`

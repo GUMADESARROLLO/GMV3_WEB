@@ -1,0 +1,49 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: gmv3-app
+  namespace: grupoguma
+  labels:
+    app: gmv3
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: gmv3-app
+  template:
+    metadata:
+      labels:
+        app: gmv3-app
+    spec:
+      volumes:
+        - name: storage
+          persistentVolumeClaim:
+            claimName: mysql-pvc
+      imagePullSecrets:
+        - name: regcred
+      containers:
+        - name: cn-gmv3-app
+          image: gumadesarrollo/gmv3:v1.21{{BUILD_NUMBER}}
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 80
+          resources:
+            requests:
+              memory: "64Mi"
+              cpu: "72m"
+            limits:
+              memory: "128Mi"
+              cpu: "144m"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: gmv3-svc
+  namespace: grupoguma
+spec:
+  selector:    
+    app: gmv3-app
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80

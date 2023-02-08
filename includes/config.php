@@ -1,7 +1,7 @@
 <?php
 
     //database configuration
-    $host       = "localhost";
+    $host       = "mysql-svc";
     $user       = "root";
     $pass       = "a7m1425.";
     $database   = "ecommerce_android_app";
