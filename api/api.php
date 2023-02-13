@@ -397,7 +397,7 @@ if (isset($_GET['category_id'])) {
 
     //$sql_query ="SELECT T0.*,ISNULL( 0, 0 ) AS SALDO_VINETA  FROM dbo.GMV3_MASTER_CLIENTES T0 WHERE T0.VENDEDOR LIKE '%".$_GET['clients_id']."%' ORDER BY NOMBRE";
 
-    $sql_query_02 = "SELECT T0.*,ISNULL(T1.DISPONIBLE, 0) AS SALDO_VINETA  FROM Softland.dbo.ANA_MTClientes_UMK T0 LEFT JOIN PRODUCCION.dbo.view_master_cliente_vineta T1 ON T0.CLIENTE = T1.CLIENTE WHERE VENDEDOR='".$_GET['clients_id']."' AND ACTIVO ='S' AND Saldo > 0 ORDER BY NOMBRE";
+    $sql_query = "SELECT T0.*,ISNULL(T1.DISPONIBLE, 0) AS SALDO_VINETA  FROM dbo.GMV3_MASTER_CLIENTES T0 LEFT JOIN PRODUCCION.dbo.view_master_cliente_vineta T1 ON T0.CLIENTE = T1.CLIENTE WHERE VENDEDOR='".$_GET['clients_id']."' AND ACTIVO ='S' AND Saldo > 0 ORDER BY NOMBRE";
 
     $query = $sqlsrv->fetchArray($sql_query, SQLSRV_FETCH_ASSOC);
     if (count($query)>0) {
