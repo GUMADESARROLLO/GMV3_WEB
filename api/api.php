@@ -41,7 +41,7 @@ if (isset($_GET['category_id'])) {
     $Lista = (in_array($CODIGO_RUTA , $PROYECTO_B)) ? '20' : '80' ;
 
 
-    $EXCENTOS   = array("F02","F03", "F04","F05", "F11", "F20","F18","F09","F10","F24","F07","F08","F13","F06","F14","F19","F21");
+    $EXCENTOS   = array("F02","F03", "F04","F05", "F11", "F20","F09","F10","F24","F07","F08","F13","F06","F14","F19","F21");
     $isExcentos = (in_array($CODIGO_RUTA , $EXCENTOS)) ? true : false;
     
     $json = array();
@@ -67,7 +67,17 @@ if (isset($_GET['category_id'])) {
         $query = $sqlsrv->fetchArray("SELECT * FROM GMV_mstr_articulos WHERE EXISTENCIA > 1 OR ARTICULO LIKE 'VU%' ORDER BY CALIFICATIVO,DESCRIPCION ASC", SQLSRV_FETCH_ASSOC);
         $RutaAsignada = $CODIGO_RUTA;
     }else{
-        $query = $sqlsrv->fetchArray("SELECT * FROM GMV_mstr_articulos WHERE ARTICULO IN ($lstArticulo) OR ARTICULO LIKE 'VU%' ORDER BY CALIFICATIVO,DESCRIPCION ASC", SQLSRV_FETCH_ASSOC);  
+          
+        
+        if($CODIGO_RUTA=='F18'){
+           $query = $sqlsrv->fetchArray("SELECT * FROM GMV_mstr_articulos WHERE ARTICULO IN (SELECT * FROM DESARROLLO.dbo.tbl_gmv_articulos_f18) ORDER BY CALIFICATIVO,DESCRIPCION ASC", SQLSRV_FETCH_ASSOC); 
+           $RutaAsignada = $CODIGO_RUTA;
+            
+        }else{
+           $query = $sqlsrv->fetchArray("SELECT * FROM GMV_mstr_articulos WHERE ARTICULO IN ($lstArticulo) OR ARTICULO LIKE 'VU%' ORDER BY CALIFICATIVO,DESCRIPCION ASC", SQLSRV_FETCH_ASSOC); 
+        }
+        
+        
     }
 
    
@@ -97,6 +107,10 @@ if (isset($_GET['category_id'])) {
 
         $Precio_Articulo = (strpos($fila["ARTICULO"], "VU") !== false) ? 1 : $fila['PRECIO_IVA'] ;
         $Existe_Articulo = (strpos($fila["ARTICULO"], "VU") !== false) ? 999 : $fila['EXISTENCIA'] ;
+        
+        if($CODIGO_RUTA=='F18'){
+            $Precio_Articulo = $fila['PRECIO_MAYORISTA'];
+        }
 
 
         if (strpos($fila["ARTICULO"], "VU") !== false) {
@@ -428,16 +442,33 @@ if (isset($_GET['category_id'])) {
             $dta[$i]['SALDO']       = number_format($key['SALDO'],2);
             $dta[$i]['MOROSO']      = $key['MOROSO'];
             $dta[$i]['TELE']        = "Tels. ".$key['TELEFONO1'].' / '.$key['TELEFONO2'];
-            $dta[$i]['CONDPA']      = "Cond. Pago: ".$key['CONDICION_PAGO'].' Dias';
+            $dta[$i]['CONDPA']      = $key['CONDICION_PAGO'];
             $dta[$i]['VERIFICADO']  = $Verificaco;
             $dta[$i]['PIN']         = $isPin;
             $dta[$i]['PLAN']         = $isPlan;
             $dta[$i]['vineta']       = number_format($key['SALDO_VINETA'],2);
+            $dta[$i]['NIVEL_PRECIO'] =$key['NIVEL_PRECIO'];
             $i++;
         }
         //echo json_encode($dta);
         //usort($dta, 'object_sorter');
-        echo json_encode($dta);
+        //echo json_encode($dta);
+
+    }else{
+        $dta[$i]['CLIENTE']      = '0000';
+        $dta[$i]['NOMBRE']       = 'CLIENTE EN BLANCO';
+        $dta[$i]['DIRECCION']    = 'EN ESPERA DE ASIGNACION DE CLIENTES';
+        $dta[$i]['DIPONIBLE']    = '0.00';
+        $dta[$i]['LIMITE']       = '0.00';
+        $dta[$i]['SALDO']        = '0.00';
+        $dta[$i]['MOROSO']       = 'N';
+        $dta[$i]['TELE']         = 'Tels. X /';
+        $dta[$i]['CONDPA']       = 'Crédito 0 Días';
+        $dta[$i]['VERIFICADO']   = "N;0.00;0.00";
+        $dta[$i]['PIN']          = 'N';
+        $dta[$i]['PLAN']         = 'N';
+        $dta[$i]['vineta']       = '0.00';
+        $dta[$i]['NIVEL_PRECIO'] = 'FARMACIA';
 
     }
 
@@ -447,8 +478,8 @@ if (isset($_GET['category_id'])) {
 
 
 
-    //header('Content-Type: application/json; charset=utf-8');
-   // echo $val = str_replace('\\/', '/', json_encode($dta));
+    header('Content-Type: application/json; charset=utf-8');
+    echo $val = str_replace('\\/', '/', json_encode($dta));
 
 
 } else if (isset($_GET['post_usuario'])) {
@@ -1397,13 +1428,15 @@ ORDER BY
     
 }else if (isset($_GET['PLAN'])){
 
-    $ruta        = $_GET['RUTA'];
-    $Cliente       = $_GET['PLAN'];
+   
 
-    $Q01="SELECT * FROM view_plan_crecimiento WHERE CLIENTE_CODIGO='".$Cliente ."'";
+    $ruta        = $_GET['RUTA'];
+    $Cliente      = $_GET['PLAN'];
+
+    $Q01="SELECT * FROM view_cliente_stats WHERE CLIENTE_CODIGO='".$Cliente ."'";
     
     $Q02="SELECT month(T0.Fecha_de_Factura) number_month,SUBSTRING(t0.MES,0,4) name_month,t0.[AÑO] annio,sum(T0.VentaNetaLocal) ttMonth 
-        FROM Softland.dbo.ANA_VentasTotales_MOD_Contabilidad_UMK T0 WHERE T0.Fecha_de_Factura BETWEEN '2022-07-01 00:00:00.000' and '2023-08-01 00:00:00.000' 
+        FROM Softland.dbo.ANA_VentasTotales_MOD_Contabilidad_UMK T0 WHERE T0.Fecha_de_Factura >= DATEADD(MONTH, -6, GETDATE())
         AND T0.CLIENTE_CODIGO= '".$Cliente ."' and T0.VentaNetaLocal  > 0
         GROUP BY MONTH ( T0.Fecha_de_Factura ),YEAR  ( T0.Fecha_de_factura),t0.MES,t0.[AÑO] ORDER BY YEAR( T0.Fecha_de_factura) ASC,MONTH ( T0.Fecha_de_Factura )";
 
@@ -1415,11 +1448,21 @@ ORDER BY
     $i=0;
 
     $query_result01 = $sqlsrv->fetchArray($Q01, SQLSRV_FETCH_ASSOC);
-    foreach ($query_result01 as $key) {
-        $dta['EVALUADO']      = ceil($key['EVALUADO']);
-        $dta['CRECIMIENTO']      = ceil($key['CRECIMIENTO']);
-        $dta['COMPRA_MIN']      = ceil($key['COMPRA_MIN']);
-        $dta['PROM_CUMP']      = ceil(number_format($key['PROM_CUMP'],0));
+    
+
+    if (empty($query_result01)) {
+        $dta['EVALUADO'] = number_format(0,2);
+        $dta['CRECIMIENTO'] = 0;
+        $dta['COMPRA_MIN'] = 0;
+        $dta['PROM_CUMP'] = 0;
+    } else {
+        foreach ($query_result01 as $key) {
+            $dta['EVALUADO']      = ceil($key['EVALUADO']);
+            $dta['CRECIMIENTO']      = ceil($key['CRECIMIENTO']);
+            $dta['COMPRA_MIN']      = ceil($key['COMPRA_MIN']);
+            $dta['PROM_CUMP']      = ceil(number_format($key['PROM_CUMP'],0));
+        }
+        
     }
 
     $query_result02 = $sqlsrv->fetchArray($Q02, SQLSRV_FETCH_ASSOC);
