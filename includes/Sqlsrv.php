@@ -6,9 +6,15 @@
 class Sqlsrv
 {
 
+    //PRODUCCION_R6
+    //public $serverName = "192.168.1.18";
+    //public $user = "dbomanager";
+
+    //PRODUCCION_R7
     public $serverName = "192.168.1.18";
-    public $dbname = "PRODUCCION";
     public $user = "dbomanager";
+
+    public $dbname = "PRODUCCION";
     public $password = "Umk*.*@!";
     public $characterSet = "UTF-8";
     public $connection;
@@ -45,7 +51,8 @@ class Sqlsrv
         return $this->status;
     }
 
-    public function OPen_database_odbcSAp(){//CONEXION A HANA INNOVA
+    public function OPen_database_odbcSAp(){
+        //CONEXION A HANA INNOVA
         $conn = @odbc_connect("HANA","SYSTEM","B1Adminhana", SQL_CUR_USE_ODBC);
         if(!$conn){
             echo '<div class="row errorConexion white-text center">

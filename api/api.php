@@ -41,20 +41,20 @@ if (isset($_GET['category_id'])) {
     $Lista = (in_array($CODIGO_RUTA , $PROYECTO_B)) ? '20' : '80' ;
 
 
-    $EXCENTOS   = array("F02","F03", "F04","F05", "F11", "F20","F18","F09","F10","F24","F07","F08","F13","F06","F14","F19","F21");
+    $EXCENTOS   = array("F02","F03", "F04","F05", "F11", "F20","F09","F10","F24","F07","F08","F13","F06","F14","F19","F21");
     $isExcentos = (in_array($CODIGO_RUTA , $EXCENTOS)) ? true : false;
     
     $json = array();
     $Lotes ="  :0:N/D";
     $i = 0;
 
-    $query_lista_asignada = "SELECT * FROM gumadesk.tlb_rutas_asignadas WHERE Ruta = '".$CODIGO_RUTA."'";
+    $query_lista_asignada = "SELECT * FROM db_estadisticas.tlb_rutas_asignadas WHERE Ruta = '".$CODIGO_RUTA."'";
     $resultado_lista_asignadas = mysqli_query($connect_comentario, $query_lista_asignada);    
     $ListaAsignada = mysqli_fetch_array($resultado_lista_asignadas, MYSQLI_ASSOC);
     $RutaAsignada = $ListaAsignada['Ruta_asignada'];
 
 
-    $query_lista_articulos = "SELECT * FROM gumadesk.view_lista_articulos WHERE Ruta = '".$RutaAsignada."' AND Lista ='".$Lista."' " ;
+    $query_lista_articulos = "SELECT * FROM db_estadisticas.view_lista_articulos WHERE Ruta = '".$RutaAsignada."' AND Lista ='".$Lista."' " ;
     
     $resultado_lista_articulos = mysqli_query($connect_comentario, $query_lista_articulos);   
     $ListaArticulos = mysqli_fetch_array($resultado_lista_articulos, MYSQLI_ASSOC);
@@ -64,10 +64,22 @@ if (isset($_GET['category_id'])) {
 
 
    if($isExcentos){
-        $query = $sqlsrv->fetchArray("SELECT * FROM GMV_mstr_articulos WHERE EXISTENCIA > 1 OR ARTICULO LIKE 'VU%' ORDER BY CALIFICATIVO,DESCRIPCION ASC", SQLSRV_FETCH_ASSOC);
+        $Tabla_Articulos = ($CODIGO_RUTA =='F02' ) ? "view_gmv_articulos_insti" : "GMV_mstr_articulos" ;
+        $query = $sqlsrv->fetchArray("SELECT * FROM " . $Tabla_Articulos . " WHERE EXISTENCIA > 1 OR ARTICULO LIKE 'VU%' ORDER BY CALIFICATIVO, DESCRIPCION ASC", SQLSRV_FETCH_ASSOC);
+
         $RutaAsignada = $CODIGO_RUTA;
     }else{
-        $query = $sqlsrv->fetchArray("SELECT * FROM GMV_mstr_articulos WHERE ARTICULO IN ($lstArticulo) OR ARTICULO LIKE 'VU%' ORDER BY CALIFICATIVO,DESCRIPCION ASC", SQLSRV_FETCH_ASSOC);  
+          
+        
+        if($CODIGO_RUTA=='F18'){
+           $query = $sqlsrv->fetchArray("SELECT * FROM GMV_mstr_articulos WHERE ARTICULO IN (SELECT * FROM DESARROLLO.dbo.tbl_gmv_articulos_f18) ORDER BY CALIFICATIVO,DESCRIPCION ASC", SQLSRV_FETCH_ASSOC); 
+           $RutaAsignada = $CODIGO_RUTA;
+            
+        }else{
+           $query = $sqlsrv->fetchArray("SELECT * FROM GMV_mstr_articulos WHERE ARTICULO IN ($lstArticulo) OR ARTICULO LIKE 'VU%' ORDER BY CALIFICATIVO,DESCRIPCION ASC", SQLSRV_FETCH_ASSOC); 
+        }
+        
+        
     }
 
    
@@ -97,6 +109,49 @@ if (isset($_GET['category_id'])) {
 
         $Precio_Articulo = (strpos($fila["ARTICULO"], "VU") !== false) ? 1 : $fila['PRECIO_IVA'] ;
         $Existe_Articulo = (strpos($fila["ARTICULO"], "VU") !== false) ? 999 : $fila['EXISTENCIA'] ;
+        
+        if ($CODIGO_RUTA == 'F18' || $CODIGO_RUTA == 'F04') {
+            $Precio_Articulo = $fila['PRECIO_MAYORISTA'];
+        }
+
+        // VALIDA EL ARTICULO QUE SE VA A TOMAR EL PRECIO
+        $isPrecios_Articulos_insti   = array("19920021");
+        $isInstiPrecio = (in_array($fila["ARTICULO"] , $isPrecios_Articulos_insti)) ? true : false;
+        
+        //CONFIGURA UN PRECIO ESPECIAL EN EL CASO QUE ESTE DEFINIDO COMO ESPESIFICO PARA LA RUTA
+         $INFO_LISTA     = $sqlsrv->fetchArray("SELECT TOP 1 * FROM GMV3_TABLE_NIVEL_PRECIO WHERE ARTICULO LIKE '".$fila["ARTICULO"]."'  AND RUTA = '".$CODIGO_RUTA."' AND ACTIVA='S' ", SQLSRV_FETCH_ASSOC);
+        if (count($INFO_LISTA) > 0) {
+             //$set_reglas = $INFO_LISTA[0]["REGLAS"];
+            $set_reglas = $fila["REGLAS"];
+            //Precio_Articulo = $INFO_LISTA[0]["PRECIO"];
+            $set_des ='
+                <!DOCTYPE html>
+                    <html>
+                    <head>
+                        <style type="text/css">
+                        .alert-box {
+                            color:#555;
+                            border-radius:10px;
+                            font-family:Tahoma,Geneva,Arial,sans-serif;font-size:11px;
+                            padding:10px 36px;
+                            margin:10px;
+                        }
+                        .alert-box span {
+                            font-weight:bold;
+                            text-transform:uppercase;
+                        }
+                        .error {
+                            border:3px solid #f5aca6;
+                        }
+                        </style>
+                    </head>
+                    <body>
+                        <div class="alert-box error"><span>Importante: </span>Precio promocional para la Zona.</div>
+                    </body>
+                </html>';
+        } else {
+            $set_reglas = $fila["REGLAS"];
+        }
 
 
         if (strpos($fila["ARTICULO"], "VU") !== false) {
@@ -127,7 +182,51 @@ if (isset($_GET['category_id'])) {
             </html>';
         }
 
-        $val_viñeta = "C$ 40.00";
+
+        if ($isInstiPrecio) {
+            $Precio_Articulo = $fila["PRECIO_INSTI"];
+        }
+
+        
+        
+        if($CODIGO_RUTA=='F02'){
+            $Precio_Articulo = $fila['PRECIO_INSTI'];
+            // $set_des = '<!DOCTYPE html>
+            //     <html>
+            //     <head>
+            //         <style type="text/css">
+            //             .alert-box {
+            //                 color:#555;
+            //                 border-radius:10px;
+            //                 font-family:Tahoma,Geneva,Arial,sans-serif;
+            //                 font-size:18px;
+            //                 padding:10px 36px;
+            //                 margin:10px;
+
+            //             }
+            //             .alert-box span {
+            //                 font-weight:bold;
+            //                 text-transform:uppercase;
+            //             }
+                        
+            //             .success {
+            //                 border:1px solid #a6ca8a;
+            //             }
+            //         </style>
+            //     </head>
+            //     <body>
+            //         <div class="alert-box success"><span>PRECIO INSTITUCIONAL: <span> </span>C$. '. number_format($fila["PRECIO_INSTI"],2) .'</div>
+            //     </body>
+            // </html>';
+        }
+
+        // NIVEL DE PRECIO CADENA DE FARMACIA
+        if($CODIGO_RUTA=='F22'){
+            $Precio_Articulo = $fila['CADENAS_FARMACIAS'];
+            $RutaAsignada = "F22 - CADENAS";
+        }
+
+        $val_viñeta = "C$ 00.00";
         $isPromo ="N";
 
 
@@ -145,7 +244,7 @@ if (isset($_GET['category_id'])) {
         $json[$i]['tax']                      = "0";
         $json[$i]['currency_code']            = "NIO";
         $json[$i]['currency_name']            = "Nicaraguan cordoba oro";
-        $json[$i]['product_bonificado']       = $fila["REGLAS"];
+        $json[$i]['product_bonificado']       = $set_reglas;
         //$json[$i]['product_lotes']            = trim($fila["LOTES"]);
         $json[$i]['product_lotes']            = $Lotes;
         $json[$i]['product_und']              = $fila["UNIDAD_MEDIDA"];
@@ -395,9 +494,9 @@ if (isset($_GET['category_id'])) {
     $sqlsrv = new Sqlsrv();
     $dta = array(); $i=0;
 
-    //$sql_query ="SELECT T0.*,ISNULL( 0, 0 ) AS SALDO_VINETA  FROM dbo.GMV3_MASTER_CLIENTES T0 WHERE T0.VENDEDOR LIKE '%".$_GET['clients_id']."%' ORDER BY NOMBRE";
+    $sql_query ="SELECT T0.*, ISNULL( 0, 0 ) AS SALDO_VINETA  FROM dbo.GMV3_MASTER_CLIENTES T0 WHERE T0.VENDEDOR='".$_GET['clients_id']."' AND ACTIVO ='S' ORDER BY NOMBRE";
 
-    $sql_query = "SELECT T0.*,ISNULL(T1.DISPONIBLE, 0) AS SALDO_VINETA  FROM dbo.GMV3_MASTER_CLIENTES T0 LEFT JOIN PRODUCCION.dbo.view_master_cliente_vineta T1 ON T0.CLIENTE = T1.CLIENTE WHERE VENDEDOR='".$_GET['clients_id']."' AND ACTIVO ='S' ORDER BY NOMBRE";
+    //$sql_query = "SELECT T0.*,ISNULL(T1.DISPONIBLE, 0) AS SALDO_VINETA  FROM dbo.GMV3_MASTER_CLIENTES T0 LEFT JOIN PRODUCCION.dbo.view_master_cliente_vineta T1 ON T0.CLIENTE = T1.CLIENTE WHERE VENDEDOR='".$_GET['clients_id']."' AND ACTIVO ='S' ORDER BY NOMBRE";
 
     $query = $sqlsrv->fetchArray($sql_query, SQLSRV_FETCH_ASSOC);
     if (count($query)>0) {
@@ -428,16 +527,33 @@ if (isset($_GET['category_id'])) {
             $dta[$i]['SALDO']       = number_format($key['SALDO'],2);
             $dta[$i]['MOROSO']      = $key['MOROSO'];
             $dta[$i]['TELE']        = "Tels. ".$key['TELEFONO1'].' / '.$key['TELEFONO2'];
-            $dta[$i]['CONDPA']      = "Cond. Pago: ".$key['CONDICION_PAGO'].' Dias';
+            $dta[$i]['CONDPA']      = $key['CONDICION_PAGO'];
             $dta[$i]['VERIFICADO']  = $Verificaco;
             $dta[$i]['PIN']         = $isPin;
             $dta[$i]['PLAN']         = $isPlan;
             $dta[$i]['vineta']       = number_format($key['SALDO_VINETA'],2);
+            $dta[$i]['NIVEL_PRECIO'] =$key['NIVEL_PRECIO'];
             $i++;
         }
         //echo json_encode($dta);
         //usort($dta, 'object_sorter');
-        echo json_encode($dta);
+        //echo json_encode($dta);
+
+    }else{
+        $dta[$i]['CLIENTE']      = '0000';
+        $dta[$i]['NOMBRE']       = 'CLIENTE EN BLANCO';
+        $dta[$i]['DIRECCION']    = 'EN ESPERA DE ASIGNACION DE CLIENTES';
+        $dta[$i]['DIPONIBLE']    = '0.00';
+        $dta[$i]['LIMITE']       = '0.00';
+        $dta[$i]['SALDO']        = '0.00';
+        $dta[$i]['MOROSO']       = 'N';
+        $dta[$i]['TELE']         = 'Tels. X /';
+        $dta[$i]['CONDPA']       = 'Crédito 0 Días';
+        $dta[$i]['VERIFICADO']   = "N;0.00;0.00";
+        $dta[$i]['PIN']          = 'N';
+        $dta[$i]['PLAN']         = 'N';
+        $dta[$i]['vineta']       = '0.00';
+        $dta[$i]['NIVEL_PRECIO'] = 'FARMACIA';
 
     }
 
@@ -447,8 +563,8 @@ if (isset($_GET['category_id'])) {
 
 
 
-    //header('Content-Type: application/json; charset=utf-8');
-   // echo $val = str_replace('\\/', '/', json_encode($dta));
+    header('Content-Type: application/json; charset=utf-8');
+    echo $val = str_replace('\\/', '/', json_encode($dta));
 
 
 } else if (isset($_GET['post_usuario'])) {
@@ -1397,13 +1513,15 @@ ORDER BY
     
 }else if (isset($_GET['PLAN'])){
 
-    $ruta        = $_GET['RUTA'];
-    $Cliente       = $_GET['PLAN'];
+   
 
-    $Q01="SELECT * FROM view_plan_crecimiento WHERE CLIENTE_CODIGO='".$Cliente ."'";
+    $ruta        = $_GET['RUTA'];
+    $Cliente      = $_GET['PLAN'];
+
+    $Q01="SELECT * FROM view_cliente_stats WHERE CLIENTE_CODIGO='".$Cliente ."'";
     
     $Q02="SELECT month(T0.Fecha_de_Factura) number_month,SUBSTRING(t0.MES,0,4) name_month,t0.[AÑO] annio,sum(T0.VentaNetaLocal) ttMonth 
-        FROM Softland.dbo.ANA_VentasTotales_MOD_Contabilidad_UMK T0 WHERE T0.Fecha_de_Factura BETWEEN '2022-07-01 00:00:00.000' and '2023-08-01 00:00:00.000' 
+        FROM Softland.dbo.ANA_VentasTotales_MOD_Contabilidad_UMK T0 WHERE T0.Fecha_de_Factura >= DATEADD(MONTH, -6, GETDATE())
         AND T0.CLIENTE_CODIGO= '".$Cliente ."' and T0.VentaNetaLocal  > 0
         GROUP BY MONTH ( T0.Fecha_de_Factura ),YEAR  ( T0.Fecha_de_factura),t0.MES,t0.[AÑO] ORDER BY YEAR( T0.Fecha_de_factura) ASC,MONTH ( T0.Fecha_de_Factura )";
 
@@ -1415,11 +1533,21 @@ ORDER BY
     $i=0;
 
     $query_result01 = $sqlsrv->fetchArray($Q01, SQLSRV_FETCH_ASSOC);
-    foreach ($query_result01 as $key) {
-        $dta['EVALUADO']      = ceil($key['EVALUADO']);
-        $dta['CRECIMIENTO']      = ceil($key['CRECIMIENTO']);
-        $dta['COMPRA_MIN']      = ceil($key['COMPRA_MIN']);
-        $dta['PROM_CUMP']      = ceil(number_format($key['PROM_CUMP'],0));
+    
+
+    if (empty($query_result01)) {
+        $dta['EVALUADO'] = number_format(0,2);
+        $dta['CRECIMIENTO'] = 0;
+        $dta['COMPRA_MIN'] = 0;
+        $dta['PROM_CUMP'] = 0;
+    } else {
+        foreach ($query_result01 as $key) {
+            $dta['EVALUADO']      = ceil($key['EVALUADO']);
+            $dta['CRECIMIENTO']      = ceil($key['CRECIMIENTO']);
+            $dta['COMPRA_MIN']      = ceil($key['COMPRA_MIN']);
+            $dta['PROM_CUMP']      = ceil(number_format($key['PROM_CUMP'],0));
+        }
+        
     }
 
     $query_result02 = $sqlsrv->fetchArray($Q02, SQLSRV_FETCH_ASSOC);
@@ -1446,6 +1574,69 @@ ORDER BY
 
     header('Content-Type: application/json; charset=utf-8');
     echo $val = str_replace('\\/', '/', json_encode($dtaBodega));
+
+}else if (isset($_GET['get_devolucion'])) {
+    $sqlsrv = new Sqlsrv();
+
+    $query = $sqlsrv->fetchArray("SELECT * FROM view_sac_devoluciones T0 WHERE  T0.FACTURA ='".$_GET['get_devolucion']."'", SQLSRV_FETCH_ASSOC);
+    $i = 0;
+    $json = array();
+
+    foreach ($query as $fila) {
+        $set_img ="SinImagen.png";
+        $query = "SELECT p.product_image,p.product_description FROM tbl_product p WHERE p.product_sku= '".$fila["ARTICULO"]."'";
+        $resouter = mysqli_query($connect, $query);
+        $total_records = mysqli_num_rows($resouter);
+        if($total_records >= 1) {
+            $link = mysqli_fetch_array($resouter, MYSQLI_ASSOC);
+            $set_img = $link['product_image'];
+        }
+        $json[$i]['mLote']          = $fila['LOTE'];
+        $json[$i]['mFactura']       = $fila['FACTURA'];
+        $json[$i]['mDia']           = $fila['FECHA_FACTURA'];
+        $json[$i]['mArticulo']      = $fila['ARTICULO'];
+        $json[$i]['mDescripcion']   = $fila['DESCRIPCION'];
+        $json[$i]['mCantidad']      = number_format($fila['CANTIDAD'],2);
+        $json[$i]['mImages']        = $set_img;
+        $json[$i]['mRuta']   = $fila['VENDEDOR'];
+        $i++;
+    }
+    header('Content-Type: application/json; charset=utf-8');
+    echo $val = str_replace('\\/', '/', json_encode($json));
+} else if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+
+    $data = file_get_contents('php://input');
+
+    // Decodificar datos JSON
+    $json = json_decode($data);
+
+    // Verificar si se pudieron decodificar los datos
+    if ($json !== null) {
+        // Recuperar las coordenadas
+        $Ruta = $json->ruta;
+        $Fecha = $json->Fecha;
+        $latitude = $json->latitude;
+        $longitude = $json->longitude;
+        
+
+        $rowInsert   = "INSERT INTO tbl_gps_logs (Ruta,longitude, latitude,Fecha) VALUES ('$Ruta', '$longitude', '$latitude', '$Fecha')";
+
+        
+         if (mysqli_query($connect, $rowInsert)) {
+            echo json_encode(array('status' => 'success'));
+        } else {
+           echo json_encode(array('status' => 'error', 'message' => 'Error al insertar los datos recibidos'));
+        }
+
+        // Realizar acciones con las coordenadas
+        // Por ejemplo, almacenarlas en una base de datos
+
+        // Enviar una respuesta al cliente (puede ser un simple mensaje de éxito)
+        
+    } else {
+        // Error al decodificar datos JSON
+        echo json_encode(array('status' => 'error', 'message' => 'Error en los datos recibidos'));
+    }
 
 }else{
     header('Content-Type: application/json; charset=utf-8');
