@@ -1,10 +1,10 @@
 <?php
-
+    $env = parse_ini_file(__DIR__ . '/../.env', false, INI_SCANNER_RAW);
     //database configuration
-    $host       = "192.168.1.15";
-    $user       = "root";
-    $pass       = "a7m1425.";
-    $database   = "db_preventa_umk";
+    $host       = $env['DB_HOST'];
+    $user       = $env['DB_USERNAME'];
+    $pass       = $env['DB_PASSWORD'];
+    $database   = $env['DB_DATABASE'];
 
     $connect = new mysqli($host, $user, $pass, $database);
 

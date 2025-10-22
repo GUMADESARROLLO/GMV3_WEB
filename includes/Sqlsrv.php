@@ -3,14 +3,15 @@
  * @version 0.1
  * @author Dpt MK47
  */
+
 class Sqlsrv
 {
-    //PRODUCCION_R7
     
-    public $serverName = "192.168.1.18";
-    public $user = "dbomanager";
-    public $dbname = "PRODUCCION";
-    public $password = "Umk*.*@!";
+    
+    private $serverName;
+    private $user;
+    private $dbname;
+    private $password;
 
     public $characterSet = "UTF-8";
     public $connection;
@@ -19,6 +20,12 @@ class Sqlsrv
 
     function __construct()
     {
+        $env = parse_ini_file(__DIR__ . '/../.env', false, INI_SCANNER_RAW);
+
+        $this->serverName = $env['DB_SQL_HOST'];
+        $this->user = $env['DB_SQL_USERNAME'];
+        $this->dbname = $env['DB_SQL_DATABASE'];
+        $this->password = $env['DB_SQL_PASSWORD'];
 
         $connectionInfo = array(
             "UID" => $this->user,
