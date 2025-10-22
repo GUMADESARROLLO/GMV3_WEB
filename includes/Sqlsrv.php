@@ -5,17 +5,13 @@
  */
 class Sqlsrv
 {
-
-    //PRODUCCION_R6
-    //public $serverName = "192.168.1.18";
-    //public $user = "dbomanager";
-
     //PRODUCCION_R7
+    
     public $serverName = "192.168.1.18";
     public $user = "dbomanager";
-
     public $dbname = "PRODUCCION";
     public $password = "Umk*.*@!";
+
     public $characterSet = "UTF-8";
     public $connection;
     protected $statement = null;

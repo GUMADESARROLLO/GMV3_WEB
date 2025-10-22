@@ -5,9 +5,6 @@ include_once ('../includes/config.php');
 include_once ('../includes/config_comentario.php');
 include_once ('../includes/Sqlsrv.php');
 include_once ('../public/sql-query.php');
-include_once ('../api/functions.php');
-
-
 
 
 
@@ -38,19 +35,14 @@ if (isset($_GET['category_id'])) {
 } else if (isset($_GET['get_recent'])) {
 
     $sqlsrv = new Sqlsrv();
-
     $CODIGO_RUTA = $_GET['get_recent'];
-    $NUM_RUTA = $CODIGO_RUTA;
-
     mysqli_query($connect_comentario, "SET SESSION group_concat_max_len = 10000");   
+    $PROYECTO_B = array( "F22", "F23");
+    $Lista = (in_array($CODIGO_RUTA , $PROYECTO_B)) ? '20' : '80' ;
 
-    $queryGrupo = "SELECT * FROM tbl_grupos_proyectos g WHERE g.VENDEDOR = '".$CODIGO_RUTA."' ";
-    $resulGrupo = mysqli_query($connect, $queryGrupo);
-    $inforGrupo = mysqli_fetch_array($resulGrupo, MYSQLI_ASSOC);    
-    $VendeGrupo = $inforGrupo['RUTA'];
-    $ListaGrupo = $inforGrupo['GRUPO'];
 
-    $CODIGO_RUTA = $VendeGrupo;
+    $EXCENTOS   = array("F02","F03", "F04","F05", "F11", "F20","F09","F10","F24","F07","F08","F13","F06","F14","F19","F21");
+    $isExcentos = (in_array($CODIGO_RUTA , $EXCENTOS)) ? true : false;
     
     $json = array();
     $Lotes ="  :0:N/D";
@@ -62,17 +54,35 @@ if (isset($_GET['category_id'])) {
     $RutaAsignada = $ListaAsignada['Ruta_asignada'];
 
 
-    $articulos_sql = []; 
-    // LA TABLA ES ALIMENTADA CON EL PROCEDURE sp_gmv_masterArticulos
-    $MASTER_ARTICULOS_B = $sqlsrv->fetchArray("SELECT ARTICULO FROM PRODUCCION.dbo.tbl_gmv_master_articulos WHERE VENDEDOR = '".$VendeGrupo."' AND GRUPOS = '" .$ListaGrupo. "' ", SQLSRV_FETCH_ASSOC);
-    foreach ($MASTER_ARTICULOS_B as $articulo) {
-        $articulo_escapado = str_replace("'", "''", $articulo['ARTICULO']);
-        $articulos_sql[] = "'$articulo_escapado'";
+    $query_lista_articulos = "SELECT * FROM db_estadisticas.view_lista_articulos WHERE Ruta = '".$RutaAsignada."' AND Lista ='".$Lista."' " ;
+    
+    $resultado_lista_articulos = mysqli_query($connect_comentario, $query_lista_articulos);   
+    $ListaArticulos = mysqli_fetch_array($resultado_lista_articulos, MYSQLI_ASSOC);
+    $lstArticulo = $ListaArticulos['Articulos']; 
+
+
+
+
+   if($isExcentos){
+        $Tabla_Articulos = ($CODIGO_RUTA =='F02' ) ? "view_gmv_articulos_insti" : "GMV_mstr_articulos" ;
+        $query = $sqlsrv->fetchArray("SELECT * FROM " . $Tabla_Articulos . " WHERE EXISTENCIA > 1 OR ARTICULO LIKE 'VU%' ORDER BY CALIFICATIVO, DESCRIPCION ASC", SQLSRV_FETCH_ASSOC);
+
+        $RutaAsignada = $CODIGO_RUTA;
+    }else{
+          
+        
+        if($CODIGO_RUTA=='F18'){
+           $query = $sqlsrv->fetchArray("SELECT * FROM GMV_mstr_articulos WHERE ARTICULO IN (SELECT * FROM DESARROLLO.dbo.tbl_gmv_articulos_f18) ORDER BY CALIFICATIVO,DESCRIPCION ASC", SQLSRV_FETCH_ASSOC); 
+           $RutaAsignada = $CODIGO_RUTA;
+            
+        }else{
+           $query = $sqlsrv->fetchArray("SELECT * FROM GMV_mstr_articulos WHERE ARTICULO IN ($lstArticulo) OR ARTICULO LIKE 'VU%' ORDER BY CALIFICATIVO,DESCRIPCION ASC", SQLSRV_FETCH_ASSOC); 
+        }
+        
+        
     }
-    $articulos_str = implode(",", $articulos_sql);
-    $query = $sqlsrv->fetchArray("SELECT * FROM GMV_mstr_articulos WHERE ARTICULO IN ($articulos_str) ORDER BY CALIFICATIVO,DESCRIPCION ASC", SQLSRV_FETCH_ASSOC); 
-    $num_regs = count($query);
-    $RutaAsignada = $CODIGO_RUTA;
+
+   
 
 
 
@@ -214,8 +224,6 @@ if (isset($_GET['category_id'])) {
         if($CODIGO_RUTA=='F22'){
             $Precio_Articulo = $fila['CADENAS_FARMACIAS'];
             $RutaAsignada = "F22 - CADENAS";
-        } else {
-            $RutaAsignada = $NUM_RUTA . " - " . $num_regs;
         }
 
         $val_viñeta = "C$ 00.00";
@@ -224,7 +232,7 @@ if (isset($_GET['category_id'])) {
 
 
         $json[$i]['product_id']               = $fila["ARTICULO"];
-        $json[$i]['product_name']             = strtoupper($fila['DESCRIPCION']) . " [" . $RutaAsignada . "] ";
+        $json[$i]['product_name']             = strtoupper($fila['DESCRIPCION']);
         $json[$i]['category_id']              = "20";
         $json[$i]['category_name']            = "Medicina";
         $json[$i]['product_price']            = number_format($Precio_Articulo,2,'.','');
@@ -247,6 +255,102 @@ if (isset($_GET['category_id'])) {
         $i++;
     }
 
+    /*
+
+    
+
+    
+   
+
+   
+
+    $PRE_VENTA = false;
+
+    if($PRE_VENTA){
+        
+        //INGRESO DE ARTICULOS EN PRE-VENTA
+        $query = $sqlsrv->fetchArray("SELECT * FROM GMV_mstr_articulos WHERE ARTICULO IN ('15016023','19231011','15012011','15012021') ORDER BY CALIFICATIVO,DESCRIPCION ASC", SQLSRV_FETCH_ASSOC);
+        
+        foreach ($query as $fila) {
+            $set_img ="SinImagen.png";
+            $set_des = "";
+
+            $query = "SELECT p.product_image,p.product_description FROM tbl_product p WHERE p.product_sku= '".$fila["ARTICULO"]."'";
+            $resouter = mysqli_query($connect, $query);
+            $total_records = mysqli_num_rows($resouter);
+            if($total_records >= 1) {
+                $link = mysqli_fetch_array($resouter, MYSQLI_ASSOC);
+                $set_img = $link['product_image'];
+                $set_des = $link['product_description'];
+            }
+
+            $qPromo = "SELECT * FROM tbl_news WHERE banner_sku = '".$fila["ARTICULO"]."'";
+            $rsPromo = mysqli_query($connect, $qPromo);
+            $total_records_promo = mysqli_num_rows($rsPromo);
+
+            $isPromo = ($total_records_promo >= 1) ? "S" : "N" ;
+
+            $json[$i]['product_id']               = $fila["ARTICULO"];
+            $json[$i]['product_name']             = strtoupper($fila['DESCRIPCION']);
+            $json[$i]['category_id']              = "20";
+            $json[$i]['category_name']            = "Medicina";
+            $json[$i]['product_price']            = number_format($fila['PRECIO_IVA'],2,'.','');
+            $json[$i]['product_status']           = "Available";
+            $json[$i]['product_image']            = $set_img;
+            $json[$i]['product_description']      = $set_des;
+            $json[$i]['product_quantity']         = str_replace(',', '', number_format($fila['EXISTENCIA'],2));
+            $json[$i]['currency_id']              = "105";
+            $json[$i]['tax']                      = "0";
+            $json[$i]['currency_code']            = "NIO";
+            $json[$i]['currency_name']            = "Nicaraguan cordoba oro";
+            $json[$i]['product_bonificado']       = $fila["REGLAS"];
+            //$json[$i]['product_lotes']            = trim($fila["LOTES"]);
+            $json[$i]['product_lotes']            = $Lotes;            
+            $json[$i]['product_und']              = $fila["UNIDAD_MEDIDA"];
+            $json[$i]['CALIFICATIVO']             = $fila["CALIFICATIVO"];
+            $json[$i]['ISPROMO']                  = $isPromo ;
+            $json[$i]['LAB']                      = $fila["LABORATORIO"];
+            $i++;
+        }
+
+    }
+
+    
+
+
+    
+        // LA IDEA ES CREAR LA TABLE
+
+       /* $set_des ='
+            <!DOCTYPE html>
+                <html>
+                <head>
+                    <style type="text/css">
+                    .alert-box {
+                        color:#555;
+                        border-radius:10px;
+                        font-family:Tahoma,Geneva,Arial,sans-serif;font-size:11px;
+                        padding:10px 36px;
+                        margin:10px;
+                    }
+                    .alert-box span {
+                        font-weight:bold;
+                        text-transform:uppercase;
+                    }
+                    .error {
+                        border:3px solid #f5aca6;
+                    }
+                    </style>
+                </head>
+                <body>
+                    <div class="alert-box error"><span>VIÑETA: </span>Valor de Viñeta de C$ 40.00</div>
+                </body>
+            </html>';
+        
+*/
+
+
+        
 
     header('Content-Type: application/json; charset=utf-8');
     echo $val = str_replace('\\/', '/', json_encode($json));
@@ -386,26 +490,11 @@ if (isset($_GET['category_id'])) {
 } else if (isset($_GET['clients_id'])) {
 
 
-    
-    //RECUPERA LA RUTA ASIGNADA AL VENDEDOR
-    $Ruta  = getRuta($connect, $_GET['clients_id']);
-
-    $SKU   = $_GET['ARTICULO'];
 
     $sqlsrv = new Sqlsrv();
-    $dta = array(); 
-    $i=0;
+    $dta = array(); $i=0;
 
-    $Clientes = $sqlsrv->fetchArray("SELECT *  FROM PRODUCCION.dbo.tbl_gmv_master_articulos T0 WHERE T0.VENDEDOR='".$Ruta."' AND ARTICULO ='".$SKU."'", SQLSRV_FETCH_ASSOC)[0];
-
-    
-    $ArrayClientes = explode(",",$Clientes['CLIENTES_FACT']);
-
-    $Condicional = ($Clientes['GRUPOS'] === "A") ? " T0.CLIENTE IN ('".implode("','", $ArrayClientes)."') " : " T0.CLIENTE NOT IN ('".implode("','", $ArrayClientes)."') " ;
-
-    $sql_query ="SELECT T0.*, ISNULL( 0, 0 ) AS SALDO_VINETA  FROM PRODUCCION.dbo.GMV3_MASTER_CLIENTES T0 WHERE $Condicional AND VENDEDOR='".$Ruta."' AND ACTIVO ='S' ORDER BY NOMBRE";
-
-    //dd($sql_query);
+    $sql_query ="SELECT T0.*, ISNULL( 0, 0 ) AS SALDO_VINETA  FROM dbo.GMV3_MASTER_CLIENTES T0 WHERE T0.VENDEDOR='".$_GET['clients_id']."' AND ACTIVO ='S' ORDER BY NOMBRE";
 
     //$sql_query = "SELECT T0.*,ISNULL(T1.DISPONIBLE, 0) AS SALDO_VINETA  FROM dbo.GMV3_MASTER_CLIENTES T0 LEFT JOIN PRODUCCION.dbo.view_master_cliente_vineta T1 ON T0.CLIENTE = T1.CLIENTE WHERE VENDEDOR='".$_GET['clients_id']."' AND ACTIVO ='S' ORDER BY NOMBRE";
 
@@ -414,26 +503,19 @@ if (isset($_GET['category_id'])) {
         foreach ($query as $key) {
 
 
-            // $query = "SELECT * FROM tlb_verificacion WHERE Cliente = '".$key['CLIENTE']."'";
-            // $resouter = mysqli_query($connect, $query);
-            // $total_records = mysqli_num_rows($resouter);
-            // $link = mysqli_fetch_array($resouter, MYSQLI_ASSOC);
+            $query = "SELECT * FROM tlb_verificacion WHERE Cliente = '".$key['CLIENTE']."'";
+            $resouter = mysqli_query($connect, $query);
+            $total_records = mysqli_num_rows($resouter);
+            $link = mysqli_fetch_array($resouter, MYSQLI_ASSOC);
 
-            // $Verificaco = ($total_records == 0) ? "N;0.00;0.00" : "S;".$link['Lati'].";".$link['Longi'] ;
+            $Verificaco = ($total_records == 0) ? "N;0.00;0.00" : "S;".$link['Lati'].";".$link['Longi'] ;
 
-            // $qPin = "SELECT * FROM tlb_pins WHERE Cliente = '".$key['CLIENTE']."'";
-            // $rPin = mysqli_query($connect, $qPin);
-            // $Pin_num_rows = mysqli_num_rows($rPin);
+            $qPin = "SELECT * FROM tlb_pins WHERE Cliente = '".$key['CLIENTE']."'";
+            $rPin = mysqli_query($connect, $qPin);
+            $Pin_num_rows = mysqli_num_rows($rPin);
 
-            // $isPin = ($Pin_num_rows == 0) ? "N" : "S";
-            // $isPlan =($key['PLAN_CRECI'] == 0) ? "N" : "S";
-
-
-
-
-            $Verificaco = "N;0.00;0.00";
-            $isPin = "N";
-            $isPlan = "N";
+            $isPin = ($Pin_num_rows == 0) ? "N" : "S";
+            $isPlan =($key['PLAN_CRECI'] == 0) ? "N" : "S";
 
             $retVal = ($key['MOROSO'] == 'S') ? $key['NOMBRE']." [MOROSO]" : $key['NOMBRE'] ;
 
@@ -1345,26 +1427,26 @@ if (isset($_GET['category_id'])) {
     $ruta        = $_GET['post_historico_factura'];
 
 
-    $Q="SELECT
-        T0.FACTURA,
-        T0.Dia,
-        T0.[Nombre del cliente] AS Cliente,
-        SUM ( T0.Venta ) AS Venta,
-        ( SELECT COUNT ( * ) FROM Softland.dbo.APK_CxC_DocVenxCL AS T1 WHERE T1.DOCUMENTO= T0.FACTURA ) AS ACTIVA,
-        ( SELECT ISNULL(SUM(T4.SALDO_LOCAL) , 0) FROM Softland.dbo.APK_CxC_DocVenxCL AS T4 WHERE T4.DOCUMENTO = T0.FACTURA ) AS SALDO,
-        ISNULL(convert(nvarchar(11),( SELECT T2.FECHA_VENCE FROM Softland.dbo.APK_CxC_DocVenxCL AS T2 WHERE T2.DOCUMENTO= T0.FACTURA ),103), '-/-/-') AS FECHA_VENCE,
-        (SELECT T3.DVencidos FROM Softland.dbo.APK_CxC_DocVenxCL AS T3 WHERE T3.DOCUMENTO= T0.FACTURA ) AS DVencidos,
-        T0.Plazo
-    FROM
-        Softland.dbo.VtasTotal_UMK T0 
-    WHERE
-        T0.[Cod. Cliente] ='".$ruta."' 
-    GROUP BY
-        T0.FACTURA,
-        T0.Dia,
-        T0.[Nombre del cliente],
-        T0.Plazo
-    ORDER BY
+      $Q="SELECT
+    T0.FACTURA,
+    T0.Dia,
+    T0.[Nombre del cliente] AS Cliente,
+    SUM ( T0.Venta ) AS Venta,
+    ( SELECT COUNT ( * ) FROM Softland.dbo.APK_CxC_DocVenxCL AS T1 WHERE T1.DOCUMENTO= T0.FACTURA ) AS ACTIVA,
+    ( SELECT ISNULL(SUM(T4.SALDO_LOCAL) , 0) FROM Softland.dbo.APK_CxC_DocVenxCL AS T4 WHERE T4.DOCUMENTO = T0.FACTURA ) AS SALDO,
+    ISNULL(convert(nvarchar(11),( SELECT T2.FECHA_VENCE FROM Softland.dbo.APK_CxC_DocVenxCL AS T2 WHERE T2.DOCUMENTO= T0.FACTURA ),103), '-/-/-') AS FECHA_VENCE,
+    (SELECT T3.DVencidos FROM Softland.dbo.APK_CxC_DocVenxCL AS T3 WHERE T3.DOCUMENTO= T0.FACTURA ) AS DVencidos,
+    T0.Plazo
+FROM
+    Softland.dbo.VtasTotal_UMK T0 
+WHERE
+    T0.[Cod. Cliente] ='".$ruta."' 
+GROUP BY
+    T0.FACTURA,
+    T0.Dia,
+    T0.[Nombre del cliente],
+    T0.Plazo
+ORDER BY
     T0.Dia DESC";
 
 
