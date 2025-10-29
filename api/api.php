@@ -65,16 +65,17 @@ if (isset($_GET['category_id'])) {
     $articulos_sql = []; 
     // LA TABLA ES ALIMENTADA CON EL PROCEDURE sp_gmv_masterArticulos
     $MASTER_ARTICULOS_B = $sqlsrv->fetchArray("SELECT ARTICULO FROM PRODUCCION.dbo.tbl_gmv_master_articulos WHERE VENDEDOR = '".$VendeGrupo."' AND GRUPOS = '" .$ListaGrupo. "' ", SQLSRV_FETCH_ASSOC);
+
     foreach ($MASTER_ARTICULOS_B as $articulo) {
         $articulo_escapado = str_replace("'", "''", $articulo['ARTICULO']);
         $articulos_sql[] = "'$articulo_escapado'";
     }
+    
     $articulos_str = implode(",", $articulos_sql);
-    $query = $sqlsrv->fetchArray("SELECT * FROM GMV_mstr_articulos WHERE ARTICULO IN ($articulos_str) ORDER BY CALIFICATIVO,DESCRIPCION ASC", SQLSRV_FETCH_ASSOC); 
+    //$query = $sqlsrv->fetchArray("SELECT * FROM GMV_mstr_articulos WHERE ARTICULO IN ($articulos_str) ORDER BY CALIFICATIVO,DESCRIPCION ASC", SQLSRV_FETCH_ASSOC); 
+    $query = $sqlsrv->fetchArray("SELECT * FROM GMV_mstr_articulos WHERE EXISTENCIA > 0 ORDER BY CALIFICATIVO,DESCRIPCION ASC", SQLSRV_FETCH_ASSOC);
     $num_regs = count($query);
     $RutaAsignada = $CODIGO_RUTA;
-
-
 
 
     foreach ($query as $fila) {
@@ -215,16 +216,19 @@ if (isset($_GET['category_id'])) {
             $Precio_Articulo = $fila['CADENAS_FARMACIAS'];
             $RutaAsignada = "F22 - CADENAS";
         } else {
-            $RutaAsignada = $NUM_RUTA . " - " . $num_regs;
+            //$RutaAsignada = $NUM_RUTA . " - " . $num_regs;
+            $RutaAsignada = $NUM_RUTA ;
         }
 
         $val_viñeta = "C$ 00.00";
         $isPromo ="N";
 
+        $UnLock = (array_search($fila["ARTICULO"], array_column($MASTER_ARTICULOS_B, 'ARTICULO')) !== false);
+
 
 
         $json[$i]['product_id']               = $fila["ARTICULO"];
-        $json[$i]['product_name']             = strtoupper($fila['DESCRIPCION']) . " [" . $RutaAsignada . "] ";
+        $json[$i]['product_name']             = strtoupper($fila['DESCRIPCION']);
         $json[$i]['category_id']              = "20";
         $json[$i]['category_name']            = "Medicina";
         $json[$i]['product_price']            = number_format($Precio_Articulo,2,'.','');
@@ -243,6 +247,7 @@ if (isset($_GET['category_id'])) {
         $json[$i]['CALIFICATIVO']             = $fila["CALIFICATIVO"];
         $json[$i]['ISPROMO']                  = $isPromo. ":" . $val_viñeta . ":" . $RutaAsignada;
         $json[$i]['LAB']                      = $fila["LABORATORIO"];
+        $json[$i]['isUnLock']                 = $UnLock;
 
         $i++;
     }
@@ -390,13 +395,11 @@ if (isset($_GET['category_id'])) {
     //RECUPERA LA RUTA ASIGNADA AL VENDEDOR
     $Ruta  = getRuta($connect, $_GET['clients_id']);
 
-    $SKU   = $_GET['ARTICULO'];
-
     $sqlsrv = new Sqlsrv();
     $dta = array(); 
     $i=0;
 
-    $Clientes = $sqlsrv->fetchArray("SELECT *  FROM PRODUCCION.dbo.tbl_gmv_master_articulos T0 WHERE T0.VENDEDOR='".$Ruta."' AND ARTICULO ='".$SKU."'", SQLSRV_FETCH_ASSOC)[0];
+    $Clientes = $sqlsrv->fetchArray("SELECT *  FROM PRODUCCION.dbo.tbl_gmv_master_articulos T0 WHERE T0.VENDEDOR='".$Ruta."'", SQLSRV_FETCH_ASSOC)[0];
 
     
     $ArrayClientes = explode(",",$Clientes['CLIENTES_FACT']);
@@ -467,7 +470,7 @@ if (isset($_GET['category_id'])) {
         $dta[$i]['MOROSO']       = 'N';
         $dta[$i]['TELE']         = 'Tels. X /';
         $dta[$i]['CONDPA']       = 'Crédito 0 Días';
-        $dta[$i]['VERIFICADO']   = "N;0.00;0.00";
+        $dta[$i][' ']   = "N;0.00;0.00";
         $dta[$i]['PIN']          = 'N';
         $dta[$i]['PLAN']         = 'N';
         $dta[$i]['vineta']       = '0.00';
