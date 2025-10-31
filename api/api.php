@@ -403,14 +403,16 @@ if (isset($_GET['category_id'])) {
     $dta = array(); 
     $i=0;
 
-    $Clientes = $sqlsrv->fetchArray("SELECT *  FROM PRODUCCION.dbo.tbl_gmv_master_articulos T0 WHERE T0.VENDEDOR='".$Ruta."'", SQLSRV_FETCH_ASSOC)[0];
+
+    //$Clientes = $sqlsrv->fetchArray("SELECT *  FROM PRODUCCION.dbo.tbl_gmv_master_articulos T0 WHERE T0.VENDEDOR='".$Ruta."'", SQLSRV_FETCH_ASSOC)[0];
 
     
-    $ArrayClientes = explode(",",$Clientes['CLIENTES_FACT']);
+    //$ArrayClientes = explode(",",$Clientes['CLIENTES_FACT']);
 
-    $Condicional = ($Clientes['GRUPOS'] === "A") ? " T0.CLIENTE IN ('".implode("','", $ArrayClientes)."') " : " T0.CLIENTE NOT IN ('".implode("','", $ArrayClientes)."') " ;
+    //$Condicional = ($Clientes['GRUPOS'] === "A") ? " T0.CLIENTE IN ('".implode("','", $ArrayClientes)."') " : " T0.CLIENTE NOT IN ('".implode("','", $ArrayClientes)."') " ;
 
-    $sql_query ="SELECT T0.*, ISNULL( 0, 0 ) AS SALDO_VINETA  FROM PRODUCCION.dbo.GMV3_MASTER_CLIENTES T0 WHERE $Condicional AND VENDEDOR='".$Ruta."' AND ACTIVO ='S' ORDER BY NOMBRE";
+    //$sql_query ="SELECT T0.*, ISNULL( 0, 0 ) AS SALDO_VINETA  FROM PRODUCCION.dbo.GMV3_MASTER_CLIENTES T0 WHERE $Condicional AND VENDEDOR='".$Ruta."' AND ACTIVO ='S' ORDER BY NOMBRE";
+    $sql_query ="SELECT T0.*, ISNULL( 0, 0 ) AS SALDO_VINETA  FROM PRODUCCION.dbo.GMV3_MASTER_CLIENTES T0 WHERE VENDEDOR='".$Ruta."' AND ACTIVO ='S' ORDER BY NOMBRE";
 
     //dd($sql_query);
 
