@@ -252,6 +252,10 @@ if (isset($_GET['category_id'])) {
         $i++;
     }
 
+    usort($json, function($a, $b) {
+        return $a['isUnLock'] < $b['isUnLock'];
+    });
+
 
     header('Content-Type: application/json; charset=utf-8');
     echo $val = str_replace('\\/', '/', json_encode($json));
