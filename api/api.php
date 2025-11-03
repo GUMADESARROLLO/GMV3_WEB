@@ -35,12 +35,26 @@ if (isset($_GET['category_id'])) {
     header('Content-Type: application/json; charset=utf-8');
     echo $val = str_replace('\\/', '/', json_encode($set));
 
-} else if (isset($_GET['get_recent'])) {
+}else if (isset($_GET['get_recent'])) {
 
     $sqlsrv = new Sqlsrv();
 
     $CODIGO_RUTA = $_GET['get_recent'];
-    $NUM_RUTA = $CODIGO_RUTA;
+    $cliente     = ($_GET['Cliente'] != 'ND') ? $_GET['Cliente'] : 'ND';
+    $NUM_RUTA    = $CODIGO_RUTA;
+
+    $json           = array();
+    $Lotes          = "  :0:N/D";
+    $i              = 0;
+    $Img_array      = array();
+    $count_imgs     = 0;
+    $val_viñeta     = "C$ 00.00";
+    $isPromo        = "N";
+    $set_img        = "SinImagen.png";
+    $set_des        = "";
+    $articulos_sql  = []; 
+    $Arti_Clientes  = [];
+    $count_clientes = 0;
 
     mysqli_query($connect_comentario, "SET SESSION group_concat_max_len = 10000");   
 
@@ -51,52 +65,58 @@ if (isset($_GET['category_id'])) {
     $ListaGrupo = $inforGrupo['GRUPO'];
 
     $CODIGO_RUTA = $VendeGrupo;
+
+    $isWhere = ($ListaGrupo === "A") ? " AND GRUPOS = 'A' " : "" ;
     
-    $json = array();
-    $Lotes ="  :0:N/D";
-    $i = 0;
-
-    $query_lista_asignada = "SELECT * FROM db_estadisticas.tlb_rutas_asignadas WHERE Ruta = '".$CODIGO_RUTA."'";
-    $resultado_lista_asignadas = mysqli_query($connect_comentario, $query_lista_asignada);    
-    $ListaAsignada = mysqli_fetch_array($resultado_lista_asignadas, MYSQLI_ASSOC);
-    $RutaAsignada = $ListaAsignada['Ruta_asignada'];
-
-
-    $articulos_sql = []; 
     // LA TABLA ES ALIMENTADA CON EL PROCEDURE sp_gmv_masterArticulos
-    $MASTER_ARTICULOS_B = $sqlsrv->fetchArray("SELECT ARTICULO FROM PRODUCCION.dbo.tbl_gmv_master_articulos WHERE VENDEDOR = '".$VendeGrupo."' AND GRUPOS = '" .$ListaGrupo. "' ", SQLSRV_FETCH_ASSOC);
-
-    foreach ($MASTER_ARTICULOS_B as $articulo) {
+    $qListArticulos = "SELECT ARTICULO,CLIENTES_FACT,GRUPOS FROM PRODUCCION.dbo.tbl_gmv_master_articulos WHERE VENDEDOR = '".$VendeGrupo."'".$isWhere;
+    $MASTER_ARTICULOS = $sqlsrv->fetchArray($qListArticulos, SQLSRV_FETCH_ASSOC);    
+    foreach ($MASTER_ARTICULOS as $articulo) {
         $articulo_escapado = str_replace("'", "''", $articulo['ARTICULO']);
         $articulos_sql[] = "'$articulo_escapado'";
-    }
-    
+    }    
+
     $articulos_str = implode(",", $articulos_sql);
-    //$query = $sqlsrv->fetchArray("SELECT * FROM GMV_mstr_articulos WHERE ARTICULO IN ($articulos_str) ORDER BY CALIFICATIVO,DESCRIPCION ASC", SQLSRV_FETCH_ASSOC); 
-    $query = $sqlsrv->fetchArray("SELECT * FROM GMV_mstr_articulos WHERE EXISTENCIA > 0 ORDER BY CALIFICATIVO,DESCRIPCION ASC", SQLSRV_FETCH_ASSOC);
-    $num_regs = count($query);
+    $query = $sqlsrv->fetchArray("SELECT * FROM GMV_mstr_articulos WHERE ARTICULO IN ($articulos_str) ORDER BY CALIFICATIVO,DESCRIPCION ASC", SQLSRV_FETCH_ASSOC);     
+    if ($ListaGrupo === "B" && $cliente != 'ND') { 
+        foreach ($MASTER_ARTICULOS as $art) {
+            $clientes = array_map('trim', explode(',', $art['CLIENTES_FACT']));
+            if (in_array($cliente, $clientes)) {
+                if ($art['GRUPOS'] != "B") {
+                    $Arti_Clientes[$count_clientes] =[
+                        'ARTICULO'  => $art['ARTICULO']
+                        //'GRUPO'     => $art['GRUPOS']
+                    ];
+                }
+                $count_clientes++;
+            }
+        }
+        
+    }
+
+ 
+    
+
+
+    //$query = $sqlsrv->fetchArray("SELECT * FROM GMV_mstr_articulos WHERE EXISTENCIA > 0 ORDER BY CALIFICATIVO,DESCRIPCION ASC", SQLSRV_FETCH_ASSOC);
     $RutaAsignada = $CODIGO_RUTA;
 
+    $rImagenes = mysqli_query($connect, "SELECT product_sku,product_image FROM tbl_product");    
+    while ( $row = mysqli_fetch_array($rImagenes, MYSQLI_ASSOC))
+    {
+        $Img_array[$count_imgs] =[
+            'SKU' => $row['product_sku'],
+            'IMG' => $row['product_image']
+        ];
+        $count_imgs++;
+    }
 
-    foreach ($query as $fila) {
-        $set_img ="SinImagen.png";
-        $set_des = "";
-
-        $query = "SELECT p.product_image,p.product_description FROM tbl_product p WHERE p.product_sku= '".$fila["ARTICULO"]."'";
-        $resouter = mysqli_query($connect, $query);
-        $total_records = mysqli_num_rows($resouter);
-        if($total_records >= 1) {
-            $link = mysqli_fetch_array($resouter, MYSQLI_ASSOC);
-            $set_img = $link['product_image'];
-            $set_des = $link['product_description'];
-        }
-
-
-        $qPromo = "SELECT * FROM tbl_news WHERE banner_sku = '".$fila["ARTICULO"]."'";
-        $rsPromo = mysqli_query($connect, $qPromo);
-        $total_records_promo = mysqli_num_rows($rsPromo);
-
-        $isPromo = ($total_records_promo >= 1) ? "S" : "N" ;
+    foreach ($query as $fila) 
+    {
+            
+        $key = array_search($fila["ARTICULO"], array_column($Img_array, 'SKU'));
+        $set_img = ($key === false) ? "SinImagen.png" : $Img_array[$key]['IMG'];
+        
 
         $Precio_Articulo = (strpos($fila["ARTICULO"], "VU") !== false) ? 1 : $fila['PRECIO_IVA'] ;
         $Existe_Articulo = (strpos($fila["ARTICULO"], "VU") !== false) ? 999 : $fila['EXISTENCIA'] ;
@@ -109,106 +129,15 @@ if (isset($_GET['category_id'])) {
         $isPrecios_Articulos_insti   = array("19920021");
         $isInstiPrecio = (in_array($fila["ARTICULO"] , $isPrecios_Articulos_insti)) ? true : false;
         
-        //CONFIGURA UN PRECIO ESPECIAL EN EL CASO QUE ESTE DEFINIDO COMO ESPESIFICO PARA LA RUTA
-         $INFO_LISTA     = $sqlsrv->fetchArray("SELECT TOP 1 * FROM GMV3_TABLE_NIVEL_PRECIO WHERE ARTICULO LIKE '".$fila["ARTICULO"]."'  AND RUTA = '".$CODIGO_RUTA."' AND ACTIVA='S' ", SQLSRV_FETCH_ASSOC);
-        if (count($INFO_LISTA) > 0) {
-             //$set_reglas = $INFO_LISTA[0]["REGLAS"];
-            $set_reglas = $fila["REGLAS"];
-            //Precio_Articulo = $INFO_LISTA[0]["PRECIO"];
-            $set_des ='
-                <!DOCTYPE html>
-                    <html>
-                    <head>
-                        <style type="text/css">
-                        .alert-box {
-                            color:#555;
-                            border-radius:10px;
-                            font-family:Tahoma,Geneva,Arial,sans-serif;font-size:11px;
-                            padding:10px 36px;
-                            margin:10px;
-                        }
-                        .alert-box span {
-                            font-weight:bold;
-                            text-transform:uppercase;
-                        }
-                        .error {
-                            border:3px solid #f5aca6;
-                        }
-                        </style>
-                    </head>
-                    <body>
-                        <div class="alert-box error"><span>Importante: </span>Precio promocional para la Zona.</div>
-                    </body>
-                </html>';
-        } else {
-            $set_reglas = $fila["REGLAS"];
-        }
-
-
-        if (strpos($fila["ARTICULO"], "VU") !== false) {
-            $set_des ='
-            <!DOCTYPE html>
-                <html>
-                <head>
-                    <style type="text/css">
-                    .alert-box {
-                        color:#555;
-                        border-radius:10px;
-                        font-family:Tahoma,Geneva,Arial,sans-serif;font-size:11px;
-                        padding:10px 36px;
-                        margin:10px;
-                    }
-                    .alert-box span {
-                        font-weight:bold;
-                        text-transform:uppercase;
-                    }
-                    .error {
-                        border:3px solid #f5aca6;
-                    }
-                    </style>
-                </head>
-                <body>
-                    <div class="alert-box error"><span>Importante: </span>Los Valores de precio y Existencia son informativos.</div>
-                </body>
-            </html>';
-        }
-
+        $set_reglas = $fila["REGLAS"];
 
         if ($isInstiPrecio) {
             $Precio_Articulo = $fila["PRECIO_INSTI"];
         }
-
         
         
         if($CODIGO_RUTA=='F02'){
-            $Precio_Articulo = $fila['PRECIO_INSTI'];
-            // $set_des = '<!DOCTYPE html>
-            //     <html>
-            //     <head>
-            //         <style type="text/css">
-            //             .alert-box {
-            //                 color:#555;
-            //                 border-radius:10px;
-            //                 font-family:Tahoma,Geneva,Arial,sans-serif;
-            //                 font-size:18px;
-            //                 padding:10px 36px;
-            //                 margin:10px;
-
-            //             }
-            //             .alert-box span {
-            //                 font-weight:bold;
-            //                 text-transform:uppercase;
-            //             }
-                        
-            //             .success {
-            //                 border:1px solid #a6ca8a;
-            //             }
-            //         </style>
-            //     </head>
-            //     <body>
-            //         <div class="alert-box success"><span>PRECIO INSTITUCIONAL: <span> </span>C$. '. number_format($fila["PRECIO_INSTI"],2) .'</div>
-            //     </body>
-            // </html>';
+            $Precio_Articulo = $fila['PRECIO_INSTI'];            
         }
 
         // NIVEL DE PRECIO CADENA DE FARMACIA
@@ -216,38 +145,34 @@ if (isset($_GET['category_id'])) {
             $Precio_Articulo = $fila['CADENAS_FARMACIAS'];
             $RutaAsignada = "F22 - CADENAS";
         } else {
-            //$RutaAsignada = $NUM_RUTA . " - " . $num_regs;
             $RutaAsignada = $NUM_RUTA ;
         }
 
-        $val_viñeta = "C$ 00.00";
-        $isPromo ="N";
 
-        $UnLock = (array_search($fila["ARTICULO"], array_column($MASTER_ARTICULOS_B, 'ARTICULO')) !== false);
+        $UnLock = ($ListaGrupo === "B" && $cliente != 'ND'  ) ? (array_search($fila["ARTICULO"], array_column($Arti_Clientes, 'ARTICULO')) === false) : true ;
 
-
-
-        $json[$i]['product_id']               = $fila["ARTICULO"];
-        $json[$i]['product_name']             = strtoupper($fila['DESCRIPCION']);
-        $json[$i]['category_id']              = "20";
-        $json[$i]['category_name']            = "Medicina";
-        $json[$i]['product_price']            = number_format($Precio_Articulo,2,'.','');
-        $json[$i]['product_status']           = "Available";
-        $json[$i]['product_image']            = $set_img;
-        $json[$i]['product_description']      = $set_des;
-        $json[$i]['product_quantity']         = str_replace(',', '', number_format($Existe_Articulo,2));
-        $json[$i]['currency_id']              = "105";
-        $json[$i]['tax']                      = "0";
-        $json[$i]['currency_code']            = "NIO";
-        $json[$i]['currency_name']            = "Nicaraguan cordoba oro";
-        $json[$i]['product_bonificado']       = $set_reglas;
-        //$json[$i]['product_lotes']            = trim($fila["LOTES"]);
-        $json[$i]['product_lotes']            = $Lotes;
-        $json[$i]['product_und']              = $fila["UNIDAD_MEDIDA"];
-        $json[$i]['CALIFICATIVO']             = $fila["CALIFICATIVO"];
-        $json[$i]['ISPROMO']                  = $isPromo. ":" . $val_viñeta . ":" . $RutaAsignada;
-        $json[$i]['LAB']                      = $fila["LABORATORIO"];
-        $json[$i]['isUnLock']                 = $UnLock;
+        $json[$i] = array(
+            'product_id'            => $fila["ARTICULO"],
+            'product_name'          => strtoupper($fila['DESCRIPCION']),
+            'category_id'           => "20",
+            'category_name'         => "Medicina",
+            'product_price'         => number_format($Precio_Articulo,2,'.',''),
+            'product_status'        => "Available",
+            'product_image'         => $set_img,
+            'product_description'   => $set_des,
+            'product_quantity'      => str_replace(',', '', number_format($Existe_Articulo,2)),
+            'currency_id'           => "105",
+            'tax'                   => "0",
+            'currency_code'         => "NIO",
+            'currency_name'         => "Nicaraguan cordoba oro",
+            'product_bonificado'    => $set_reglas,
+            'product_lotes'         => $Lotes,
+            'product_und'           => $fila["UNIDAD_MEDIDA"],
+            'CALIFICATIVO'          => $fila["CALIFICATIVO"],
+            'ISPROMO'               => $isPromo. ":" . $val_viñeta . ":" . $RutaAsignada,
+            'LAB'                   => $fila["LABORATORIO"],
+            'isUnLock'              => $UnLock
+        );
 
         $i++;
     }
@@ -261,7 +186,7 @@ if (isset($_GET['category_id'])) {
     echo $val = str_replace('\\/', '/', json_encode($json));
     $sqlsrv->close();
 
-} else if (isset($_GET['get_category'])) {
+}else if (isset($_GET['get_category'])) {
     $query = "SELECT DISTINCT c.category_id, c.category_name, c.category_image, COUNT(DISTINCT p.product_id) as product_count FROM tbl_category c LEFT JOIN tbl_product p ON c.category_id = p.category_id GROUP BY c.category_id ORDER BY c.category_id DESC";
     $resouter = mysqli_query($connect, $query);
 
@@ -276,7 +201,7 @@ if (isset($_GET['category_id'])) {
     header('Content-Type: application/json; charset=utf-8');
     echo $val = str_replace('\\/', '/', json_encode($set));
 
-} else if (isset($_GET['get_tax_currency'])) {
+}else if (isset($_GET['get_tax_currency'])) {
     $query = "SELECT c.tax, o.currency_code FROM tbl_config c, tbl_currency o WHERE c.currency_id = o.currency_id AND c.id = 1";
     $resouter = mysqli_query($connect, $query);
 
@@ -291,7 +216,7 @@ if (isset($_GET['category_id'])) {
     header('Content-Type: application/json; charset=utf-8');
     echo $val = str_replace('\\/', '/', json_encode($set));
 
-} else if (isset($_GET['post_order'])) {
+}else if (isset($_GET['post_order'])) {
 
     $code        = $_POST['code'];
     $name        = $_POST['name'];
@@ -316,7 +241,7 @@ if (isset($_GET['category_id'])) {
     }
     mysqli_close($connect);
 
-} else if (isset($_GET['txt_bonificado.setText(product_bonificado);'])) {
+}else if (isset($_GET['txt_bonificado.setText(product_bonificado);'])) {
 
     $query = "SELECT * FROM tbl_shipping ORDER BY shipping_id ASC";
     $resouter = mysqli_query($connect, $query);
@@ -332,7 +257,7 @@ if (isset($_GET['category_id'])) {
     header('Content-Type: application/json; charset=utf-8');
     echo $val = str_replace('\\/', '/', json_encode($set));
 
-} else if (isset($_GET['get_help'])) {
+}else if (isset($_GET['get_help'])) {
 
     $query = "SELECT * FROM tbl_help ORDER BY id DESC";
     $resouter = mysqli_query($connect, $query);
@@ -348,7 +273,7 @@ if (isset($_GET['category_id'])) {
     header('Content-Type: application/json; charset=utf-8');
     echo $val = str_replace('\\/', '/', json_encode($set));
 
-} else if (isset($_GET['product_id'])) {
+}else if (isset($_GET['product_id'])) {
 
 
     $sqlsrv = new Sqlsrv();
@@ -392,7 +317,7 @@ if (isset($_GET['category_id'])) {
     echo $val = str_replace('\\/', '/', json_encode($json));
     $sqlsrv->close();
 
-} else if (isset($_GET['clients_id'])) {
+}else if (isset($_GET['clients_id'])) {
 
 
     
@@ -494,7 +419,7 @@ if (isset($_GET['category_id'])) {
     echo $val = str_replace('\\/', '/', json_encode($dta));
 
 
-} else if (isset($_GET['post_usuario'])) {
+}else if (isset($_GET['post_usuario'])) {
 
     $myString = $_GET['post_usuario'];
 
@@ -775,7 +700,7 @@ if (isset($_GET['category_id'])) {
 
     header('Content-Type: application/json; charset=utf-8');
     echo $val = str_replace('\\/', '/', json_encode($set));
-}else if(isset($_GET['get_comentarios_im'])){
+}else if (isset($_GET['get_comentarios_im'])){
 
     $Usuario = $_GET['get_comentarios_im'];
     $OrderBy = $_GET['OrderBy'];
@@ -802,7 +727,7 @@ if (isset($_GET['category_id'])) {
     echo $val = str_replace('\\/', '/', json_encode($array));
 
 
-} else if (isset($_GET['post_report'])) {
+}else if (isset($_GET['post_report'])) {
 
 
     $Fecha          = $_POST['sndFecha'];
@@ -1350,7 +1275,7 @@ if (isset($_GET['category_id'])) {
     }
     header('Content-Type: application/json; charset=utf-8');
     echo $val = str_replace('\\/', '/', json_encode($array));
-} else if (isset($_GET['post_historico_factura'])){
+}else if (isset($_GET['post_historico_factura'])){
     $ruta        = $_GET['post_historico_factura'];
 
 
@@ -1530,7 +1455,7 @@ if (isset($_GET['category_id'])) {
     }
     header('Content-Type: application/json; charset=utf-8');
     echo $val = str_replace('\\/', '/', json_encode($json));
-} else if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+}else if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $data = file_get_contents('php://input');
 
@@ -1565,7 +1490,7 @@ if (isset($_GET['category_id'])) {
         echo json_encode(array('status' => 'error', 'message' => 'Error en los datos recibidos'));
     }
 
-}else{
+}else {
     header('Content-Type: application/json; charset=utf-8');
     echo "no method found!";
 }
