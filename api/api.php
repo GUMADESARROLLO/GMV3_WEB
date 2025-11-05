@@ -71,48 +71,35 @@ if (isset($_GET['category_id'])) {
     foreach ($MASTER_ARTICULOS as $articulo) {
         $articulo_escapado = str_replace("'", "''", $articulo['ARTICULO']);
         $articulos_sql[] = "'$articulo_escapado'";
-    }    
-
+    }
     $articulos_str = implode(",", $articulos_sql);
     $query = $sqlsrv->fetchArray("SELECT * FROM GMV_mstr_articulos WHERE ARTICULO IN ($articulos_str) ORDER BY CALIFICATIVO,DESCRIPCION ASC", SQLSRV_FETCH_ASSOC);     
-    if ($ListaGrupo === "B" && $cliente != 'ND') { 
+
+
+    if ($ListaGrupo === "B" && $cliente != 'ND') {        
         foreach ($MASTER_ARTICULOS as $art) {
             $clientes = array_map('trim', explode(',', $art['CLIENTES_FACT']));
             if (in_array($cliente, $clientes)) {
                 if ($art['GRUPOS'] != "B") {
                     $Arti_Clientes[$count_clientes] =[
                         'ARTICULO'  => $art['ARTICULO']
-                        //'GRUPO'     => $art['GRUPOS']
                     ];
                 }
                 $count_clientes++;
             }
         }
-        
     }
-
- 
-    
-
 
     //$query = $sqlsrv->fetchArray("SELECT * FROM GMV_mstr_articulos WHERE EXISTENCIA > 0 ORDER BY CALIFICATIVO,DESCRIPCION ASC", SQLSRV_FETCH_ASSOC);
     $RutaAsignada = $CODIGO_RUTA;
 
-    $rImagenes = mysqli_query($connect, "SELECT product_sku,product_image FROM tbl_product");    
-    while ( $row = mysqli_fetch_array($rImagenes, MYSQLI_ASSOC))
-    {
-        $Img_array[$count_imgs] =[
-            'SKU' => $row['product_sku'],
-            'IMG' => $row['product_image']
-        ];
-        $count_imgs++;
-    }
+    $rImagenes = mysqli_fetch_all(mysqli_query($connect, "SELECT product_sku,product_image FROM tbl_product"), MYSQLI_ASSOC);
 
     foreach ($query as $fila) 
     {
             
-        $key = array_search($fila["ARTICULO"], array_column($Img_array, 'SKU'));
-        $set_img = ($key === false) ? "SinImagen.png" : $Img_array[$key]['IMG'];
+        $key = array_search($fila["ARTICULO"], array_column($rImagenes, 'product_sku'));
+        $set_img = ($key === false) ? "SinImagen.png" : $rImagenes[$key]['product_image'];
         
 
         $Precio_Articulo = (strpos($fila["ARTICULO"], "VU") !== false) ? 1 : $fila['PRECIO_IVA'] ;
