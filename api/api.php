@@ -8,9 +8,6 @@ include_once ('../public/sql-query.php');
 include_once ('../api/functions.php');
 
 
-
-
-
 $connect->set_charset('utf8');
 
 @$connect_comentario->set_charset('utf8');
@@ -581,47 +578,55 @@ if (isset($_GET['category_id'])) {
     header('Content-Type: application/json; charset=utf-8');
     echo $val = str_replace('\\/', '/', json_encode($dta));
 }else if (isset($_GET['get_stat_ruta'])){
-
-    $sqlsrv = new Sqlsrv();
-    $dta = array(); $i = 0;
-
-
-
-
+    
     $anio = $_GET['sAnno'];
     $mes  = $_GET['sMes'];
     $Ruta = $_GET['get_stat_ruta'];
-    $fecha       = date('Y-m-d',strtotime(str_replace('/', '-',($anio.'-'.$mes.'-01'))));
 
-    $qPeriodo = $sqlsrv->fetchArray("SELECT IdPeriodo FROM DESARROLLO.dbo.metacuota_GumaNet WHERE Fecha='".$fecha."' AND IdCompany='1' ", SQLSRV_FETCH_ASSOC);
+    $fecha = date('Y-m-d',strtotime(str_replace('/', '-',($anio.'-'.$mes.'-01'))));
+    
+    $q_meta_unidades = 0;
+    $q_meta_valor    = 0;
+    $dta[0] = [ 
+        'mVentaReal' => 0,
+        'mMetaVenta' => 0,
+        'mVentaDif'  => 0,
+        'mVntCanti'  => 0,
+        'mVntCantiReal' => 0,
+        'mVntCantiDif'  => 0
+    ];; 
 
-    $q_meta_unidades= $sqlsrv->fetchArray("SELECT Sum(Meta) as Meta FROM DESARROLLO.dbo.gn_cuota_x_productos WHERE IdPeriodo='".$qPeriodo[0]['IdPeriodo']."' AND CodVendedor='".$Ruta."' ", SQLSRV_FETCH_ASSOC);
+    $sqlsrv = new Sqlsrv();
+    $qPeriodo = $sqlsrv->fetchArray("SELECT IdPeriodo FROM DESARROLLO.dbo.metacuota_GumaNet WHERE Fecha ='".$fecha."' AND IdCompany='1' ", SQLSRV_FETCH_ASSOC);
+    if ($qPeriodo == null || $qPeriodo == '') {
+        header('Content-Type: application/json; charset=utf-8');
+        echo $val = str_replace('\\/', '/', json_encode($dta));
+        $sqlsrv->close();
+        exit();
+    }
 
-    $q_meta_valor = $sqlsrv->fetchArray("SELECT Sum(val) as val FROM DESARROLLO.dbo.gn_cuota_x_productos WHERE IdPeriodo='".$qPeriodo[0]['IdPeriodo']."' AND CodVendedor='".$Ruta."' ", SQLSRV_FETCH_ASSOC);
+    $PeriodoActivo = $qPeriodo[0]['IdPeriodo'];
+    $q_meta = $sqlsrv->fetchArray("SELECT Sum(Meta) as Meta, Sum(val) as Valor FROM DESARROLLO.dbo.gn_cuota_x_productos WHERE IdPeriodo = '".$PeriodoActivo."' AND CodVendedor ='".$Ruta."' GROUP BY IdPeriodo, CodVendedor", SQLSRV_FETCH_ASSOC);
+    $q_meta_unidades = $q_meta[0]['Meta'];
+    $q_meta_valor    = $q_meta[0]['Valor'];
 
-    $sql_exec = "EXEC Ventas_Rutas ".$mes.", ".$anio;
+    $sql_exec = "SELECT Ruta, SUM(VENTA) AS Monto, SUM(Cantidad) AS Cantidad FROM Softland.DBO.VtasTotal_UMK (nolock) WHERE month(DIA)= '".$mes."' AND  year(DIA) = '".$anio."' AND NOT [P. Unitario] = 0 AND  Ruta = '".$Ruta."' GROUP BY Ruta";
     $qVenta = $sqlsrv->fetchArray($sql_exec,SQLSRV_FETCH_ASSOC);
 
-    $found_key = array_search($Ruta, array_column($qVenta, 'Ruta'));
+    $Meta_Monto     = $qVenta[0]['Monto'];
+    $Meta_Cantidad  = $qVenta[0]['Cantidad'];
+
+    $dta[0] = [ 
+        'mVentaReal' => str_replace(",", "",number_format($Meta_Monto,2)),
+        'mMetaVenta' => str_replace(",", "",number_format($q_meta_valor,2)),
+        'mVentaDif'  => ($Meta_Monto==0) ? "100.00" : number_format(((floatval($Meta_Monto)/floatval($q_meta_valor))*100),2),
+        'mVntCanti'  => str_replace(",", "",number_format($q_meta_unidades,2)),
+        'mVntCantiReal' => str_replace(",", "",number_format($Meta_Cantidad,2)),
+        'mVntCantiDif'  => ($q_meta_unidades==0) ? "100.00" : number_format(((floatval($Meta_Cantidad) / floatval($q_meta_unidades))*100),2)
+    ];
 
 
-
-    $Meta_Monto     = $qVenta[$found_key]['Monto'];
-    $Meta_Cantidad  = $qVenta[$found_key]['Cantidad'];
-
-
-    $dta[$i]['mVentaReal']       = str_replace(",", "",number_format($Meta_Monto,2));
-    $dta[$i]['mMetaVenta']      = str_replace(",", "",number_format($q_meta_valor[0]['val'],2));
-    $dta[0]['mVentaDif']        = ($Meta_Monto==0) ? "100.00" : number_format(((floatval($Meta_Monto)/floatval($q_meta_valor[0]['val']))*100),2);
-
-
-    $dta[$i]['mVntCanti']        = str_replace(",", "",number_format($q_meta_unidades[0]['Meta'],2));
-    $dta[$i]['mVntCantiReal']    = str_replace(",", "",number_format($Meta_Cantidad,2));
-    $dta[0]['mVntCantiDif']     = ($q_meta_unidades[0]['Meta']==0) ? "100.00" : number_format(((floatval($Meta_Cantidad)/floatval($q_meta_unidades[0]['Meta']))*100),2);
-
-
-
-
+    $sqlsrv->close();
     header('Content-Type: application/json; charset=utf-8');
     echo $val = str_replace('\\/', '/', json_encode($dta));
 
