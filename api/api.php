@@ -717,6 +717,23 @@ if (isset($_GET['category_id'])) {
     }
     header('Content-Type: application/json; charset=utf-8');
     echo $val = str_replace('\\/', '/', json_encode($array));
+}else if (isset($_GET['get_comments_post_im'])) {
+
+    $IdPost = $_GET['get_comments_post_im'];
+
+    $query = "SELECT * FROM tbl_comments_post_im WHERE id_post= '".$IdPost."' ";
+    $resouter = mysqli_query($connect_comentario, $query);
+
+    $set = array();
+    $total_records = mysqli_num_rows($resouter);
+    if($total_records >= 1) {
+        while ($link = mysqli_fetch_array($resouter, MYSQLI_ASSOC)){
+            $set[] = $link;
+        }
+    }
+
+    header('Content-Type: application/json; charset=utf-8');
+    echo $val = str_replace('\\/', '/', json_encode($set));
 
 
 }else if (isset($_GET['post_report'])) {

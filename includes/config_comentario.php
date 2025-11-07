@@ -1,12 +1,10 @@
 <?php
 
-    //database configuration
+    $env = parse_ini_file(__DIR__ . '/../.env', false, INI_SCANNER_RAW);
     
-    $host       = "192.168.1.15";
-    $user       = "Dios";    
-    //$host       = "localhost";
-    //$user       = "root";
-    $pass       = "a7m1425.";
+    $host       = $env['DB_HOST'];
+    $user       = $env['DB_USERNAME'];
+    $pass       = $env['DB_PASSWORD'];
     $database   = "db_gumanet";
 
     @$connect_comentario = new mysqli($host, $user, $pass, $database);
