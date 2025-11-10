@@ -721,7 +721,7 @@ if (isset($_GET['category_id'])) {
 
     $IdPost = $_GET['get_comments_post_im'];
 
-    $query = "SELECT * FROM tbl_comments_post_im WHERE id_post= '".$IdPost."' ";
+    $query = "SELECT * FROM tbl_comments_post_im WHERE id_post= '".$IdPost."' ORDER BY created_at DESC";
     $resouter = mysqli_query($connect_comentario, $query);
 
     $set = array();
