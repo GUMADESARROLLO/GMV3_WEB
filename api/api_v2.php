@@ -5,7 +5,7 @@ include_once ('../includes/config.php');
 include_once ('../includes/config_comentario.php');
 include_once ('../includes/Sqlsrv.php');
 include_once ('../public/sql-query.php');
-
+include_once ('../api/functions.php');
 
 
 $connect->set_charset('utf8');
@@ -60,22 +60,21 @@ if (isset($_GET['category_id'])) {
     $ListaArticulos = mysqli_fetch_array($resultado_lista_articulos, MYSQLI_ASSOC);
     $lstArticulo = $ListaArticulos['Articulos']; 
 
-
-
-
    if($isExcentos){
         $Tabla_Articulos = ($CODIGO_RUTA =='F02' ) ? "view_gmv_articulos_insti" : "GMV_mstr_articulos" ;
         $query = $sqlsrv->fetchArray("SELECT * FROM " . $Tabla_Articulos . " WHERE EXISTENCIA > 1 OR ARTICULO LIKE 'VU%' ORDER BY CALIFICATIVO, DESCRIPCION ASC", SQLSRV_FETCH_ASSOC);
-
         $RutaAsignada = $CODIGO_RUTA;
     }else{
+       
           
         
         if($CODIGO_RUTA=='F18'){
+            
            $query = $sqlsrv->fetchArray("SELECT * FROM GMV_mstr_articulos WHERE ARTICULO IN (SELECT * FROM DESARROLLO.dbo.tbl_gmv_articulos_f18) ORDER BY CALIFICATIVO,DESCRIPCION ASC", SQLSRV_FETCH_ASSOC); 
            $RutaAsignada = $CODIGO_RUTA;
             
         }else{
+             dd($Lista);
            $query = $sqlsrv->fetchArray("SELECT * FROM GMV_mstr_articulos WHERE ARTICULO IN ($lstArticulo) OR ARTICULO LIKE 'VU%' ORDER BY CALIFICATIVO,DESCRIPCION ASC", SQLSRV_FETCH_ASSOC); 
         }
         
@@ -226,7 +225,7 @@ if (isset($_GET['category_id'])) {
             $RutaAsignada = "F22 - CADENAS";
         }
 
-        $val_viñeta = "C$ 00.00";
+        $val_viÃ±eta = "C$ 00.00";
         $isPromo ="N";
 
 
@@ -249,7 +248,7 @@ if (isset($_GET['category_id'])) {
         $json[$i]['product_lotes']            = $Lotes;
         $json[$i]['product_und']              = $fila["UNIDAD_MEDIDA"];
         $json[$i]['CALIFICATIVO']             = $fila["CALIFICATIVO"];
-        $json[$i]['ISPROMO']                  = $isPromo. ":" . $val_viñeta . ":" . $RutaAsignada;
+        $json[$i]['ISPROMO']                  = $isPromo. ":" . $val_viÃ±eta . ":" . $RutaAsignada;
         $json[$i]['LAB']                      = $fila["LABORATORIO"];
 
         $i++;
@@ -343,7 +342,7 @@ if (isset($_GET['category_id'])) {
                     </style>
                 </head>
                 <body>
-                    <div class="alert-box error"><span>VIÑETA: </span>Valor de Viñeta de C$ 40.00</div>
+                    <div class="alert-box error"><span>VIÃ‘ETA: </span>Valor de ViÃ±eta de C$ 40.00</div>
                 </body>
             </html>';
         
@@ -548,7 +547,7 @@ if (isset($_GET['category_id'])) {
         $dta[$i]['SALDO']        = '0.00';
         $dta[$i]['MOROSO']       = 'N';
         $dta[$i]['TELE']         = 'Tels. X /';
-        $dta[$i]['CONDPA']       = 'Crédito 0 Días';
+        $dta[$i]['CONDPA']       = 'CrÃ©dito 0 DÃ­as';
         $dta[$i]['VERIFICADO']   = "N;0.00;0.00";
         $dta[$i]['PIN']          = 'N';
         $dta[$i]['PLAN']         = 'N';
@@ -1520,10 +1519,10 @@ ORDER BY
 
     $Q01="SELECT * FROM view_cliente_stats WHERE CLIENTE_CODIGO='".$Cliente ."'";
     
-    $Q02="SELECT month(T0.Fecha_de_Factura) number_month,SUBSTRING(t0.MES,0,4) name_month,t0.[AÑO] annio,sum(T0.VentaNetaLocal) ttMonth 
+    $Q02="SELECT month(T0.Fecha_de_Factura) number_month,SUBSTRING(t0.MES,0,4) name_month,t0.[AÃ‘O] annio,sum(T0.VentaNetaLocal) ttMonth 
         FROM Softland.dbo.ANA_VentasTotales_MOD_Contabilidad_UMK T0 WHERE T0.Fecha_de_Factura >= DATEADD(MONTH, -6, GETDATE())
         AND T0.CLIENTE_CODIGO= '".$Cliente ."' and T0.VentaNetaLocal  > 0
-        GROUP BY MONTH ( T0.Fecha_de_Factura ),YEAR  ( T0.Fecha_de_factura),t0.MES,t0.[AÑO] ORDER BY YEAR( T0.Fecha_de_factura) ASC,MONTH ( T0.Fecha_de_Factura )";
+        GROUP BY MONTH ( T0.Fecha_de_Factura ),YEAR  ( T0.Fecha_de_factura),t0.MES,t0.[AÃ‘O] ORDER BY YEAR( T0.Fecha_de_factura) ASC,MONTH ( T0.Fecha_de_Factura )";
 
     $sqlsrv = new Sqlsrv();
 
@@ -1631,7 +1630,7 @@ ORDER BY
         // Realizar acciones con las coordenadas
         // Por ejemplo, almacenarlas en una base de datos
 
-        // Enviar una respuesta al cliente (puede ser un simple mensaje de éxito)
+        // Enviar una respuesta al cliente (puede ser un simple mensaje de Ã©xito)
         
     } else {
         // Error al decodificar datos JSON

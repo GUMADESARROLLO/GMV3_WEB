@@ -52,74 +52,93 @@ if (isset($_GET['category_id'])) {
     $articulos_sql  = []; 
     $Arti_Clientes  = [];
     $count_clientes = 0;
+    $UnLock         = true;
 
-    mysqli_query($connect_comentario, "SET SESSION group_concat_max_len = 10000");   
+    //mysqli_query($connect_comentario, "SET SESSION group_concat_max_len = 10000");   
+
+    //
+    
 
     $queryGrupo = "SELECT * FROM tbl_grupos_proyectos g WHERE g.VENDEDOR = '".$CODIGO_RUTA."' ";
     $resulGrupo = mysqli_query($connect, $queryGrupo);
     $inforGrupo = mysqli_fetch_array($resulGrupo, MYSQLI_ASSOC);    
     $VendeGrupo = $inforGrupo['RUTA'];
     $ListaGrupo = $inforGrupo['GRUPO'];
-
     $CODIGO_RUTA = $VendeGrupo;
 
     $isWhere = ($ListaGrupo === "A") ? " AND GRUPOS = 'A' " : "" ;
-    
+
     // LA TABLA ES ALIMENTADA CON EL PROCEDURE sp_gmv_masterArticulos
-    $qListArticulos = "SELECT ARTICULO,CLIENTES_FACT,GRUPOS FROM PRODUCCION.dbo.tbl_gmv_master_articulos WHERE VENDEDOR = '".$VendeGrupo."'".$isWhere;
+    $qListArticulos = "SELECT ARTICULO,CLIENTES_FACT,GRUPOS FROM PRODUCCION.dbo.tbl_gmv_master_articulos WHERE VENDEDOR = '".$VendeGrupo."'";
     $MASTER_ARTICULOS = $sqlsrv->fetchArray($qListArticulos, SQLSRV_FETCH_ASSOC);    
     foreach ($MASTER_ARTICULOS as $articulo) {
         $articulo_escapado = str_replace("'", "''", $articulo['ARTICULO']);
         $articulos_sql[] = "'$articulo_escapado'";
     }
     $articulos_str = implode(",", $articulos_sql);
-    $query = $sqlsrv->fetchArray("SELECT * FROM GMV_mstr_articulos WHERE ARTICULO IN ($articulos_str) ORDER BY CALIFICATIVO,DESCRIPCION ASC", SQLSRV_FETCH_ASSOC);     
+    
+    $sql = "SELECT * FROM GMV_mstr_articulos WHERE ARTICULO IN ($articulos_str) ORDER BY DESCRIPCION ASC";    
+    
+    // if ($ListaGrupo === "B" && $cliente != 'ND') {        
+    //     foreach ($MASTER_ARTICULOS as $art) {
+    //         $clientes = array_map('trim', explode(',', $art['CLIENTES_FACT']));
+    //         if (in_array($cliente, $clientes)) {
+    //             if ($art['GRUPOS'] != "B") {
+    //                 $Arti_Clientes[$count_clientes] =[
+    //                     'ARTICULO'  => $art['ARTICULO']
+    //                 ];
+    //             }
+    //             $count_clientes++;
+    //         }
+    //     }
+    // }
 
+    
 
-    if ($ListaGrupo === "B" && $cliente != 'ND') {        
-        foreach ($MASTER_ARTICULOS as $art) {
-            $clientes = array_map('trim', explode(',', $art['CLIENTES_FACT']));
-            if (in_array($cliente, $clientes)) {
-                if ($art['GRUPOS'] != "B") {
-                    $Arti_Clientes[$count_clientes] =[
-                        'ARTICULO'  => $art['ARTICULO']
-                    ];
-                }
-                $count_clientes++;
-            }
-        }
+    // CONSULTA QUE MUESTRA TODOS LOS ARTICULOS DISPONIBLES EN INVENTARIO
+    if ($CODIGO_RUTA == 'F18') {
+        $sql = "SELECT * 
+                FROM GMV_mstr_articulos 
+                WHERE ARTICULO IN (SELECT * FROM DESARROLLO.dbo.tbl_gmv_articulos_f18) 
+                ORDER BY DESCRIPCION ASC";
+    } else {
+        $tabla = in_array($CODIGO_RUTA, ['F02'])
+            ? "view_gmv_articulos_insti"
+            : "GMV_mstr_articulos";
+
+        $sql = "SELECT * 
+                FROM $tabla 
+                WHERE EXISTENCIA > 1 
+                ORDER BY DESCRIPCION ASC";
     }
 
-    //$query = $sqlsrv->fetchArray("SELECT * FROM GMV_mstr_articulos WHERE EXISTENCIA > 0 ORDER BY CALIFICATIVO,DESCRIPCION ASC", SQLSRV_FETCH_ASSOC);
-    $RutaAsignada = $CODIGO_RUTA;
+    $query = $sqlsrv->fetchArray($sql, SQLSRV_FETCH_ASSOC);
 
+    $RutaAsignada = $CODIGO_RUTA;
     $rImagenes = mysqli_fetch_all(mysqli_query($connect, "SELECT product_sku,product_image FROM tbl_product"), MYSQLI_ASSOC);
 
     foreach ($query as $fila) 
-    {
-            
+    {            
         $key = array_search($fila["ARTICULO"], array_column($rImagenes, 'product_sku'));
-        $set_img = ($key === false) ? "SinImagen.png" : $rImagenes[$key]['product_image'];
-        
+        $set_img = ($key === false) ? "SinImagen.png" : $rImagenes[$key]['product_image'];        
 
         $Precio_Articulo = (strpos($fila["ARTICULO"], "VU") !== false) ? 1 : $fila['PRECIO_IVA'] ;
         $Existe_Articulo = (strpos($fila["ARTICULO"], "VU") !== false) ? 999 : $fila['EXISTENCIA'] ;
         
+        // NIVEL DE PRECIO DE MAYORISTA
         if ($CODIGO_RUTA == 'F18' || $CODIGO_RUTA == 'F04') {
             $Precio_Articulo = $fila['PRECIO_MAYORISTA'];
         }
 
         // VALIDA EL ARTICULO QUE SE VA A TOMAR EL PRECIO
         $isPrecios_Articulos_insti   = array("19920021");
-        $isInstiPrecio = (in_array($fila["ARTICULO"] , $isPrecios_Articulos_insti)) ? true : false;
+        $isInstiPrecio = (in_array($fila["ARTICULO"] , $isPrecios_Articulos_insti)) ? true : false;        
         
-        $set_reglas = $fila["REGLAS"];
 
         if ($isInstiPrecio) {
             $Precio_Articulo = $fila["PRECIO_INSTI"];
-        }
-        
-        
+        }        
+        // NIVEL DE PRECIO INSTITUCIONAL
         if($CODIGO_RUTA=='F02'){
             $Precio_Articulo = $fila['PRECIO_INSTI'];            
         }
@@ -133,7 +152,9 @@ if (isset($_GET['category_id'])) {
         }
 
 
-        $UnLock = ($ListaGrupo === "B" && $cliente != 'ND'  ) ? (array_search($fila["ARTICULO"], array_column($Arti_Clientes, 'ARTICULO')) === false) : true ;
+        //$UnLock = ($ListaGrupo === "B" && $cliente != 'ND'  ) ? (array_search($fila["ARTICULO"], array_column($Arti_Clientes, 'ARTICULO')) === false) : true ;
+
+        $set_reglas = $fila["REGLAS"];
 
         $json[$i] = array(
             'product_id'            => $fila["ARTICULO"],
