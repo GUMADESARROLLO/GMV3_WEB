@@ -54,11 +54,9 @@ if (isset($_GET['category_id'])) {
     $count_clientes = 0;
     $UnLock         = true;
 
+    $ListaPrecio     = "Nv. Prec. Farmacia";
+
     //mysqli_query($connect_comentario, "SET SESSION group_concat_max_len = 10000");   
-
-    //
-    
-
     $queryGrupo = "SELECT * FROM tbl_grupos_proyectos g WHERE g.VENDEDOR = '".$CODIGO_RUTA."' ";
     $resulGrupo = mysqli_query($connect, $queryGrupo);
     $inforGrupo = mysqli_fetch_array($resulGrupo, MYSQLI_ASSOC);    
@@ -128,25 +126,28 @@ if (isset($_GET['category_id'])) {
         // NIVEL DE PRECIO DE MAYORISTA
         if ($CODIGO_RUTA == 'F18' || $CODIGO_RUTA == 'F04') {
             $Precio_Articulo = $fila['PRECIO_MAYORISTA'];
+            $ListaPrecio = "Nv. Prec. Mayorista";
         }
 
         // VALIDA EL ARTICULO QUE SE VA A TOMAR EL PRECIO
-        $isPrecios_Articulos_insti   = array("19920021");
-        $isInstiPrecio = (in_array($fila["ARTICULO"] , $isPrecios_Articulos_insti)) ? true : false;        
-        
+        // $isPrecios_Articulos_insti   = array("19920021");
+        // $isInstiPrecio = (in_array($fila["ARTICULO"] , $isPrecios_Articulos_insti)) ? true : false;      
+        // if ($isInstiPrecio) {
+        //     $Precio_Articulo = $fila["PRECIO_INSTI"];
+        //     $ListaPrecio = "Nv. Prec. Institucional";
+        // }
 
-        if ($isInstiPrecio) {
-            $Precio_Articulo = $fila["PRECIO_INSTI"];
-        }        
         // NIVEL DE PRECIO INSTITUCIONAL
         if($CODIGO_RUTA=='F02'){
-            $Precio_Articulo = $fila['PRECIO_INSTI'];            
+            $Precio_Articulo = $fila['PRECIO_INSTI'];
+            $ListaPrecio = "Nv. Prec. Institucional";
         }
-
         // NIVEL DE PRECIO CADENA DE FARMACIA
         if($CODIGO_RUTA=='F22'){
             $Precio_Articulo = $fila['CADENAS_FARMACIAS'];
             $RutaAsignada = "F22 - CADENAS";
+            $ListaPrecio = "Nv. Prec. Cadenas Farmacias";
+
         } else {
             $RutaAsignada = $NUM_RUTA ;
         }
@@ -176,7 +177,8 @@ if (isset($_GET['category_id'])) {
             'CALIFICATIVO'          => $fila["CALIFICATIVO"],
             'ISPROMO'               => $isPromo. ":" . $val_viñeta . ":" . $RutaAsignada,
             'LAB'                   => $fila["LABORATORIO"],
-            'isUnLock'              => $UnLock
+            'isUnLock'              => $UnLock,
+            'ListaPrecio'           => $ListaPrecio
         );
 
         $i++;
