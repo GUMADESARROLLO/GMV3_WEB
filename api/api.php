@@ -6,6 +6,7 @@ include_once ('../includes/config_comentario.php');
 include_once ('../includes/Sqlsrv.php');
 include_once ('../public/sql-query.php');
 include_once ('../api/functions.php');
+//$env = parse_ini_file(__DIR__ . '/../.env', false, INI_SCANNER_RAW);
 
 
 $connect->set_charset('utf8');
@@ -16,6 +17,8 @@ $sql_query      = "SELECT * FROM tbl_admin ORDER BY id DESC LIMIT 1";
 $user_result    = mysqli_query($connect, $sql_query);
 $user_row       = mysqli_fetch_assoc($user_result);
 $admin_email    = $user_row['email'];
+
+
 
 if (isset($_GET['category_id'])) {
     $query = "SELECT p.product_id, p.product_name, p.category_id, n.category_name, p.product_price, p.product_status, p.product_image, p.product_description, p.product_quantity, c.currency_id, c.tax, o.currency_code, o.currency_name FROM tbl_category n, tbl_product p, tbl_config c, tbl_currency o WHERE c.currency_id = o.currency_id AND c.id = 1 AND n.category_id = p.category_id AND n.category_id ='".$_GET['category_id']."' ORDER BY p.product_id DESC";
@@ -33,6 +36,12 @@ if (isset($_GET['category_id'])) {
     echo $val = str_replace('\\/', '/', json_encode($set));
 
 }else if (isset($_GET['get_recent'])) {
+
+    if ( $_GET['APP_KEY'] !== $env['APP_KEY'] ) {
+        header('HTTP/1.1 401 Unauthorized');
+        echo json_encode(['error' => 'Unauthorized']);
+        exit();
+    }
 
     $sqlsrv = new Sqlsrv();
 
@@ -77,19 +86,19 @@ if (isset($_GET['category_id'])) {
     
     $sql = "SELECT * FROM GMV_mstr_articulos WHERE ARTICULO IN ($articulos_str) ORDER BY DESCRIPCION ASC";    
     
-    // if ($ListaGrupo === "B" && $cliente != 'ND') {        
-    //     foreach ($MASTER_ARTICULOS as $art) {
-    //         $clientes = array_map('trim', explode(',', $art['CLIENTES_FACT']));
-    //         if (in_array($cliente, $clientes)) {
-    //             if ($art['GRUPOS'] != "B") {
-    //                 $Arti_Clientes[$count_clientes] =[
-    //                     'ARTICULO'  => $art['ARTICULO']
-    //                 ];
-    //             }
-    //             $count_clientes++;
-    //         }
-    //     }
-    // }
+    if ($ListaGrupo === "B" && $cliente != 'ND') {        
+        foreach ($MASTER_ARTICULOS as $art) {
+            $clientes = array_map('trim', explode(',', $art['CLIENTES_FACT']));
+            if (in_array($cliente, $clientes)) {
+                if ($art['GRUPOS'] != "B") {
+                    $Arti_Clientes[$count_clientes] =[
+                        'ARTICULO'  => $art['ARTICULO']
+                    ];
+                }
+                $count_clientes++;
+            }
+        }
+    }
 
     
 
@@ -109,6 +118,7 @@ if (isset($_GET['category_id'])) {
                 WHERE EXISTENCIA > 1 
                 ORDER BY DESCRIPCION ASC";
     }
+
 
     $query = $sqlsrv->fetchArray($sql, SQLSRV_FETCH_ASSOC);
 
@@ -327,6 +337,12 @@ if (isset($_GET['category_id'])) {
 }else if (isset($_GET['clients_id'])) {
 
 
+    
+    if ( $_GET['APP_KEY'] !== $env['APP_KEY'] ) {
+        header('HTTP/1.1 401 Unauthorized');
+        echo json_encode(['error' => 'Unauthorized']);
+        exit();
+    }
     
     //RECUPERA LA RUTA ASIGNADA AL VENDEDOR
     $Ruta  = getRuta($connect, $_GET['clients_id']);
