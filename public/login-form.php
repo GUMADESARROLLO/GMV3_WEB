@@ -140,7 +140,7 @@
                     <br>
                     <br>
                     <span class="pmd-card-subtitle-text">UNIMARK S,A &copy; <span class="auto-update-year"></span>. Todos los Derechos Reservados.</span>
-            <h3 class="pmd-card-subtitle-text">Version 3.3.0</h3>
+            <h3 class="pmd-card-subtitle-text">v3.9.27</h3>
                     
                 </div>
                 
