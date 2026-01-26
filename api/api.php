@@ -68,15 +68,23 @@ if (isset($_GET['category_id'])) {
     //mysqli_query($connect_comentario, "SET SESSION group_concat_max_len = 10000");   
     $queryGrupo = "SELECT * FROM tbl_grupos_proyectos g WHERE g.VENDEDOR = '".$CODIGO_RUTA."' ";
     $resulGrupo = mysqli_query($connect, $queryGrupo);
-    $inforGrupo = mysqli_fetch_array($resulGrupo, MYSQLI_ASSOC);    
-    $VendeGrupo = $inforGrupo['RUTA'];
+    $inforGrupo = mysqli_fetch_array($resulGrupo, MYSQLI_ASSOC);
+    
+    //$ListaVendedor = $inforGrupo['RUTA'];
+    
+    $ListaVendedor = explode(",", $inforGrupo['RUTA'] ?? []);
+    $VendeGrupo = ($cliente != 'ND') ? getClienteVendedor($connect, $cliente)  : $ListaVendedor[0] ?? "";
+    
+    dd( $VendeGrupo );
+
+
     $ListaGrupo = $inforGrupo['GRUPO'];
     $CODIGO_RUTA = $VendeGrupo;
 
     $isWhere = ($ListaGrupo === "A") ? " AND GRUPOS = 'A' " : "" ;
 
     // LA TABLA ES ALIMENTADA CON EL PROCEDURE sp_gmv_masterArticulos
-    $qListArticulos = "SELECT ARTICULO,CLIENTES_FACT,GRUPOS FROM PRODUCCION.dbo.tbl_gmv_master_articulos WHERE VENDEDOR = '".$VendeGrupo."'";
+    $qListArticulos = "SELECT ARTICULO,CLIENTES_FACT,GRUPOS FROM PRODUCCION.dbo.tbl_gmv_master_articulos WHERE VENDEDOR =' ".$VendeGrupo." ' ";
     $MASTER_ARTICULOS = $sqlsrv->fetchArray($qListArticulos, SQLSRV_FETCH_ASSOC);    
     foreach ($MASTER_ARTICULOS as $articulo) {
         $articulo_escapado = str_replace("'", "''", $articulo['ARTICULO']);
@@ -360,7 +368,8 @@ if (isset($_GET['category_id'])) {
     //$Condicional = ($Clientes['GRUPOS'] === "A") ? " T0.CLIENTE IN ('".implode("','", $ArrayClientes)."') " : " T0.CLIENTE NOT IN ('".implode("','", $ArrayClientes)."') " ;
 
     //$sql_query ="SELECT T0.*, ISNULL( 0, 0 ) AS SALDO_VINETA  FROM PRODUCCION.dbo.GMV3_MASTER_CLIENTES T0 WHERE $Condicional AND VENDEDOR='".$Ruta."' AND ACTIVO ='S' ORDER BY NOMBRE";
-    $sql_query ="SELECT T0.*, ISNULL( 0, 0 ) AS SALDO_VINETA  FROM PRODUCCION.dbo.GMV3_MASTER_CLIENTES T0 WHERE VENDEDOR='".$Ruta."' AND ACTIVO ='S' ORDER BY NOMBRE";
+    $sql_query ="SELECT T0.*, ISNULL( 0, 0 ) AS SALDO_VINETA  FROM PRODUCCION.dbo.GMV3_MASTER_CLIENTES T0 WHERE VENDEDOR in (".$Ruta.") AND ACTIVO ='S' ORDER BY NOMBRE";
+
 
     //dd($sql_query);
 
@@ -465,6 +474,9 @@ if (isset($_GET['category_id'])) {
     $sql_query = "SELECT username,Activo,Name,Telefono,email FROM tbl_admin WHERE username = ? AND password = ?";
     $stmt = $connect->stmt_init();
     if($stmt->prepare($sql_query)) {
+
+        $Ruta  = getRuta($connect, $username);
+
         $stmt->bind_param('ss', $username, $password);
         $stmt->execute();
 
@@ -482,7 +494,9 @@ if (isset($_GET['category_id'])) {
                         'FullName' => strtoupper($vName),
                         'Tele' => strtoupper($vTelefono),
                         'Correo' => strtoupper($vEmail),
-                        'success' => '1');
+                        'success' => '1',
+                        'Ruta' => strtoupper($Ruta),
+                        );
                 }else{
                     $set['result'][] = array('msg' => 'Account disabled', 'success' => '2');
                 }
