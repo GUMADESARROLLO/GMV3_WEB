@@ -1,0 +1,13 @@
+upload/product
+node_modules
+vendor
+.git
+.gitignore
+.idea
+.dockerignore
+
+# Archivos innecesarios
+.env
+.env.*
+Dockerfile
+docker-compose.yml
