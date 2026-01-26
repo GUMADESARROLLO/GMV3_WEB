@@ -1,6 +1,6 @@
-FROM gumadesarrollo/php:7.4-nginx-sqlsrv-prod
+FROM kooldev/php:7.4-nginx-sqlsrv-prod
 
-ARG ARG_APP_NAME=gmv3
+ARG ARG_APP_NAME=GMV
 
 ENV APP_NAME=${ARG_APP_NAME} \
     PHP_FPM_LISTEN=/run/php-fpm.sock \
