@@ -134,7 +134,8 @@ if (isset($_GET['category_id'])) {
         $Existe_Articulo = (strpos($fila["ARTICULO"], "VU") !== false) ? 999 : $fila['EXISTENCIA'] ;
         
         // NIVEL DE PRECIO DE MAYORISTA
-        if ($CODIGO_RUTA == 'F18' || $CODIGO_RUTA == 'F04') {
+        //if ($CODIGO_RUTA == 'F18' || $CODIGO_RUTA == 'F04') {
+        if (in_array($CODIGO_RUTA, array('F18', 'F04', 'F2804'))) {
             $Precio_Articulo = $fila['PRECIO_MAYORISTA'];
             $ListaPrecio = "Nv. Prec. Mayorista";
         }
@@ -148,12 +149,12 @@ if (isset($_GET['category_id'])) {
         // }
 
         // NIVEL DE PRECIO INSTITUCIONAL
-        if($CODIGO_RUTA=='F02'){
+        if (in_array($CODIGO_RUTA, array('F02', 'F2802'))){
             $Precio_Articulo = $fila['PRECIO_INSTI'];
             $ListaPrecio = "Nv. Prec. Institucional";
         }
         // NIVEL DE PRECIO CADENA DE FARMACIA
-        if($CODIGO_RUTA=='F22'){
+        if (in_array($CODIGO_RUTA, array('F22', 'F2822'))){
             $Precio_Articulo = $fila['CADENAS_FARMACIAS'];
             $RutaAsignada = "F22 - CADENAS";
             $ListaPrecio = "Nv. Prec. Cadenas Farmacias";
