@@ -109,7 +109,7 @@ if (isset($_GET['category_id'])) {
                 WHERE ARTICULO IN (SELECT * FROM DESARROLLO.dbo.tbl_gmv_articulos_f18) 
                 ORDER BY DESCRIPCION ASC";
     } else {
-        $tabla = in_array($CODIGO_RUTA, ['F02'])
+        $tabla = in_array($CODIGO_RUTA, ['F02', 'F2802'])
             ? "view_gmv_articulos_insti"
             : "GMV_mstr_articulos";
 
