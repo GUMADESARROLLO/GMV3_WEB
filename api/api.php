@@ -391,7 +391,7 @@ if (isset($_GET['category_id'])) {
 
 
 
-            $Verificaco = "S;0.00;0.00";
+            $Verificaco = "N;0.00;0.00";
             $isPin = "N";
             $isPlan = "N";
 
@@ -427,7 +427,7 @@ if (isset($_GET['category_id'])) {
         $dta[$i]['MOROSO']       = 'N';
         $dta[$i]['TELE']         = 'Tels. X /';
         $dta[$i]['CONDPA']       = 'Crédito 0 Días';
-        $dta[$i][' ']   = "N;0.00;0.00";
+        $dta[$i]['VERIFICADO']   = "N;0.00;0.00";
         $dta[$i]['PIN']          = 'N';
         $dta[$i]['PLAN']         = 'N';
         $dta[$i]['vineta']       = '0.00';
