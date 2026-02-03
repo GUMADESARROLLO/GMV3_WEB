@@ -344,6 +344,8 @@ if (isset($_GET['category_id'])) {
         echo json_encode(['error' => 'Unauthorized']);
         exit();
     }
+
+    $RutaPrincipal = substr($_GET['clients_id'], 0, 3);
     
     //RECUPERA LA RUTA ASIGNADA AL VENDEDOR
     $Ruta  = getRuta($connect, $_GET['clients_id']);
@@ -361,8 +363,8 @@ if (isset($_GET['category_id'])) {
     //$Condicional = ($Clientes['GRUPOS'] === "A") ? " T0.CLIENTE IN ('".implode("','", $ArrayClientes)."') " : " T0.CLIENTE NOT IN ('".implode("','", $ArrayClientes)."') " ;
 
     //$sql_query ="SELECT T0.*, ISNULL( 0, 0 ) AS SALDO_VINETA  FROM PRODUCCION.dbo.GMV3_MASTER_CLIENTES T0 WHERE $Condicional AND VENDEDOR='".$Ruta."' AND ACTIVO ='S' ORDER BY NOMBRE";
-    $sql_query ="SELECT T0.*, ISNULL( 0, 0 ) AS SALDO_VINETA  FROM PRODUCCION.dbo.GMV3_MASTER_CLIENTES T0 WHERE VENDEDOR='".$Ruta."' AND ACTIVO ='S' ORDER BY NOMBRE";
-
+    $sql_query ="SELECT T0.*, ISNULL( 0, 0 ) AS SALDO_VINETA  FROM PRODUCCION.dbo.GMV3_MASTER_CLIENTES T0 WHERE VENDEDOR IN ('".$RutaPrincipal."' , '".$Ruta."')  AND ACTIVO ='S' ORDER BY NOMBRE";
+    
     //dd($sql_query);
 
     //$sql_query = "SELECT T0.*,ISNULL(T1.DISPONIBLE, 0) AS SALDO_VINETA  FROM dbo.GMV3_MASTER_CLIENTES T0 LEFT JOIN PRODUCCION.dbo.view_master_cliente_vineta T1 ON T0.CLIENTE = T1.CLIENTE WHERE VENDEDOR='".$_GET['clients_id']."' AND ACTIVO ='S' ORDER BY NOMBRE";
@@ -389,7 +391,7 @@ if (isset($_GET['category_id'])) {
 
 
 
-            $Verificaco = "N;0.00;0.00";
+            $Verificaco = "S;0.00;0.00";
             $isPin = "N";
             $isPlan = "N";
 
