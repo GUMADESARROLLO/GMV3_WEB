@@ -75,26 +75,31 @@ if (isset($_GET['category_id'])) {
 
     $isWhere = ($ListaGrupo === "A") ? " AND GRUPOS = 'A' " : "" ;
 
+
     // LA TABLA ES ALIMENTADA CON EL PROCEDURE sp_gmv_masterArticulos
-    $qListArticulos = "SELECT ARTICULO,CLIENTES_FACT,GRUPOS FROM PRODUCCION.dbo.tbl_gmv_master_articulos WHERE VENDEDOR = '".$VendeGrupo."'";
+    $qListArticulos = "SELECT ARTICULO,CLIENTES_FACT,GRUPOS FROM PRODUCCION.dbo.tbl_gmv_master_articulos WHERE VENDEDOR = '".$VendeGrupo."'" . $isWhere ;
     $MASTER_ARTICULOS = $sqlsrv->fetchArray($qListArticulos, SQLSRV_FETCH_ASSOC);    
+
+    //EXTRAER EL VENCIMIENTO DE LOS PRODUCTOS CON EXISTENCIA
+    $LotesVencimiento = $sqlsrv->fetchArray("SELECT ARTICULO,FECHA_VENCIMIENTO FROM PRODUCCION.dbo.gmv_lotes_vecimientos", SQLSRV_FETCH_ASSOC);
+
+
+    
     foreach ($MASTER_ARTICULOS as $articulo) {
         $articulo_escapado = str_replace("'", "''", $articulo['ARTICULO']);
         $articulos_sql[] = "'$articulo_escapado'";
     }
     $articulos_str = implode(",", $articulos_sql);
     
-    $sql = "SELECT * FROM GMV_mstr_articulos WHERE ARTICULO IN ($articulos_str) ORDER BY DESCRIPCION ASC";    
-    
-    if ($ListaGrupo === "B" && $cliente != 'ND') {        
+    if ($ListaGrupo === "B" && $cliente != 'ND') {      
         foreach ($MASTER_ARTICULOS as $art) {
             $clientes = array_map('trim', explode(',', $art['CLIENTES_FACT']));
             if (in_array($cliente, $clientes)) {
-                if ($art['GRUPOS'] != "B") {
-                    $Arti_Clientes[$count_clientes] =[
-                        'ARTICULO'  => $art['ARTICULO']
-                    ];
-                }
+
+                $Arti_Clientes[$count_clientes] =[
+                    'ARTICULO'  => $art['ARTICULO']
+                ];
+
                 $count_clientes++;
             }
         }
@@ -102,51 +107,48 @@ if (isset($_GET['category_id'])) {
 
     
 
-    // CONSULTA QUE MUESTRA TODOS LOS ARTICULOS DISPONIBLES EN INVENTARIO
     if ($CODIGO_RUTA == 'F18') {
         $sql = "SELECT * 
                 FROM GMV_mstr_articulos 
                 WHERE ARTICULO IN (SELECT * FROM DESARROLLO.dbo.tbl_gmv_articulos_f18) 
                 ORDER BY DESCRIPCION ASC";
     } else {
-        $tabla = in_array($CODIGO_RUTA, ['F02', 'F2802'])
-            ? "view_gmv_articulos_insti"
-            : "GMV_mstr_articulos";
 
-        $sql = "SELECT * 
-                FROM $tabla 
-                WHERE EXISTENCIA > 1 
-                ORDER BY DESCRIPCION ASC";
+        $View = in_array($CODIGO_RUTA, ['F02', 'F2802']) ? "view_gmv_articulos_insti" : "GMV_mstr_articulos";
+            $sql = "SELECT * FROM $View WHERE ARTICULO IN ($articulos_str) ORDER BY DESCRIPCION ASC";    
+
+        if (in_array($CODIGO_RUTA, ['F22', 'F02', 'F04'])) {
+            $sql = "SELECT * FROM $View WHERE EXISTENCIA > 1 ORDER BY DESCRIPCION ASC";  
+        }
     }
 
+    
 
     $query = $sqlsrv->fetchArray($sql, SQLSRV_FETCH_ASSOC);
 
     $RutaAsignada = $CODIGO_RUTA;
     $rImagenes = mysqli_fetch_all(mysqli_query($connect, "SELECT product_sku,product_image FROM tbl_product"), MYSQLI_ASSOC);
 
+
     foreach ($query as $fila) 
     {            
-        $key = array_search($fila["ARTICULO"], array_column($rImagenes, 'product_sku'));
-        $set_img = ($key === false) ? "SinImagen.png" : $rImagenes[$key]['product_image'];        
 
-        $Precio_Articulo = (strpos($fila["ARTICULO"], "VU") !== false) ? 1 : $fila['PRECIO_IVA'] ;
-        $Existe_Articulo = (strpos($fila["ARTICULO"], "VU") !== false) ? 999 : $fila['EXISTENCIA'] ;
+        $CODIGO_ARTICULO = $fila["ARTICULO"];
+        $key = array_search($CODIGO_ARTICULO, array_column($rImagenes, 'product_sku'));
+        $set_img = ($key === false) ? "SinImagen.png" : $rImagenes[$key]['product_image'];    
         
-        // NIVEL DE PRECIO DE MAYORISTA
-        //if ($CODIGO_RUTA == 'F18' || $CODIGO_RUTA == 'F04') {
+        // $keyLote = array_search($CODIGO_ARTICULO, array_column($LotesVencimiento, 'ARTICULO'));
+        // $set_des = ($keyLote === false) ? "N/D" : $LotesVencimiento[$keyLote]['FECHA_VENCIMIENTO']->format('d/m/Y') ;
+
+        $Precio_Articulo = (strpos($CODIGO_ARTICULO, "VU") !== false) ? 1 : $fila['PRECIO_IVA'] ;
+        $Existe_Articulo = (strpos($CODIGO_ARTICULO, "VU") !== false) ? 999 : $fila['EXISTENCIA'] ;
+
+        
+        
         if (in_array($CODIGO_RUTA, array('F18', 'F04', 'F2804'))) {
             $Precio_Articulo = $fila['PRECIO_MAYORISTA'];
             $ListaPrecio = "Nv. Prec. Mayorista";
         }
-
-        // VALIDA EL ARTICULO QUE SE VA A TOMAR EL PRECIO
-        // $isPrecios_Articulos_insti   = array("19920021");
-        // $isInstiPrecio = (in_array($fila["ARTICULO"] , $isPrecios_Articulos_insti)) ? true : false;      
-        // if ($isInstiPrecio) {
-        //     $Precio_Articulo = $fila["PRECIO_INSTI"];
-        //     $ListaPrecio = "Nv. Prec. Institucional";
-        // }
 
         // NIVEL DE PRECIO INSTITUCIONAL
         if (in_array($CODIGO_RUTA, array('F02', 'F2802'))){
@@ -163,13 +165,49 @@ if (isset($_GET['category_id'])) {
             $RutaAsignada = $NUM_RUTA ;
         }
 
+        $UnLock = ($ListaGrupo === "B" && $cliente != 'ND'  ) ? (array_search($CODIGO_ARTICULO, array_column($Arti_Clientes, 'ARTICULO')) === false) : true ;
+        
+        $KeyGrupArticulo = array_search($CODIGO_ARTICULO, array_column($MASTER_ARTICULOS, 'ARTICULO'));
+        $GrupArticulo = $MASTER_ARTICULOS[$KeyGrupArticulo]['GRUPOS'] ?? "N/D";
 
-        //$UnLock = ($ListaGrupo === "B" && $cliente != 'ND'  ) ? (array_search($fila["ARTICULO"], array_column($Arti_Clientes, 'ARTICULO')) === false) : true ;
-
+        if ( $GrupArticulo === "B" && $UnLock === false ) {
+            $UnLock = true;
+        }
+        
         $set_reglas = $fila["REGLAS"];
+
+        if ($set_des != "") {
+            
+            $set_des ='
+                <!DOCTYPE html>
+                    <html>
+                    <head>
+                        <style type="text/css">
+                        .alert-box {
+                            color:#555;
+                            border-radius:10px;
+                            font-family:Tahoma,Geneva,Arial,sans-serif;font-size:18px;
+                            padding:10px 36px;
+                            margin:10px;
+                        }
+                        .alert-box span {
+                            font-weight:bold;
+                            text-transform:uppercase;
+                        }
+                        .error {
+                            border:3px solid #f5aca6;
+                        }
+                        </style>
+                    </head>
+                    <body>
+                        <div class="alert-box error">Fecha de Venc.: '.$set_des.'</div>
+                    </body>
+                </html>';
+        }
 
         $json[$i] = array(
             'product_id'            => $fila["ARTICULO"],
+            //'product_name'          => strtoupper($fila['DESCRIPCION']) . " - ( " . $GrupArticulo . " )" ,
             'product_name'          => strtoupper($fila['DESCRIPCION']),
             'category_id'           => "20",
             'category_name'         => "Medicina",
@@ -189,11 +227,13 @@ if (isset($_GET['category_id'])) {
             'ISPROMO'               => $isPromo. ":" . $val_viñeta . ":" . $RutaAsignada,
             'LAB'                   => $fila["LABORATORIO"],
             'isUnLock'              => $UnLock,
-            'ListaPrecio'           => $ListaPrecio
+            'ListaPrecio'           => $ListaPrecio,
+            'ListaGrupo'            => $GrupArticulo,
         );
 
         $i++;
     }
+
 
     usort($json, function($a, $b) {
         return $a['isUnLock'] < $b['isUnLock'];
@@ -302,7 +342,7 @@ if (isset($_GET['category_id'])) {
 
     foreach ($query as $fila) {
         $set_img ="SinImagen.png";
-        $set_des = "";
+        $set_des = "ND";
 
         $query = "SELECT p.product_image,p.product_description FROM tbl_product p WHERE p.product_sku= '".$fila["ARTICULO"]."'";
         $resouter = mysqli_query($connect, $query);
@@ -327,7 +367,7 @@ if (isset($_GET['category_id'])) {
         $json['tax']                      = "0";
         $json['currency_code']            = "NIO";
         $json['currency_name']            = "Nicaraguan cordoba oro";
-        $json['product_bonificado']            = $fila["REGLAS"];
+        $json['product_bonificado']       = $fila["REGLAS"];
         $i++;
     }
 
