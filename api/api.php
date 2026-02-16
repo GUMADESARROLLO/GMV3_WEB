@@ -115,11 +115,17 @@ if (isset($_GET['category_id'])) {
     } else {
 
         $View = in_array($CODIGO_RUTA, ['F02', 'F2802']) ? "view_gmv_articulos_insti" : "GMV_mstr_articulos";
-            $sql = "SELECT * FROM $View WHERE ARTICULO IN ($articulos_str) ORDER BY DESCRIPCION ASC";    
+        $sql = "SELECT * FROM $View WHERE ARTICULO IN ($articulos_str) ORDER BY DESCRIPCION ASC";    
 
         if (in_array($CODIGO_RUTA, ['F22', 'F02', 'F04'])) {
             $sql = "SELECT * FROM $View WHERE EXISTENCIA > 1 ORDER BY DESCRIPCION ASC";  
         }
+    }
+
+    //RUTAS QUE ESTAN SIN VENDEDOR EN GRUPO B PERO REQUIEREN MOSTRAR TODOS LOS PRODUCTOS CON EXISTENCIA PARA NO BLOQUEAR LA APP
+    if (in_array($CODIGO_RUTA, ['F05', 'F09', 'F10','F11', 'F19', 'F20'])) {
+        $sql = "SELECT * FROM GMV_mstr_articulos WHERE EXISTENCIA > 1 AND NOT ARTICULO LIKE 'VU%' AND ARTICULO LIKE '1%' ORDER BY CALIFICATIVO,DESCRIPCION ASC";
+
     }
 
     
