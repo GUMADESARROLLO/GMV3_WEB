@@ -62,6 +62,7 @@ if (isset($_GET['category_id'])) {
     $Arti_Clientes  = [];
     $count_clientes = 0;
     $UnLock         = true;
+    $isWhere        = "";
 
     $ListaPrecio     = "Nv. Prec. Farmacia";
 
@@ -73,7 +74,20 @@ if (isset($_GET['category_id'])) {
     $ListaGrupo = $inforGrupo['GRUPO'];
     $CODIGO_RUTA = $VendeGrupo;
 
-    $isWhere = ($ListaGrupo === "A") ? " AND GRUPOS = 'A' " : "" ;
+
+    
+    //TIENE QUE EXCLUIR QUE FUERON DE ESENCIAL PERO EXPANSION LO FACTURO
+
+    if ($ListaGrupo === "A") { 
+
+        $isWhere = " AND GRUPOS = 'A' ";
+
+        if ($cliente != 'ND') {
+            $isWhere .= " AND ARTICULO NOT IN (SELECT ARTICULO FROM PRODUCCION.dbo.tbl_gmv_umk_excepciones WHERE ESENCIAL = '$VendeGrupo' AND CLIENTE = '$cliente') ";
+        }
+
+    }
+    //$isWhere = ($ListaGrupo === "A") ? " AND GRUPOS = 'A' " : "" ;
 
 
     // LA TABLA ES ALIMENTADA CON EL PROCEDURE sp_gmv_masterArticulos
@@ -83,23 +97,21 @@ if (isset($_GET['category_id'])) {
     //EXTRAER EL VENCIMIENTO DE LOS PRODUCTOS CON EXISTENCIA
     $LotesVencimiento = $sqlsrv->fetchArray("SELECT ARTICULO,FECHA_VENCIMIENTO FROM PRODUCCION.dbo.gmv_lotes_vecimientos", SQLSRV_FETCH_ASSOC);
 
-
     
     foreach ($MASTER_ARTICULOS as $articulo) {
         $articulo_escapado = str_replace("'", "''", $articulo['ARTICULO']);
         $articulos_sql[] = "'$articulo_escapado'";
     }
+    
     $articulos_str = implode(",", $articulos_sql);
     
     if ($ListaGrupo === "B" && $cliente != 'ND') {      
         foreach ($MASTER_ARTICULOS as $art) {
             $clientes = array_map('trim', explode(',', $art['CLIENTES_FACT']));
             if (in_array($cliente, $clientes)) {
-
                 $Arti_Clientes[$count_clientes] =[
                     'ARTICULO'  => $art['ARTICULO']
                 ];
-
                 $count_clientes++;
             }
         }
@@ -123,10 +135,11 @@ if (isset($_GET['category_id'])) {
     }
 
     //RUTAS QUE ESTAN SIN VENDEDOR EN GRUPO B PERO REQUIEREN MOSTRAR TODOS LOS PRODUCTOS CON EXISTENCIA PARA NO BLOQUEAR LA APP
-    if (in_array($CODIGO_RUTA, ['F05', 'F09', 'F10','F11', 'F19', 'F20'])) {
+    if (in_array($CODIGO_RUTA, ['F09', 'F10','F11', 'F19', 'F20'])) {
         $sql = "SELECT * FROM GMV_mstr_articulos WHERE EXISTENCIA > 1 AND NOT ARTICULO LIKE 'VU%' AND ARTICULO LIKE '1%' ORDER BY CALIFICATIVO,DESCRIPCION ASC";
 
     }
+
 
     
 
@@ -143,8 +156,8 @@ if (isset($_GET['category_id'])) {
         $key = array_search($CODIGO_ARTICULO, array_column($rImagenes, 'product_sku'));
         $set_img = ($key === false) ? "SinImagen.png" : $rImagenes[$key]['product_image'];    
         
-        // $keyLote = array_search($CODIGO_ARTICULO, array_column($LotesVencimiento, 'ARTICULO'));
-        // $set_des = ($keyLote === false) ? "N/D" : $LotesVencimiento[$keyLote]['FECHA_VENCIMIENTO']->format('d/m/Y') ;
+        $keyLote = array_search($CODIGO_ARTICULO, array_column($LotesVencimiento, 'ARTICULO'));
+        $set_des = ($keyLote === false) ? "N/D" : $LotesVencimiento[$keyLote]['FECHA_VENCIMIENTO']->format('d/m/Y') ;
 
         $Precio_Articulo = (strpos($CODIGO_ARTICULO, "VU") !== false) ? 1 : $fila['PRECIO_IVA'] ;
         $Existe_Articulo = (strpos($CODIGO_ARTICULO, "VU") !== false) ? 999 : $fila['EXISTENCIA'] ;
@@ -213,8 +226,8 @@ if (isset($_GET['category_id'])) {
 
         $json[$i] = array(
             'product_id'            => $fila["ARTICULO"],
-            //'product_name'          => strtoupper($fila['DESCRIPCION']) . " - ( " . $GrupArticulo . " )" ,
-            'product_name'          => strtoupper($fila['DESCRIPCION']),
+            'product_name'          => strtoupper($fila['DESCRIPCION']) . " - ( " . $GrupArticulo . " )" ,
+            //'product_name'          => strtoupper($fila['DESCRIPCION']),
             'category_id'           => "20",
             'category_name'         => "Medicina",
             'product_price'         => number_format($Precio_Articulo,2,'.',''),
