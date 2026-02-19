@@ -226,8 +226,8 @@ if (isset($_GET['category_id'])) {
 
         $json[$i] = array(
             'product_id'            => $fila["ARTICULO"],
-            'product_name'          => strtoupper($fila['DESCRIPCION']) . " - ( " . $GrupArticulo . " )" ,
-            //'product_name'          => strtoupper($fila['DESCRIPCION']),
+            //'product_name'          => strtoupper($fila['DESCRIPCION']) . " - ( " . $GrupArticulo . " )" ,
+            'product_name'          => strtoupper($fila['DESCRIPCION']),
             'category_id'           => "20",
             'category_name'         => "Medicina",
             'product_price'         => number_format($Precio_Articulo,2,'.',''),
