@@ -42,14 +42,27 @@ if (isset($_GET['category_id'])) {
         echo json_encode(['error' => 'Unauthorized']);
         exit();
     }
-    
+    $CODIGO_RUTA    = $_GET['get_detalle_otc'];
     $sqlsrv = new Sqlsrv();
 
-    $query = $sqlsrv->fetchArray("SELECT * FROM GMV_mstr_articulos WHERE EXISTENCIA > 1 AND NOT ARTICULO LIKE 'VU%' AND ARTICULO LIKE '1%' ORDER BY CALIFICATIVO,DESCRIPCION ASC", SQLSRV_FETCH_ASSOC);
+    $qOTC = $sqlsrv->fetchArray("SELECT ARTICULO,CANT_DISPONIBLE FROM iweb_bodegas WHERE BODEGA = '".$CODIGO_RUTA."' ", SQLSRV_FETCH_ASSOC);
+    $SKU_OTC = array();
+    $OTC_exist = array();
+    foreach ($qOTC as $fila) {
+        //if ($fila['CANT_DISPONIBLE'] > 0) {
+            $SKU_OTC[] = $fila['ARTICULO'];
+            $OTC_exist[] = array(
+                'ARTICULO' => $fila['ARTICULO'],
+                'CANT_DISPONIBLE' => $fila['CANT_DISPONIBLE']
+            );
+        //}
+    }
+
+    $query = $sqlsrv->fetchArray("SELECT * FROM GMV_mstr_articulos WHERE  ARTICULO in ('".implode("','", $SKU_OTC )."') ORDER BY CALIFICATIVO,DESCRIPCION ASC", SQLSRV_FETCH_ASSOC);
     $rImagenes = mysqli_fetch_all(mysqli_query($connect, "SELECT product_sku,product_image FROM tbl_product"), MYSQLI_ASSOC);
 
     $i = 0;
-    $CODIGO_RUTA    = $_GET['get_detalle_otc'];
+    
     $json           = array();
     $set_img        = "SinImagen.png";
     $isPromo        = "N";
@@ -64,16 +77,21 @@ if (isset($_GET['category_id'])) {
         $key = array_search($CODIGO_ARTICULO, array_column($rImagenes, 'product_sku'));
         $set_img = ($key === false) ? "SinImagen.png" : $rImagenes[$key]['product_image']; 
 
+        $k_OTC = array_search($CODIGO_ARTICULO, array_column($OTC_exist, 'ARTICULO'));
+        $cant_disponible = ($k_OTC === false) ? 0 : $OTC_exist[$k_OTC]['CANT_DISPONIBLE'] ;
+        
+
+
         $json[$i] = array(
             'product_id'            => $CODIGO_ARTICULO ,
             'product_name'          => strtoupper($fila['DESCRIPCION']),
             'category_id'           => "20",
             'category_name'         => "Medicina",
-            'product_price'         => number_format($fila['PRECIO'],2,'.',''),
+            'product_price'         => number_format($fila['OTC_DETALLE'],2,'.',''),
             'product_status'        => "Available",
             'product_image'         => $set_img,
             'product_description'   => "N/D",
-            'product_quantity'      => str_replace(',', '', number_format($fila['EXISTENCIA'],2)),
+            'product_quantity'      => str_replace(',', '', number_format($cant_disponible,2)),
             'currency_id'           => "105",
             'tax'                   => "0",
             'currency_code'         => "NIO",
