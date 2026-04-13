@@ -35,7 +35,69 @@ if (isset($_GET['category_id'])) {
     header('Content-Type: application/json; charset=utf-8');
     echo $val = str_replace('\\/', '/', json_encode($set));
 
-}else if (isset($_GET['get_recent'])) {
+}else if (isset($_GET['get_detalle_otc']))  {
+
+    if ( $_GET['APP_KEY'] !== $env['APP_KEY'] ) {
+        header('HTTP/1.1 401 Unauthorized');
+        echo json_encode(['error' => 'Unauthorized']);
+        exit();
+    }
+    
+    $sqlsrv = new Sqlsrv();
+
+    $query = $sqlsrv->fetchArray("SELECT * FROM GMV_mstr_articulos WHERE EXISTENCIA > 1 AND NOT ARTICULO LIKE 'VU%' AND ARTICULO LIKE '1%' ORDER BY CALIFICATIVO,DESCRIPCION ASC", SQLSRV_FETCH_ASSOC);
+    $rImagenes = mysqli_fetch_all(mysqli_query($connect, "SELECT product_sku,product_image FROM tbl_product"), MYSQLI_ASSOC);
+
+    $i = 0;
+    $CODIGO_RUTA    = $_GET['get_detalle_otc'];
+    $json           = array();
+    $set_img        = "SinImagen.png";
+    $isPromo        = "N";
+    $val_vineta     = "C$ 00.00";
+    $RutaAsignada   = $CODIGO_RUTA . "- CADENAS";
+    $UnLock         = true;
+    $ListaPrecio     = "Nv. Prec. OTC";
+
+    foreach ($query as $fila) {
+        $CODIGO_ARTICULO = $fila["ARTICULO"];
+
+        $key = array_search($CODIGO_ARTICULO, array_column($rImagenes, 'product_sku'));
+        $set_img = ($key === false) ? "SinImagen.png" : $rImagenes[$key]['product_image']; 
+
+        $json[$i] = array(
+            'product_id'            => $CODIGO_ARTICULO ,
+            'product_name'          => strtoupper($fila['DESCRIPCION']),
+            'category_id'           => "20",
+            'category_name'         => "Medicina",
+            'product_price'         => number_format($fila['PRECIO'],2,'.',''),
+            'product_status'        => "Available",
+            'product_image'         => $set_img,
+            'product_description'   => "N/D",
+            'product_quantity'      => str_replace(',', '', number_format($fila['EXISTENCIA'],2)),
+            'currency_id'           => "105",
+            'tax'                   => "0",
+            'currency_code'         => "NIO",
+            'currency_name'         => "Nicaraguan cordoba oro",
+            'product_bonificado'    => $fila["REGLAS"],
+            'product_lotes'         => "  :0:N/D",
+            'product_und'           => $fila["UNIDAD_MEDIDA"],
+            'CALIFICATIVO'          => $fila["CALIFICATIVO"],
+            'ISPROMO'               => $isPromo. ":" . $val_vineta . ":" . $RutaAsignada,
+            'LAB'                   => $fila["LABORATORIO"],
+            'isUnLock'              => $UnLock,
+            'ListaPrecio'           => $ListaPrecio,
+            'ListaGrupo'            => "A",
+        );
+        $i++;
+    }
+
+    header('Content-Type: application/json; charset=utf-8');
+    echo $val = str_replace('\\/', '/', json_encode($json));
+    $sqlsrv->close();
+    
+}
+
+else if (isset($_GET['get_recent'])) {
 
     if ( $_GET['APP_KEY'] !== $env['APP_KEY'] ) {
         header('HTTP/1.1 401 Unauthorized');
@@ -135,7 +197,7 @@ if (isset($_GET['category_id'])) {
     }
 
     //RUTAS QUE ESTAN SIN VENDEDOR EN GRUPO B PERO REQUIEREN MOSTRAR TODOS LOS PRODUCTOS CON EXISTENCIA PARA NO BLOQUEAR LA APP
-    if (in_array($CODIGO_RUTA, ['F09', 'F10','F11', 'F19', 'F20', 'F03', 'F05'])) {
+    if (in_array($CODIGO_RUTA, ['F19', 'F20', 'F05', 'F06' , 'F14' ])) {
         $sql = "SELECT * FROM GMV_mstr_articulos WHERE EXISTENCIA > 1 AND NOT ARTICULO LIKE 'VU%' AND ARTICULO LIKE '1%' ORDER BY CALIFICATIVO,DESCRIPCION ASC";
 
     }
