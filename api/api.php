@@ -54,7 +54,7 @@ if (isset($_GET['category_id'])) {
     $set_img        = "SinImagen.png";
     $isPromo        = "N";
     $val_vineta     = "C$ 00.00";
-    $RutaAsignada   = $CODIGO_RUTA . "- CADENAS";
+    $RutaAsignada   = $CODIGO_RUTA . "- OTCS";
     $UnLock         = true;
     $ListaPrecio     = "Nv. Prec. OTC";
 
