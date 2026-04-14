@@ -113,9 +113,7 @@ if (isset($_GET['category_id'])) {
     echo $val = str_replace('\\/', '/', json_encode($json));
     $sqlsrv->close();
     
-}
-
-else if (isset($_GET['get_recent'])) {
+} else if (isset($_GET['get_recent'])) {
 
     if ( $_GET['APP_KEY'] !== $env['APP_KEY'] ) {
         header('HTTP/1.1 401 Unauthorized');
@@ -215,7 +213,7 @@ else if (isset($_GET['get_recent'])) {
     }
 
     //RUTAS QUE ESTAN SIN VENDEDOR EN GRUPO B PERO REQUIEREN MOSTRAR TODOS LOS PRODUCTOS CON EXISTENCIA PARA NO BLOQUEAR LA APP
-    if (in_array($CODIGO_RUTA, ['F19', 'F20', 'F05', 'F06' , 'F14' ])) {
+    if (in_array($CODIGO_RUTA, ['F19', 'F20', 'F05', 'F06' , 'F14', 'F02', 'F22', 'F04' ])) {
         $sql = "SELECT * FROM GMV_mstr_articulos WHERE EXISTENCIA > 1 AND NOT ARTICULO LIKE 'VU%' AND ARTICULO LIKE '1%' ORDER BY CALIFICATIVO,DESCRIPCION ASC";
 
     }
@@ -342,8 +340,40 @@ else if (isset($_GET['get_recent'])) {
     header('Content-Type: application/json; charset=utf-8');
     echo $val = str_replace('\\/', '/', json_encode($json));
     $sqlsrv->close();
+} else if (isset($_GET['get_detalle_pedido'])) {
 
-}else if (isset($_GET['get_category'])) {
+    if ( $_GET['APP_KEY'] !== $env['APP_KEY'] ) {
+        header('HTTP/1.1 401 Unauthorized');
+        echo json_encode(['error' => 'Unauthorized']);
+        exit();
+    }
+
+    $num_pedido = $_GET['get_detalle_pedido'];
+
+    $i=0;
+    $array = array();
+
+    $query = "SELECT * FROM tbl_order WHERE code = '".$num_pedido."' ORDER BY id";
+    $resouter = mysqli_query($connect, $query);
+    $total_records = mysqli_num_rows($resouter);
+    if($total_records >= 1)
+    {
+        foreach ($resouter as $key)
+        {
+            $array[$i]['PEDIDO_ID']         = "NUM: ".$key['id'];
+            $array[$i]['PEDIDO_NUM']        = $key['code'];
+            $array[$i]['PEDIDO_CLIENTE']    = trim(str_replace('-', '', $key['email']));
+            $array[$i]['PEDIDO_NOMBRE']     = $key['phone'];
+            $array[$i]['PEDIDO_DIR']        = $key['address'];
+            $array[$i]['PEDIDO_ORDEN']      = $key['order_list'];
+            $array[$i]['PEDIDO_FECHA']      = date('d/m/Y H:i', strtotime($key['created_at']));
+            $array[$i]['PEDIDO_TOTAL']     = $key['order_total'];
+            $i++;
+        }
+    }
+    @header('Content-Type: application/json; charset=utf-8');
+    echo $val = str_replace('\\/', '/', json_encode($array));
+} else if (isset($_GET['get_category'])) {
     $query = "SELECT DISTINCT c.category_id, c.category_name, c.category_image, COUNT(DISTINCT p.product_id) as product_count FROM tbl_category c LEFT JOIN tbl_product p ON c.category_id = p.category_id GROUP BY c.category_id ORDER BY c.category_id DESC";
     $resouter = mysqli_query($connect, $query);
 
@@ -358,7 +388,7 @@ else if (isset($_GET['get_recent'])) {
     header('Content-Type: application/json; charset=utf-8');
     echo $val = str_replace('\\/', '/', json_encode($set));
 
-}else if (isset($_GET['get_tax_currency'])) {
+} else if (isset($_GET['get_tax_currency'])) {
     $query = "SELECT c.tax, o.currency_code FROM tbl_config c, tbl_currency o WHERE c.currency_id = o.currency_id AND c.id = 1";
     $resouter = mysqli_query($connect, $query);
 
