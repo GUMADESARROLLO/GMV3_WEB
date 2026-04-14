@@ -79,6 +79,8 @@ if (isset($_GET['category_id'])) {
 
         $k_OTC = array_search($CODIGO_ARTICULO, array_column($OTC_exist, 'ARTICULO'));
         $cant_disponible = ($k_OTC === false) ? 0 : $OTC_exist[$k_OTC]['CANT_DISPONIBLE'] ;
+
+        $Precio_Articulo = 10;
         
 
 
@@ -87,7 +89,7 @@ if (isset($_GET['category_id'])) {
             'product_name'          => strtoupper($fila['DESCRIPCION']),
             'category_id'           => "20",
             'category_name'         => "Medicina",
-            'product_price'         => number_format($fila['OTC_DETALLE'],2,'.',''),
+            'product_price'         => number_format($Precio_Articulo,2,'.',''),
             'product_status'        => "Available",
             'product_image'         => $set_img,
             'product_description'   => "N/D",
@@ -96,7 +98,7 @@ if (isset($_GET['category_id'])) {
             'tax'                   => "0",
             'currency_code'         => "NIO",
             'currency_name'         => "Nicaraguan cordoba oro",
-            'product_bonificado'    => $fila["REGLAS"],
+            'product_bonificado'    => "0",
             'product_lotes'         => "  :0:N/D",
             'product_und'           => $fila["UNIDAD_MEDIDA"],
             'CALIFICATIVO'          => $fila["CALIFICATIVO"],
@@ -587,7 +589,7 @@ if (isset($_GET['category_id'])) {
         //echo json_encode($dta);
 
     }else{
-        $dta[$i]['CLIENTE']      = '0000';
+        $dta[$i]['CLIENTE']      = '99999';
         $dta[$i]['NOMBRE']       = 'CLIENTE EN BLANCO';
         $dta[$i]['DIRECCION']    = 'EN ESPERA DE ASIGNACION DE CLIENTES';
         $dta[$i]['DIPONIBLE']    = '0.00';
