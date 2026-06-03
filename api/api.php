@@ -1677,6 +1677,51 @@ if (isset($_GET['category_id'])) {
     }
     header('Content-Type: application/json; charset=utf-8');
     echo $val = str_replace('\\/', '/', json_encode($json));
+}else if (isset($_GET['request_incremento']) && $_SERVER['REQUEST_METHOD'] === 'GET') {
+    $ruta = mysqli_real_escape_string($connect_comentario, $_GET['request_incremento']);
+    $query = "SELECT id, ruta, cliente, cod_cliente, monto, fecha, estado, motivo, saldo_actual, limite_actual, disponible_actual FROM solicitudes WHERE ruta = '$ruta' ORDER BY fecha DESC";
+    $result = mysqli_query($connect_comentario, $query);
+    $data = array();
+    while ($row = mysqli_fetch_assoc($result)) {
+        $data[] = $row;
+    }
+    header('Content-Type: application/json; charset=utf-8');
+    echo json_encode(array('data' => $data));
+}else if (isset($_GET['get_last_recibo'])) {
+    $ruta = mysqli_real_escape_string($connect_comentario, $_GET['get_last_recibo']);
+    $query = "SELECT ultimo_recibo FROM view_recibos WHERE ruta = '$ruta'";
+    $result = mysqli_query($connect_comentario, $query);
+    $row = mysqli_fetch_assoc($result);
+    $last = $row['ultimo_recibo'] ?? 0;
+    $next = str_pad($last + 1, 5, '0', STR_PAD_LEFT);
+    echo json_encode(['last_recibo' => $next]);
+
+}else if (isset($_GET['request_incremento']) && $_SERVER['REQUEST_METHOD'] === 'POST') {
+    $input = json_decode(file_get_contents('php://input'), true);
+    
+    if ($input === null) {
+        echo json_encode(array('status' => 'error', 'message' => 'JSON inválido o cuerpo vacío'));
+        exit;
+    }
+
+    $codigo      = mysqli_real_escape_string($connect_comentario, $input['codigo']);
+    $ruta        = mysqli_real_escape_string($connect_comentario, $input['ruta']);
+    $cliente     = mysqli_real_escape_string($connect_comentario, $input['cliente']);
+    $codCliente  = mysqli_real_escape_string($connect_comentario, $input['cod_cliente']);
+    $monto       = mysqli_real_escape_string($connect_comentario, $input['monto']);
+    $motivo      = mysqli_real_escape_string($connect_comentario, $input['motivo']);
+    $saldoActual = mysqli_real_escape_string($connect_comentario, $input['saldo_actual']);
+    $limiteActual = mysqli_real_escape_string($connect_comentario, $input['limite_actual']);
+    $disponible  = mysqli_real_escape_string($connect_comentario, $input['disponible']);
+
+    $query = "INSERT INTO solicitudes (codigo, ruta, cliente, cod_cliente, monto, fecha, estado, motivo, saldo_actual, limite_actual, disponible_actual)
+              VALUES ('$codigo', '$ruta', '$cliente', '$codCliente', '$monto', NOW(), 'Pendiente', '$motivo', '$saldoActual', '$limiteActual', '$disponible')";
+
+    if (mysqli_query($connect_comentario, $query)) {
+        echo json_encode(array('status' => 'success', 'message' => 'Data Inserted Successfully'));
+    } else {
+        echo json_encode(array('status' => 'error', 'message' => 'Error: ' . mysqli_error($connect_comentario)));
+    }
 }else if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $data = file_get_contents('php://input');
